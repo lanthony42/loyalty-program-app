@@ -3,6 +3,7 @@ node_modules
 *.out
 *.log
 prisma/dev*
+uploads
 *~
 .env
 .DS_Store

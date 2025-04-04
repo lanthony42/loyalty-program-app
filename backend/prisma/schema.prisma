@@ -1,0 +1,101 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                   Int           @id @default(autoincrement())
+  username             String        @unique
+  name                 String?
+  email                String        @unique
+  password             String?
+  birthday             DateTime?
+  role                 Role          @default(REGULAR)
+  points               Int           @default(0)
+  createdAt            DateTime      @default(now())
+  lastLogin            DateTime?
+  verified             Boolean       @default(false)
+  suspicious           Boolean       @default(false)
+  avatarUrl            String?
+  resetTokens          ResetToken[]
+  transactionsReceived Transaction[] @relation("ReceivedTransactions")
+  transactionsSent     Transaction[] @relation("SentTransactions")
+  eventsOrganized      Event[]       @relation("OrganizedEvents")
+  eventsAttended       Event[]       @relation("AttendedEvents")
+}
+
+enum Role {
+  REGULAR
+  CASHIER
+  MANAGER
+  SUPERUSER
+}
+
+model ResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique @default(uuid())
+  expiresAt DateTime
+  invalid   Boolean  @default(false)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id           Int             @id @default(autoincrement())
+  type         TransactionType
+  amount       Int
+  spent        Float?
+  relatedId    Int?
+  remark       String          @default("")
+  suspicious   Boolean         @default(false)
+  receivedById Int
+  receivedBy   User            @relation("ReceivedTransactions", fields: [receivedById], references: [id])
+  sentById     Int
+  sentBy       User            @relation("SentTransactions", fields: [sentById], references: [id])
+  promotions   Promotion[]     @relation("TransactionPromotions")
+}
+
+enum TransactionType {
+  PURCHASE
+  ADJUSTMENT
+  REDEMPTION
+  TRANSFER
+  EVENT
+}
+
+model Promotion {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String
+  type         PromotionType
+  startTime    DateTime
+  endTime      DateTime
+  minSpending  Float?
+  rate         Float?
+  points       Int?
+  transactions Transaction[] @relation("TransactionPromotions")
+}
+
+enum PromotionType {
+  AUTOMATIC
+  ONE_TIME
+}
+
+model Event {
+  id            Int      @id @default(autoincrement())
+  name          String
+  description   String
+  location      String
+  startTime     DateTime
+  endTime       DateTime
+  capacity      Int?
+  pointsRemain  Int
+  pointsAwarded Int      @default(0)
+  published     Boolean  @default(false)
+  organizers    User[]   @relation("OrganizedEvents")
+  guests        User[]   @relation("AttendedEvents")
+}
