@@ -18,12 +18,22 @@ const port = (() => {
   return num;
 })();
 
+require("dotenv").config();
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
 const express = require("express");
 const app = express();
 
+const cors = require("cors");
+app.use(cors({
+  origin: FRONTEND_URL,
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
 app.use(express.json());
 
-// ADD YOUR WORK HERE
 const { jwtAuth } = require("./middleware/auth");
 app.use(jwtAuth);
 
