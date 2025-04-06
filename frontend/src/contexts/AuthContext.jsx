@@ -29,7 +29,8 @@ export const AuthProvider = ({ children }) => {
 
             if (response.ok) {
                 const data = await response.json();
-                setUser(data.user); 
+                console.log(data)
+                setUser(data); 
             } else {
                 throw new Error('Failed to fetch user data');
             }
@@ -45,20 +46,21 @@ export const AuthProvider = ({ children }) => {
         navigate('/'); 
     };
 
-    const login = async (username, password) => {
+    const login = async (utorid, password) => {
         try {
-            const response = await fetch(`${BACKEND_URL}/login`, {
+            const response = await fetch(`${BACKEND_URL}/auth/tokens`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ utorid, password }),
             });
 
             const data = await response.json();
             if (response.ok) {
-                const { token } = data;
+                const { token, expiresAt } = data;
                 localStorage.setItem('token', token); 
+                localStorage.setItem('expiresAt', expiresAt); 
                 fetchUserData(token); 
                 navigate('/profile');
             } else {
@@ -99,6 +101,6 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export const useAuth = () => {
+export const UseAuth = () => {
     return useContext(AuthContext);
 };
