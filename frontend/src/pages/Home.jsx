@@ -6,7 +6,6 @@ function Home() {
         <h2>Welcome!</h2>
         <div className="row">
             <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
         </div>
     </>;
 }

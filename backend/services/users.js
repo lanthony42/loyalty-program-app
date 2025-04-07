@@ -135,6 +135,7 @@ module.exports = app => {
   });
 
   app.patch("/users/me", upload.single("avatar"), async (req, res) => {
+    console.log("Dfsfdsjfdkfsdlkfsljfdk")
     const valid = (
       validate.string(req.body, "name", "email") &&
       validate.date(req.body, "birthday") &&

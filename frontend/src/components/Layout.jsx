@@ -8,7 +8,7 @@ const Layout = () => {
         <header>
             <Link to="/">Home</Link>
             { user ? <>
-                <Link to="/profile" className="user">{user.username}</Link>
+                <Link to="/profile" className="user">{user.utorid}</Link>
                 <a href="#" onClick={logout}>Logout</a>
                 </> :
                 <Link to="/login">Login</Link>

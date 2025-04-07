@@ -6,10 +6,9 @@ const Register = () => {
     const { register } = UseAuth();
     const [error, setError] = useState("");
     const [data, setData] = useState({
-        username: '',
-        firstname: '',
-        lastname: '',
-        password: ''
+        utorid: '',
+        name: '',
+        email: ''
     });
 
     const handle_change = (e) => {
@@ -26,43 +25,33 @@ const Register = () => {
     return <>
         <h2>Registration</h2>
         <form onSubmit={handle_submit}>
-            <label htmlFor="username">User Name:</label>
+            <label htmlFor="utorid">utorid:</label>
             <input
                 type="text"
-                id="username"
-                name="username"
-                placeholder='User Name'
-                value={data.username}
+                id="utorid"
+                name="utorid"
+                placeholder='utorid'
+                value={data.utorid}
                 onChange={handle_change}
                 required
             />
-            <label htmlFor="firstname">First Name:</label>
+            <label htmlFor="name">Name:</label>
             <input
                 type="text"
-                id="firstname"
-                name="firstname"
-                placeholder='First Name'
-                value={data.firstname}
+                id="name"
+                name="name"
+                placeholder='Name'
+                value={data.name}
                 onChange={handle_change}
                 required
             />
-            <label htmlFor="lastname">Last Name:</label>
+            <label htmlFor="email">Email:</label>
             <input
-                type="text"
-                id="lastname"
-                name="lastname"
-                placeholder='Last Name'
-                value={data.lastname}
-                onChange={handle_change}
-                required
-            />
-            <label htmlFor="password">Password:</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder='Password'
-                value={data.password}
+                type="email"
+                id="email"
+                name="email"
+                placeholder='Email'
+                value={data.email}
                 onChange={handle_change}
                 required
             />

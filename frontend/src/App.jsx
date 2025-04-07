@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Success from "./pages/Success";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import UpdateUser from "./pages/UpdateUser";
 
 const MyRoutes = () => {
   return <Routes>
@@ -15,6 +16,7 @@ const MyRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/success" element={<Success />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/updateUser" element={<UpdateUser />} />
     </Route>
   </Routes>
 }

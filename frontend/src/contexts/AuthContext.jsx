@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log(data)
                 setUser(data); 
             } else {
                 throw new Error('Failed to fetch user data');
@@ -42,6 +41,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('token'); 
+        localStorage.removeItem('expiresAt'); 
         setUser(null); 
         navigate('/'); 
     };
@@ -72,14 +72,17 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const register = async ({ username, firstname, lastname, password }) => {
+    const register = async ({ utorid, name, email }) => {
         try {
-            const response = await fetch(`${BACKEND_URL}/register`, {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch(`${BACKEND_URL}/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ username, firstname, lastname, password }),
+                body: JSON.stringify({ utorid, name, email }),
             });
 
             const data = await response.json();
@@ -94,8 +97,35 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const update_user = async (userData) => {
+        try {
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+            for (const key in userData) {
+                formData.append(key, userData[key]);
+            }
+            const response = await fetch(`${BACKEND_URL}/users/me`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                navigate('/profile');
+            } else {
+                return data.message;
+            }
+        } catch (error) {
+            console.log(error);
+            return 'An error occurred while updating';
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, register }}>
+        <AuthContext.Provider value={{ user, login, logout, register, update_user }}>
             {children}
         </AuthContext.Provider>
     );
