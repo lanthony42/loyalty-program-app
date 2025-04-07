@@ -6,6 +6,7 @@ const { getPrisma, Role, PromotionType } = require("../prisma/prisma");
 
 const validate = require("./validate");
 const multer = require("multer");
+const fs = require("fs");
 
 const REGISTER_EXPIRY = 7 * 24 * 60 * 60;
 const RESET_EXPIRY = 60 * 60;
@@ -14,7 +15,11 @@ const RATE_LIMIT = 60 * 1000;
 const lastRequests = new Map();
 const storage = multer.diskStorage({
   destination: (_0, _1, cb) => {
-    cb(null, "uploads/avatars/");
+    const path = "uploads/avatars/";
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+    cb(null, path);
   },
   filename: (req, file, cb) => {
     const tokens = file.originalname.split(".");
@@ -135,7 +140,6 @@ module.exports = app => {
   });
 
   app.patch("/users/me", upload.single("avatar"), async (req, res) => {
-    console.log("Dfsfdsjfdkfsdlkfsljfdk")
     const valid = (
       validate.string(req.body, "name", "email") &&
       validate.date(req.body, "birthday") &&

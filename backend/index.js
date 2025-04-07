@@ -49,6 +49,8 @@ addEventEndpoints(app);
 const addPromotionEndpoints = require("./services/promotions");
 addPromotionEndpoints(app);
 
+app.use("/uploads", express.static("uploads"));
+
 const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

@@ -6,10 +6,10 @@ function UpdateUser() {
     const { update_user } = UseAuth();    
     const [error, setError] = useState("");
     const [data, setData] = useState({
-            name: null,
-            email: null,
-            birthday: null,
-            avatar: null
+        name: null,
+        email: null,
+        birthday: null,
+        avatar: null
     });
 
     const handle_change = (e) => {

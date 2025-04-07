@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
                 const data = await response.json();
                 setUser(data); 
             } else {
+                setUser(null);
                 throw new Error('Failed to fetch user data');
             }
         } catch (error) {
@@ -102,7 +103,9 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             const formData = new FormData();
             for (const key in userData) {
-                formData.append(key, userData[key]);
+                if (userData[key]) {                    
+                    formData.append(key, userData[key]);
+                }
             }
             const response = await fetch(`${BACKEND_URL}/users/me`, {
                 method: 'PATCH',

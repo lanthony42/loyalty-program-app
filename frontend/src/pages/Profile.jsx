@@ -1,6 +1,7 @@
-import { UseAuth } from "../contexts/AuthContext";
 import "./main.css";
+import { UseAuth } from "../contexts/AuthContext";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
 function Profile() {
@@ -9,7 +10,7 @@ function Profile() {
     const options = { hour: 'numeric', minute: 'numeric', hour12: true };
     const pretty_date = date.toLocaleTimeString('en-US', options);
 
-    const avatarUrl = user?.avatarUrl || DEFAULT_AVATAR;
+    const avatarUrl = user?.avatarUrl ? `${BACKEND_URL}${user?.avatarUrl}` : DEFAULT_AVATAR;
     
     console.log(user?.avatarUrl);
     return <>
