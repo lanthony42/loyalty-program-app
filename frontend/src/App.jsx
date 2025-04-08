@@ -3,6 +3,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
+import Users from "./pages/Accounts";
 import Login from "@/pages/Accounts/Login";
 import EditProfile from "@/pages/Accounts/EditProfile";
 import Register from "@/pages/Accounts/Register";
@@ -19,6 +20,7 @@ const MyRoutes = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="edit-profile" element={<EditProfile />} />
                 <Route path="register" element={<Register />} />
+                <Route path="users" element={<Users />} />
                 <Route path="transactions">
                     <Route index element={<Transactions />} />
                     <Route path=":transactionId" element={<Transaction />} />
