@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const UpdateUser = () => {
-    const { authReady, token, user, fetchUserData } = useAuth();
+    const { authReady, user, fetchUserData } = useAuth();
     if (!authReady) {
         return <p>Loading...</p>;
     }
@@ -48,13 +48,13 @@ const UpdateUser = () => {
             const response = await fetch(url, {
                 method: "PATCH",
                 headers: {
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${user.token}`,
                 },
                 body: formData,
             });
 
             if (response.ok) {
-                await fetchUserData(token);
+                await fetchUserData(user.token);
                 navigate("/profile");
             }
             else {

@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const Register = () => {
-    const { authReady, token, user } = useAuth();
+    const { authReady, user } = useAuth();
     if (!authReady) {
         return <p>Loading...</p>;
     }
@@ -35,7 +35,7 @@ const Register = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${user.token}`,
                 },
                 body: JSON.stringify(data),
             });

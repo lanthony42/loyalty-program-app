@@ -4,9 +4,15 @@ import config from "@/config";
 
 const AuthContext = createContext(null);
 
+const Role = {
+    REGULAR: 0,
+    CASHIER: 1,
+    MANAGER: 2,
+    SUPERUSER: 3
+};
+
 export const AuthProvider = ({ children }) => {
     const [authReady, setAuthReady] = useState(false);
-    const [token, setToken] = useState(null);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
@@ -17,7 +23,6 @@ export const AuthProvider = ({ children }) => {
         }
         else {
             setAuthReady(true);
-            setToken(null);
             setUser(null);
         }
     }, []);
@@ -35,8 +40,11 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 const data = await response.json();
                 setAuthReady(true);
-                setToken(storedToken);
-                setUser(data);
+                setUser({
+                    ...data,
+                    token: storedToken,
+                    baseRole: data.role
+                });
             }
             else {
                 throw new Error("Failed to fetch user data");
@@ -48,9 +56,18 @@ export const AuthProvider = ({ children }) => {
             // Clear data on error
             localStorage.removeItem("token");
             setAuthReady(true);
-            setToken(null);
             setUser(null);
         }
+    };
+
+    const setRole = role => {
+        if (Role[role] > Role[user.baseRole]) {
+            role = user.baseRole;
+        }
+        setUser({
+            ...data,
+            role
+        });
     };
 
     const login = async (utorid, password) => {
@@ -67,8 +84,7 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 const { token: storedToken } = await response.json();
                 localStorage.setItem("token", storedToken);
-                fetchUserData(storedToken);
-                setToken(storedToken);
+                await fetchUserData(storedToken);
 
                 navigate("/dashboard");
             }
@@ -90,7 +106,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ authReady, token, user, fetchUserData, login, logout }}>
+        <AuthContext.Provider value={{ Role, authReady, user, fetchUserData, setRole, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
