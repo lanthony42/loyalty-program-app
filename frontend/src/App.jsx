@@ -8,7 +8,8 @@ import Login from "@/pages/Accounts/Login";
 import EditProfile from "@/pages/Accounts/EditProfile";
 import Register from "@/pages/Accounts/Register";
 import Transactions from "@/pages/Transactions";
-import Transaction from "@/pages/Transactions/Transaction";
+import CreateTransaction from "@/pages/Transactions/Create";
+import ViewTransaction from "@/pages/Transactions/View";
 import NotFound from "@/pages/NotFound";
 
 const MyRoutes = () => {
@@ -23,7 +24,8 @@ const MyRoutes = () => {
                 <Route path="register" element={<Register />} />
                 <Route path="transactions">
                     <Route index element={<Transactions />} />
-                    <Route path=":transactionId" element={<Transaction />} />
+                    <Route path="create" element={<CreateTransaction />} />
+                    <Route path=":transactionId" element={<ViewTransaction />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Route>

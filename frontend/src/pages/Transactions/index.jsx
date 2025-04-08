@@ -177,7 +177,9 @@ const Transactions = () => {
             {transactions.map(transaction => (
                 <li key={transaction.id}>
                     Id: {transaction.id} - Type: {transaction.type}
-                    <Link to={`/transactions/${transaction.id}`} state={{ fromList: true }}>View</Link>
+                    {isManager && <Link to={`/transactions/${transaction.id}`} state={{ fromList: true }}>
+                        View
+                    </Link>}
                 </li>
             ))}
         </ul>

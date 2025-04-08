@@ -4,7 +4,7 @@ import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-const Transaction = () => {
+const Create = () => {
     const [transaction, setTransaction] = useState(null);
     const [error, setError] = useState("");
     const { transactionId } = useParams();
@@ -185,4 +185,4 @@ const Transaction = () => {
     </>;
 };
 
-export default Transaction;
+export default Create;
