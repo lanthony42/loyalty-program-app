@@ -28,11 +28,18 @@ header > a:hover {
     color: white;
 }
 
+header > .user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0;
+    padding-right: 55px;
+}
+
 header > .avatar-dropdown {
     color: #ddd;
     font-weight: normal;
     padding: 0;
-    padding-right: 55px;
 }
 
 main {
