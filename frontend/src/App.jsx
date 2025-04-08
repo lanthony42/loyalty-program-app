@@ -2,11 +2,11 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
-import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
-import Profile from "@/pages/User/Profile";
-import EditProfile from "@/pages/User/EditProfile";
-import Register from "@/pages/User/Register";
+import Login from "@/pages/Accounts/Login";
+import Profile from "@/pages/Accounts/Profile";
+import EditProfile from "@/pages/Accounts/EditProfile";
+import Register from "@/pages/Accounts/Register";
 import Transactions from "@/pages/Transactions";
 import NotFound from "@/pages/NotFound";
 
