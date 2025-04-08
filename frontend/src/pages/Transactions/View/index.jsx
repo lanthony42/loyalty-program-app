@@ -64,12 +64,17 @@ const View = () => {
     };
 
     const clickBack = () => {
-        if (location.state?.fromList) {
+        if (location.state?.fromSite) {
             navigate(-1);
         }
         else {
             navigate('/transactions');
         }
+    };
+
+    const createAdjustment = () => {
+        const url = `/transactions/create?type=adjustment&utorid=${transaction.utorid}&relatedId=${transaction.id}`;
+        navigate(url, { state: { fromSite: true } });
     };
 
     const handleSubmit = async e => {
@@ -189,6 +194,7 @@ const View = () => {
             />
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
+                <button type="button" onClick={createAdjustment}>Create Adjustment</button>
                 <button type="submit">Update</button>
             </div>
             <p className="error">{error}</p>

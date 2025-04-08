@@ -17,7 +17,8 @@ const Create = () => {
     const [transaction, setTransaction] = useState({
         userId: searchParams.get("userId") || undefined,
         utorid: searchParams.get("utorid") || undefined,
-        type: searchParams.get("type") || undefined
+        type: searchParams.get("type") || undefined,
+        relatedId: searchParams.get("relatedId") || undefined
     });
     const [types, setTypes] = useState([]);
     const [error, setError] = useState("");    
@@ -32,10 +33,12 @@ const Create = () => {
                     newTypes.push(key);
                 }
             }
-            setTransaction({
-                ...transaction,
-                type: newTypes[0]
-            });
+            if (!newTypes.includes(transaction.type)) {                
+                setTransaction({
+                    ...transaction,
+                    type: newTypes[0]
+                });
+            }
             setTypes(newTypes);
         }
     }, [user]);
@@ -106,7 +109,7 @@ const Create = () => {
     }
 
     const clickBack = () => {
-        if (location.state?.fromList) {
+        if (location.state?.fromSite) {
             navigate(-1);
         }
         else {

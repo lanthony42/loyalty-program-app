@@ -29,7 +29,7 @@ const Process = () => {
     };
 
     const clickBack = () => {
-        if (location.state?.fromList) {
+        if (location.state?.fromSite) {
             navigate(-1);
         }
         else {
