@@ -4,7 +4,7 @@ import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-const PAGE_LIMIT = 10;
+const PAGE_LIMIT = 5;
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -14,6 +14,7 @@ const Transactions = () => {
 
     const query = useMemo(() => {
         return {
+            limit: PAGE_LIMIT,
             page: parseInt(searchParams.get("page")) || 1,
             name: searchParams.get("name") || "",
             createdBy: searchParams.get("createdBy") || "",
@@ -102,10 +103,15 @@ const Transactions = () => {
         });
     };
 
-    return <>
-        <h1>Transactions</h1>
-        <Link to="/transactions/create">Create New</Link>
-        <div>
+    return <div>
+        <div className="header-container">
+            <h1>Transactions</h1>
+            <div className="btn-container">
+                <Link to="/transactions/create">Create New</Link>
+            </div>
+        </div>
+        
+        <div className="filter-container">
             {isManager && <>
                 <input
                     name="name"
@@ -184,22 +190,26 @@ const Transactions = () => {
                 </li>
             ))}
         </ul>
-        <div>
-            <button
-                onClick={() => changePage(query.page - 1)}
-                disabled={query.page === 1}
-            >
-                Previous
-            </button>
+        <div className="pagination-container">
+            <div className="btn-container">
+                <button
+                    onClick={() => changePage(query.page - 1)}
+                    disabled={query.page === 1}
+                >
+                    Previous
+                </button>
+            </div>
             <span>Page {Math.min(query.page, totalPages)} of {totalPages}</span>
-            <button
-                onClick={() => changePage(query.page + 1)}
-                disabled={query.page === totalPages}
-            >
-                Next
-            </button>
+            <div className="btn-container">
+                <button
+                    onClick={() => changePage(query.page + 1)}
+                    disabled={query.page === totalPages}
+                >
+                    Next
+                </button>
+            </div>
         </div>
-    </>;
+    </div>;
 };
 
 export default Transactions;
