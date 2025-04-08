@@ -28,9 +28,11 @@ header > a:hover {
     color: white;
 }
 
-header > .user {
+header > .avatar-dropdown {
     color: #ddd;
     font-weight: normal;
+    padding: 0;
+    padding-right: 55px;
 }
 
 main {

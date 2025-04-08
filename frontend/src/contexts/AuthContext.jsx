@@ -5,10 +5,10 @@ import config from "@/config";
 const AuthContext = createContext(null);
 
 const Role = {
-    REGULAR: 0,
-    CASHIER: 1,
-    MANAGER: 2,
-    SUPERUSER: 3
+    regular: 0,
+    cashier: 1,
+    manager: 2,
+    superuser: 3
 };
 
 export const AuthProvider = ({ children }) => {
