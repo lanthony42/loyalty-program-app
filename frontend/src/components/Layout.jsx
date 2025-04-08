@@ -1,4 +1,4 @@
-import "@/components/Layout.css";
+import "./Layout.css";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 

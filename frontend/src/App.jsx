@@ -7,6 +7,7 @@ import Dashboard from "@/pages/Dashboard";
 import Profile from "@/pages/User/Profile";
 import EditProfile from "@/pages/User/EditProfile";
 import Register from "@/pages/User/Register";
+import Transactions from "@/pages/Transactions";
 import NotFound from "@/pages/NotFound";
 
 const MyRoutes = () => {
@@ -19,6 +20,7 @@ const MyRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/transactions" element={<Transactions />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
