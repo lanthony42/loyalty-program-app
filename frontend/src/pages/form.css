@@ -11,7 +11,8 @@ form label {
     align-self: center;
 }
 
-form input {
+form input,
+form select {
     padding: 8px;
     font-size: 1rem;
 }

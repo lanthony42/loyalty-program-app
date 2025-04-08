@@ -42,7 +42,7 @@ module.exports = app => {
     const promotions = [];
     let promotionRate = 0.04;
     let promotionPoints = 0;
-    for (const promotionId of req.body.promotionIds) {
+    for (const promotionId of (req.body.promotionIds || [])) {
       const promotion = await getPrisma().promotion.findUnique({
         where: {
           id: promotionId,

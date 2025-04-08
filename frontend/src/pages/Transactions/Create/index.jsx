@@ -1,20 +1,37 @@
 import "@/pages/form.css";
 import { useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
+const TYPES = {
+  purchase: "cashier",
+  adjustment: "manager",
+  redemption: "regular",
+  transfer: "regular"
+}
+
 const Create = () => {
-    const [transaction, setTransaction] = useState(null);
-    const [error, setError] = useState("");
-    const { transactionId } = useParams();
     const { Role, authReady, user } = useAuth();
+    const [transaction, setTransaction] = useState({});
+    const [types, setTypes] = useState([]);
+    const [error, setError] = useState("");    
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
         if (user) {
-            fetchTransactionData();
+            const newTypes = [];
+            for (const key in TYPES) {
+                if (Role[user.role] >= Role[TYPES[key]]) {
+                    newTypes.push(key);
+                }
+            }
+            setTransaction({
+                ...transaction,
+                type: newTypes[0]
+            });
+            setTypes(newTypes);
         }
     }, [user]);
 
@@ -25,43 +42,38 @@ const Create = () => {
         return <Navigate to="/login" replace />;
     }
 
-    const isManager = Role[user.role] >= Role.manager;
-    if (!isManager) {
-        return <Navigate to="/dashboard" replace />;
-    }
-
-    const fetchTransactionData = async () => {
-        try {
-            const url = `${config.backendUrl}/transactions/${transactionId}`;
-            const response = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                },
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setTransaction(data);
-            }
-            else if (response.status === 404) {
-                navigate("/404");
-            }
-            else {
-                throw new Error("Failed to fetch transaction data");
-            }
-        }
-        catch (error) {
-            console.error(error);
-        }
-    };
-
-    const changeSuspicious = e => {
+    const handleChange = e => {
+        const { name, value } = e.target;
         setTransaction({
             ...transaction,
-            suspicious: e.target.checked
+            [name]: value
         });
     };
+
+    const handleTypeChange = e => {
+        if (e.target.value === "purchase") {
+            setTransaction({
+                ...transaction,
+                type: e.target.value,
+                amount: undefined
+            });
+        }
+        else {
+            setTransaction({
+                ...transaction,
+                type: e.target.value,
+                spent: undefined
+            });
+        }
+    };
+
+    const handlePromotionsChange = e => {
+        const tokens = e.target.value.split(",");
+        setTransaction({
+            ...transaction,
+            promotionIds: tokens.map(x => x.trim())
+        });
+    }
 
     const clickBack = () => {
         if (location.state?.fromList) {
@@ -76,18 +88,20 @@ const Create = () => {
         e.preventDefault();
 
         try {
-            const url = `${config.backendUrl}/transactions/${transaction.id}/suspicious`;
+            const url = transaction.type === "redemption" ? `${config.backendUrl}/users/me/transactions` :
+                        transaction.type === "transfer"   ? `${config.backendUrl}/users/${transaction.utorid}/transactions` :
+                                                            `${config.backendUrl}/transactions`;
             const response = await fetch(url, {
-                method: "PATCH",
+                method: "POST",
                 headers: {
                     "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ suspicious: transaction.suspicious }),
+                body: JSON.stringify(transaction),
             });
 
             if (response.ok) {
-                await fetchTransactionData();
+                clickBack();
             }
             else {
                 const json = await response.json();
@@ -99,9 +113,9 @@ const Create = () => {
             setError("An error occurred while updating");
         }
     };
-    
-    return !transaction ? <p>Loading...</p> : <>
-        <h1>Transaction {transaction.id}</h1>
+
+    return <>
+        <h1>Create Transaction</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="utorid">UTORid:</label>
             <input
@@ -110,35 +124,58 @@ const Create = () => {
                 name="utorid"
                 placeholder="UTORid"
                 value={transaction.utorid || ""}
-                disabled
+                onChange={handleChange}
+                required
             />
             <label htmlFor="type">Type:</label>
-            <input
+            <select
                 type="text"
                 id="type"
                 name="type"
                 placeholder="Type"
                 value={transaction.type || ""}
-                disabled
-            />
-            <label htmlFor="amount">Amount:</label>
-            <input
-                type="number"
-                id="amount"
-                name="amount"
-                placeholder="Amount"
-                value={transaction.amount || ""}
-                disabled
-            />
-            {transaction.type === "purchase" && <>
+                onChange={handleTypeChange}
+                required
+            >
+                {types.map(type => (
+                    <option key={type} value={type}>{`${type.charAt(0).toUpperCase()}${type.slice(1)}`}</option>
+                ))}
+            </select>
+            {transaction.type === "purchase" ? <>
                 <label htmlFor="amount">Spent:</label>
                 <input
                     type="number"
                     id="spent"
                     name="spent"
                     placeholder="Spent"
+                    min="0"
                     value={transaction.spent || ""}
-                    disabled
+                    onChange={handleChange}
+                    required
+                />
+            </> : <>
+                <label htmlFor="amount">Amount:</label>
+                <input
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    placeholder="Amount"
+                    step="1"
+                    value={transaction.amount || ""}
+                    onChange={handleChange}
+                    required
+                />
+            </>}
+            {transaction.type === "adjustment" && <>
+                <label htmlFor="relatedId">Related Id:</label>
+                <input
+                    type="number"
+                    id="relatedId"
+                    name="relatedId"
+                    placeholder="Related Id"
+                    value={transaction.relatedId || ""}
+                    onChange={handleChange}
+                    required
                 />
             </>}
             <label htmlFor="promotionIds">Promotion Ids:</label>
@@ -147,16 +184,8 @@ const Create = () => {
                 id="promotionIds"
                 name="promotionIds"
                 placeholder="Promotion Ids"
-                value={transaction.promotionIds.join(", ") || ""}
-                disabled
-            />
-            <label htmlFor="suspicious">Suspicious:</label>
-            <input
-                type="checkbox"
-                id="suspicious"
-                name="suspicious"
-                value={transaction.suspicious || false}
-                onChange={changeSuspicious}
+                value={transaction.promotionIds?.join(", ") || ""}
+                onChange={handlePromotionsChange}
             />
             <label htmlFor="remark">Remark:</label>
             <input
@@ -165,20 +194,11 @@ const Create = () => {
                 name="remark"
                 placeholder="Remark"
                 value={transaction.remark || ""}
-                disabled
-            />
-            <label htmlFor="createdBy">Created By:</label>
-            <input
-                type="text"
-                id="createdBy"
-                name="createdBy"
-                placeholder="Created By"
-                value={transaction.createdBy || ""}
-                disabled
+                onChange={handleChange}
             />
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
-                <button type="submit">Update</button>
+                <button type="submit">Create</button>
             </div>
             <p className="error">{error}</p>
         </form>
