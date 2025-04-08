@@ -1,6 +1,6 @@
-import "./main.css";
+import "@/pages/main.css";
 import { Link, Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Home = () => {
     const { authReady, user } = useAuth();

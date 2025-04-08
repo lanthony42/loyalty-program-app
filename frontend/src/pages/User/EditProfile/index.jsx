@@ -1,8 +1,8 @@
-import "./form.css";
+import "@/pages/form.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import config from "../config";
+import { useAuth } from "@/contexts/AuthContext";
+import config from "@/config";
 
 const UpdateUser = () => {
     const [error, setError] = useState("");

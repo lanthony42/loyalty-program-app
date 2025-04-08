@@ -1,8 +1,8 @@
-import "./form.css";
+import "@/pages/form.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import config from "../config";
+import { useAuth } from "@/contexts/AuthContext";
+import config from "@/config";
 
 const Register = () => {
     const [error, setError] = useState("");
@@ -41,7 +41,7 @@ const Register = () => {
             });
 
             if (response.ok) {
-                navigate("/success");
+                navigate("/dashboard");
             }
             else {
                 const json = await response.json();
