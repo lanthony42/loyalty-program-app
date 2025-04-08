@@ -5,10 +5,10 @@ import config from "@/config";
 const AuthContext = createContext(null);
 
 const Role = {
-    REGULAR: 0,
-    CASHIER: 1,
-    MANAGER: 2,
-    SUPERUSER: 3
+    regular: 0,
+    cashier: 1,
+    manager: 2,
+    superuser: 3
 };
 
 export const AuthProvider = ({ children }) => {
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
             role = user.baseRole;
         }
         setUser({
-            ...data,
+            ...user,
             role
         });
     };
@@ -81,10 +81,10 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ utorid, password }),
             });
 
+            const data = await response.json();
             if (response.ok) {
-                const { token: storedToken } = await response.json();
-                localStorage.setItem("token", storedToken);
-                await fetchUserData(storedToken);
+                localStorage.setItem("token", data.token);
+                await fetchUserData(data.token);
 
                 navigate("/dashboard");
             }
