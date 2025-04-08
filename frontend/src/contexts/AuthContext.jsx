@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
                 setAuthReady(true);
                 setUser({
                     ...data,
+                    role: getRole() || data.role,
                     token: storedToken,
                     baseRole: data.role
                 });
@@ -60,10 +61,18 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const getRole = () => {
+        const role = localStorage.getItem("role");
+        if (Role[role] != null) {
+            return role;
+        }
+    };
+
     const setRole = role => {
         if (Role[role] > Role[user.baseRole]) {
             role = user.baseRole;
         }
+        localStorage.setItem("role", role);
         setUser({
             ...user,
             role
@@ -99,7 +108,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem("token"); 
+        localStorage.clear();
         setUser(null);
 
         navigate("/");

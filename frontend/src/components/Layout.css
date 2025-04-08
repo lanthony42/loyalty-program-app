@@ -28,18 +28,15 @@ header > a:hover {
     color: white;
 }
 
-header > .user {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0;
+header > .avatar-dropdown {
+    position: relative;
+    display: inline-block;
     padding-right: 55px;
 }
 
-header > .avatar-dropdown {
-    color: #ddd;
-    font-weight: normal;
-    padding: 0;
+.user-points {
+    font-weight: bold;
+    color: white;
 }
 
 main {
@@ -48,6 +45,7 @@ main {
     align-items: center;
     padding: 40px;
     gap: 40px;
+    padding-bottom: 180px;
 }
 
 main h2 {

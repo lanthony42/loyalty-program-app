@@ -4,7 +4,11 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
+const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
+
 const UpdateUser = () => {
+    const { authReady, user, fetchUserData } = useAuth();
+    const navigate = useNavigate();
     const [error, setError] = useState("");
     const [data, setData] = useState({
         name: user?.name || null,
@@ -12,8 +16,11 @@ const UpdateUser = () => {
         birthday: user?.birthday || null,
         avatar: null
     });
-    const { authReady, user, fetchUserData } = useAuth();
-    const navigate = useNavigate();
+    const [passwordData, setPasswordData] = useState({
+        old: null,
+        new: null,
+    });
+    const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
 
     if (!authReady) {
         return <p>Loading...</p>;
@@ -25,6 +32,11 @@ const UpdateUser = () => {
     const handleChange = e => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
+    };
+
+    const handlePasswordChange = e => {
+        const { name, value } = e.target;
+        setPasswordData({ ...passwordData, [name]: value });
     };
 
     const handleFileChange = e => {
@@ -55,7 +67,7 @@ const UpdateUser = () => {
 
             if (response.ok) {
                 await fetchUserData(user.token);
-                navigate("/profile");
+                navigate("/dashboard");
             }
             else {
                 const json = await response.json();
@@ -68,7 +80,53 @@ const UpdateUser = () => {
         }
     };
 
-    return <>
+    const handleReset = async e => {
+        e.preventDefault();
+    
+        try {
+            const url = `${config.backendUrl}/users/me/password`;
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    old: passwordData.old,
+                    new: passwordData.new
+                }),
+            });
+    
+            if (response.ok) {
+                await fetchUserData(user.token);
+                navigate("/dashboard");
+            } else {
+                const json = await response.json();
+                setError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setError("An error occurred while requesting token");
+        }
+    };
+    
+    
+
+    return <>     
+        <h3>Hello, {user?.name ||user?.utorid}!</h3>   
+        <img
+            src={avatarUrl}
+            alt="Your avatar"
+            style={{
+                width: "120px",
+                height: "120px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                marginBottom: "1rem"
+            }}
+        />
+
         <h2>Update Your Information</h2>
         <form onSubmit={handleSubmit}>
             <label htmlFor="name">Name:</label>
@@ -110,6 +168,31 @@ const UpdateUser = () => {
                 <button type="submit">Update</button>
             </div>
             <p className="error">{error}</p>
+        </form>
+
+        <h2>Reset Password</h2>
+        <form onSubmit={handleReset}>
+            <label htmlFor="old">Old Password:</label>
+            <input
+                type="password"
+                id="old"
+                name="old"
+                value={passwordData.old || ""}
+                required
+                onChange={handlePasswordChange}
+            />
+            <label htmlFor="new">New Password:</label>
+            <input
+                type="password"
+                id="new"
+                name="new"
+                value={passwordData.new || ""}
+                required
+                onChange={handlePasswordChange}
+            />
+            <div className="btn-container">
+                <button id="request">Reset</button>
+            </div>
         </form>
     </>;
 };

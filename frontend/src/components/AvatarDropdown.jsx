@@ -43,7 +43,7 @@ const AvatarDropdown = ({ avatarUrl, logout, user, setRole, Role }) => {
           style={{
             position: "absolute",
             top: "50px",
-            right: 0,
+            right: -55,
             backgroundColor: "#fff",
             border: "1px solid #ddd",
             borderRadius: "8px",
@@ -53,7 +53,7 @@ const AvatarDropdown = ({ avatarUrl, logout, user, setRole, Role }) => {
             padding: "8px 0"
           }}
         >
-          <Link to="/profile" style={itemStyle}>Profile</Link>
+          <Link to="/edit-profile" style={itemStyle}>Profile</Link>
 
           <button
             style={itemStyle}

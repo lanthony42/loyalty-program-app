@@ -14,15 +14,17 @@ const Layout = () => {
         <header>
             <Link to="/">Home</Link>
             {user ? (
-                <div className="user">
-                    <span style={{ fontWeight: "bold", color: "white" }}>{user.points} points</span>
-                    <AvatarDropdown
-                        avatarUrl={avatarUrl}
-                        logout={logout}
-                        user={user}
-                        setRole={setRole}
-                        Role={Role}
-                    />
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem", padding: 0, paddingRight: 50 }}>
+                    <span className="user-points">{user.points} points</span>
+                    <div className="avatar-dropdown">
+                        <AvatarDropdown
+                            avatarUrl={avatarUrl}
+                            logout={logout}
+                            user={user}
+                            setRole={setRole}
+                            Role={Role}
+                        />
+                    </div>
                 </div>
             ) : (
                 <Link to="/login">Login</Link>

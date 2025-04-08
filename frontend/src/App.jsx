@@ -4,7 +4,6 @@ import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Accounts/Login";
-import Profile from "@/pages/Accounts/Profile";
 import EditProfile from "@/pages/Accounts/EditProfile";
 import Register from "@/pages/Accounts/Register";
 import Transactions from "@/pages/Transactions";
@@ -17,8 +16,7 @@ const MyRoutes = () => {
         <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/register" element={<Register />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="*" element={<NotFound />} />
