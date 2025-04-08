@@ -4,17 +4,17 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
+    const [utorid, setUtorId] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const { authReady, user, login } = useAuth();
+    
     if (!authReady) {
         return <p>Loading...</p>;
     }
     else if (user) {
         return <Navigate to="/dashboard" replace />;
     }
-
-    const [utorid, setUtorId] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
 
     const handleSubmit = async e => {
         e.preventDefault();

@@ -5,21 +5,21 @@ import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const Register = () => {
-    const { authReady, user } = useAuth();
-    if (!authReady) {
-        return <p>Loading...</p>;
-    }
-    else if (!user) { // TODO: Change, cashiers and higher register users
-        return <Navigate to="/login" replace />;
-    }
-
     const [error, setError] = useState("");
     const [data, setData] = useState({
         utorid: "",
         name: "",
         email: ""
     });
+    const { authReady, user } = useAuth();
     const navigate = useNavigate();
+
+    if (!authReady) {
+        return <p>Loading...</p>;
+    }
+    else if (!user) { // TODO: Change, cashiers and higher register users
+        return <Navigate to="/login" replace />;
+    }
 
     const handleChange = e => {
         const { name, value } = e.target;

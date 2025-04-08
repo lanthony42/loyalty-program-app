@@ -5,14 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const UpdateUser = () => {
-    const { authReady, user, fetchUserData } = useAuth();
-    if (!authReady) {
-        return <p>Loading...</p>;
-    }
-    else if (!user) {
-        return <Navigate to="/login" replace />;
-    }
-
     const [error, setError] = useState("");
     const [data, setData] = useState({
         name: user?.name || null,
@@ -20,7 +12,15 @@ const UpdateUser = () => {
         birthday: user?.birthday || null,
         avatar: null
     });
+    const { authReady, user, fetchUserData } = useAuth();
     const navigate = useNavigate();
+
+    if (!authReady) {
+        return <p>Loading...</p>;
+    }
+    else if (!user) {
+        return <Navigate to="/login" replace />;
+    }
 
     const handleChange = e => {
         const { name, value } = e.target;
