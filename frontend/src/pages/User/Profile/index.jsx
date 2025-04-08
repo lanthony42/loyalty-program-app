@@ -1,5 +1,5 @@
 import "@/pages/main.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -18,9 +18,9 @@ const Profile = () => {
     const options = { hour: "numeric", minute: "numeric", hour12: true };
     const pretty_date = date.toLocaleTimeString("en-US", options);
     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
-    
+
     return <>
-        <h3>Hello, {user?.utorid}!</h3>
+        <h3>Hello, {user?.name ||user?.utorid}!</h3>
         <p>You have been with us since {pretty_date}.</p>
         <img
             src={avatarUrl}

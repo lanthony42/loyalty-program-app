@@ -1,26 +1,26 @@
 import "@/pages/form.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const UpdateUser = () => {
-    const [error, setError] = useState("");
-    const [data, setData] = useState({
-        name: null,
-        email: null,
-        birthday: null,
-        avatar: null
-    });
-    const navigate = useNavigate();
-
-    const { authReady, token, user } = useAuth();
+    const { authReady, token, user, fetchUserData } = useAuth();
     if (!authReady) {
         return <p>Loading...</p>;
     }
     else if (!user) {
         return <Navigate to="/login" replace />;
     }
+
+    const [error, setError] = useState("");
+    const [data, setData] = useState({
+        name: user?.name || null,
+        email: user?.email || null,
+        birthday: user?.birthday || null,
+        avatar: null
+    });
+    const navigate = useNavigate();
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -54,6 +54,7 @@ const UpdateUser = () => {
             });
 
             if (response.ok) {
+                await fetchUserData(token);
                 navigate("/profile");
             }
             else {

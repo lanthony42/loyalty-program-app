@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const tokens = file.originalname.split(".");
-    cb(null, `${req.user.username}.${tokens[tokens.length - 1]}`);
+    cb(null, `${req.user.username}_${Date.now()}.${tokens[tokens.length - 1]}`);
   }
 });
 const upload = multer({ storage });

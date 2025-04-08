@@ -1,18 +1,10 @@
 import "@/pages/form.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const Register = () => {
-    const [error, setError] = useState("");
-    const [data, setData] = useState({
-        utorid: "",
-        name: "",
-        email: ""
-    });
-    const navigate = useNavigate();
-
     const { authReady, token, user } = useAuth();
     if (!authReady) {
         return <p>Loading...</p>;
@@ -20,6 +12,14 @@ const Register = () => {
     else if (!user) { // TODO: Change, cashiers and higher register users
         return <Navigate to="/login" replace />;
     }
+
+    const [error, setError] = useState("");
+    const [data, setData] = useState({
+        utorid: "",
+        name: "",
+        email: ""
+    });
+    const navigate = useNavigate();
 
     const handleChange = e => {
         const { name, value } = e.target;

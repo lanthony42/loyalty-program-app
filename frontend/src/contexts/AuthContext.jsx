@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
                 const data = await response.json();
                 setAuthReady(true);
                 setToken(storedToken);
-                setUser(data); 
+                setUser(data);
             }
             else {
                 throw new Error("Failed to fetch user data");
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ authReady, token, user, login, logout }}>
+        <AuthContext.Provider value={{ authReady, token, user, fetchUserData, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
