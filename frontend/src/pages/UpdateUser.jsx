@@ -1,9 +1,9 @@
-import { UseAuth } from '../contexts/AuthContext';
-import './form.css';
-import React, { useState } from "react";
+import "./form.css";
+import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 function UpdateUser() {
-    const { update_user } = UseAuth();    
+    const { update_user } = useAuth();    
     const [error, setError] = useState("");
     const [data, setData] = useState({
         name: null,
@@ -39,8 +39,8 @@ function UpdateUser() {
                 type="text"
                 id="name"
                 name="name"
-                placeholder='Name'
-                value={data.name || ''}
+                placeholder="Name"
+                value={data.name || ""}
                 onChange={handle_change}
             />
             <label htmlFor="email">Email:</label>
@@ -48,8 +48,8 @@ function UpdateUser() {
                 type="email"
                 id="email"
                 name="email"
-                placeholder='Email'
-                value={data.email || ''}
+                placeholder="Email"
+                value={data.email || ""}
                 onChange={handle_change}
             />
             <label htmlFor="birthday">Birthday:</label>
@@ -57,8 +57,8 @@ function UpdateUser() {
                 type="date"
                 id="birthday"
                 name="birthday"
-                placeholder='Birthday'
-                value={data.birthday || ''}
+                placeholder="Birthday"
+                value={data.birthday || ""}
                 onChange={handle_change}
             />
             <label htmlFor="avatar">Avatar:</label>

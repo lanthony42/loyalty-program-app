@@ -2,6 +2,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Success from "./pages/Success";
 import Login from "./pages/Login";
@@ -13,6 +14,7 @@ const MyRoutes = () => {
     <Route path="/" element={<Layout />}>
       <Route index element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/Dashboard" element={<Dashboard />} />
       <Route path="/register" element={<Register />} />
       <Route path="/success" element={<Success />} />
       <Route path="/profile" element={<Profile />} />

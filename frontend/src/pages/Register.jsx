@@ -1,9 +1,9 @@
 import './form.css';
 import React, { useState } from 'react';
-import { UseAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Register = () => {
-    const { register } = UseAuth();
+    const { register } = useAuth();
     const [error, setError] = useState("");
     const [data, setData] = useState({
         utorid: '',

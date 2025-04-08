@@ -1,30 +1,39 @@
-import { UseAuth } from '../contexts/AuthContext';
-import './form.css';
-import React, { useState } from "react";
+import "./form.css";
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function Login() {
-    const [utorid, setUtorid] = useState("");
+    const [utorid, setUtorId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const { login } = UseAuth();
 
-    const handle_submit = (e) => {
+    const { authReady, user, login } = useAuth();
+    if (!authReady) {
+        return <p>Loading...</p>;
+    }
+    else if (user) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    const handleSubmit = async e => {
         e.preventDefault();
-        login(utorid, password)
-        .then(message => setError(message));
+
+        const message = await login(utorid, password)
+        setError(message);
     };
 
     return <>
         <h2>Login</h2>
-        <form onSubmit={handle_submit}>
-            <label htmlFor="utorid">utorid:</label>
+        <form onSubmit={handleSubmit}>
+            <label htmlFor="utorid">UTORid:</label>
             <input
                 type="text"
                 id="utorid"
                 name="utorid"
-                placeholder='utorid'
+                placeholder="utorid"
                 value={utorid}
-                onChange={(e) => setUtorid(e.target.value)}
+                onChange={(e) => setUtorId(e.target.value)}
                 required
             />
             <label htmlFor="password">Password:</label>
@@ -32,7 +41,7 @@ function Login() {
                 type="password"
                 id="password"
                 name="password"
-                placeholder='Password'
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

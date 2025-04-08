@@ -1,7 +1,16 @@
 import "./main.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function Home() {
+    const { authReady, user } = useAuth();
+    if (!authReady) {
+        return <p>Loading...</p>;
+    }
+    else if (user) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
     return <>
         <h2>Welcome!</h2>
         <div className="row">
