@@ -55,13 +55,37 @@ const Create = () => {
             setTransaction({
                 ...transaction,
                 type: e.target.value,
-                amount: undefined
+                userId: undefined,
+                amount: undefined,
+                relatedId: undefined
+            });
+        }
+        else if (e.target.value === "redemption") {
+            setTransaction({
+                ...transaction,
+                type: e.target.value,
+                userId: undefined,
+                utorid: undefined,
+                spent: undefined,
+                relatedId: undefined,
+                promotionIds: undefined
+            });
+        }
+        else if (e.target.value === "transfer") {
+            setTransaction({
+                ...transaction,
+                type: e.target.value,
+                utorid: undefined,
+                spent: undefined,
+                relatedId: undefined,
+                promotionIds: undefined
             });
         }
         else {
             setTransaction({
                 ...transaction,
                 type: e.target.value,
+                userId: undefined,
                 spent: undefined
             });
         }
@@ -89,7 +113,7 @@ const Create = () => {
 
         try {
             const url = transaction.type === "redemption" ? `${config.backendUrl}/users/me/transactions` :
-                        transaction.type === "transfer"   ? `${config.backendUrl}/users/${transaction.utorid}/transactions` :
+                        transaction.type === "transfer"   ? `${config.backendUrl}/users/${transaction.userId}/transactions` :
                                                             `${config.backendUrl}/transactions`;
             const response = await fetch(url, {
                 method: "POST",
@@ -117,16 +141,30 @@ const Create = () => {
     return <>
         <h1>Create Transaction</h1>
         <form onSubmit={handleSubmit}>
-            <label htmlFor="utorid">UTORid:</label>
-            <input
-                type="text"
-                id="utorid"
-                name="utorid"
-                placeholder="UTORid"
-                value={transaction.utorid || ""}
-                onChange={handleChange}
-                required
-            />
+            {transaction.type === "transfer" && <>
+                <label htmlFor="userId">User Id:</label>
+                <input
+                    type="text"
+                    id="userId"
+                    name="userId"
+                    placeholder="User Id"
+                    value={transaction.userId || ""}
+                    onChange={handleChange}
+                    required
+                />
+            </>}
+            {transaction.type !== "redemption" && transaction.type !== "transfer" && <>
+                <label htmlFor="utorid">UTORid:</label>
+                <input
+                    type="text"
+                    id="utorid"
+                    name="utorid"
+                    placeholder="UTORid"
+                    value={transaction.utorid || ""}
+                    onChange={handleChange}
+                    required
+                />
+            </>}
             <label htmlFor="type">Type:</label>
             <select
                 type="text"
@@ -178,15 +216,17 @@ const Create = () => {
                     required
                 />
             </>}
-            <label htmlFor="promotionIds">Promotion Ids:</label>
-            <input
-                type="text"
-                id="promotionIds"
-                name="promotionIds"
-                placeholder="Promotion Ids"
-                value={transaction.promotionIds?.join(", ") || ""}
-                onChange={handlePromotionsChange}
-            />
+            {transaction.type !== "redemption" && transaction.type !== "transfer" && <>
+                <label htmlFor="promotionIds">Promotion Ids:</label>
+                <input
+                    type="text"
+                    id="promotionIds"
+                    name="promotionIds"
+                    placeholder="Promotion Ids"
+                    value={transaction.promotionIds?.join(", ") || ""}
+                    onChange={handlePromotionsChange}
+                />
+            </>}
             <label htmlFor="remark">Remark:</label>
             <input
                 type="text"

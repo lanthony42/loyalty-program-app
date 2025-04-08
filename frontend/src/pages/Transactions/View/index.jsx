@@ -141,6 +141,17 @@ const View = () => {
                     disabled
                 />
             </>}
+            {transaction.type === "adjustment" && <>
+                <label htmlFor="relatedId">Related Id:</label>
+                <input
+                    type="number"
+                    id="relatedId"
+                    name="relatedId"
+                    placeholder="Related Id"
+                    value={transaction.relatedId || ""}
+                    disabled
+                />
+            </>}
             <label htmlFor="promotionIds">Promotion Ids:</label>
             <input
                 type="text"
