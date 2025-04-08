@@ -7,7 +7,7 @@ const AvatarDropdown = ({ avatarUrl, logout, user, setRole, Role }) => {
   const dropdownRef = useRef(null);
 
   const availableRoles = Object.keys(Role).filter(r => Role[r] <= Role[user.baseRole]);
-  
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {

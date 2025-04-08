@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
             role = user.baseRole;
         }
         setUser({
-            ...data,
+            ...user,
             role
         });
     };
@@ -81,10 +81,10 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ utorid, password }),
             });
 
+            const data = await response.json();
             if (response.ok) {
-                const { token: storedToken } = await response.json();
-                localStorage.setItem("token", storedToken);
-                await fetchUserData(storedToken);
+                localStorage.setItem("token", data.token);
+                await fetchUserData(data.token);
 
                 navigate("/dashboard");
             }
