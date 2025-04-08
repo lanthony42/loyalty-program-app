@@ -19,7 +19,7 @@ function createToken(user) {
 }
 
 function jwtAuth(req, res, next) {
-  if (req.path.startsWith("/auth") || req.path.startsWith("/uploads")) {
+  if (req.path.startsWith("/auth") || req.path.startsWith("/uploads") || req.path.startsWith("/seed")) {
     return next();
   }
 

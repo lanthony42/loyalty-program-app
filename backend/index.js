@@ -51,6 +51,9 @@ addPromotionEndpoints(app);
 
 app.use("/uploads", express.static("uploads"));
 
+const addSeedEndpoint = require("./prisma/seed");
+addSeedEndpoint(app);
+
 const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
