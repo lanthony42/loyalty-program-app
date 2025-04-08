@@ -12,7 +12,7 @@ const Users = () => {
     const [users, setUsers] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
-    const { Role, authReady, user } = useAuth();
+    const { authReady, user } = useAuth();
 
     const query = useMemo(() => {
         return {
@@ -23,22 +23,6 @@ const Users = () => {
             activated: searchParams.get("activated") || ""
         };
     }, [searchParams]);
-
-    useEffect(() => {
-        if (user) {
-            fetchUserData();
-        }
-    }, [user, query]);
-
-    if (!authReady) {
-        return <p>Loading...</p>;
-    }
-    else if (!user) {
-        return <Navigate to="/login" replace />;
-    }
-    else if (user.role === "regular") {
-        return <Navigate to="/dashboard" replace />;
-    }
 
     const fetchUserData = async () => {
         const result = [];
@@ -71,6 +55,22 @@ const Users = () => {
             console.error(error);
         }
     };
+
+    useEffect(() => {
+        if (user) {
+            fetchUserData();
+        }
+    }, [user, query]);
+
+    if (!authReady) {
+        return <p>Loading...</p>;
+    }
+    else if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+    else if (user.role === "regular") {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const changeFilter = e => {
         const { name, value } = e.target;

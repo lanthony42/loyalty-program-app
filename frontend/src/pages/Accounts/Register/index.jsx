@@ -20,6 +20,9 @@ const Register = () => {
     else if (!user) { // TODO: Change, cashiers and higher register users
         return <Navigate to="/login" replace />;
     }
+    else if (user.role === "regular") {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const handleChange = e => {
         const { name, value } = e.target;
