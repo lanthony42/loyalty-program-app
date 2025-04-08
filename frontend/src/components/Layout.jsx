@@ -12,7 +12,12 @@ const Layout = () => {
 
     return <>
         <header>
-            <Link to="/">Home</Link>
+            <div className="link-container" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <Link to="/">Home</Link>
+                {user?.role !== "regular" && (
+                    <Link to="/users">Users</Link>
+                )}
+            </div>
             {user ? (
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem", padding: 0, paddingRight: 50 }}>
                     <span className="user-points">{user.points} points</span>

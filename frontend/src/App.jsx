@@ -5,6 +5,7 @@ import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Accounts/Login";
 import EditProfile from "@/pages/Accounts/EditProfile";
+import Users from "./pages/Accounts";
 import Register from "@/pages/Accounts/Register";
 import Transactions from "@/pages/Transactions";
 import NotFound from "@/pages/NotFound";
@@ -17,6 +18,7 @@ const MyRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/users" element={<Users />} />
         <Route path="/register" element={<Register />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="*" element={<NotFound />} />
