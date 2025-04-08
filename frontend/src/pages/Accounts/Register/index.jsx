@@ -17,7 +17,7 @@ const Register = () => {
     if (!authReady) {
         return <p>Loading...</p>;
     }
-    else if (!user) { // TODO: Change, cashiers and higher register users
+    else if (!user) {
         return <Navigate to="/login" replace />;
     }
     else if (user.role === "regular") {
