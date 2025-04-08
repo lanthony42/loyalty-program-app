@@ -14,7 +14,15 @@ const Transactions = () => {
 
     const query = useMemo(() => {
         return {
-            page: parseInt(searchParams.get("page")) || 1
+            page: parseInt(searchParams.get("page")) || 1,
+            name: searchParams.get("name") || "",
+            createdBy: searchParams.get("createdBy") || "",
+            suspicious: searchParams.get("suspicious") || "",
+            promotionId: searchParams.get("promotionId") || "",
+            type: searchParams.get("type") || "",
+            relatedId: searchParams.get("relatedId") || "",
+            amount: searchParams.get("amount") || "",
+            operator: searchParams.get("operator") || ""
         };
     }, [searchParams]);
 
@@ -31,16 +39,18 @@ const Transactions = () => {
         return <Navigate to="/login" replace />;
     }
 
+    const isManager = Role[user.role] >= Role.manager;
+
     const fetchTransactionData = async () => {
         const result = [];
         for (const key in query) {
-            if (query[key] != null) {
+            if (query[key] != null && query[key] !== "") {
                 result.push(`${key}=${query[key]}`);
             }
         }
-        const params = result.join("&");        
-        const url = user.role < Role.MANAGER ? `${config.backendUrl}/users/me/transactions?${params}` :
-                                               `${config.backendUrl}/transactions?${params}`;
+        const params = result.join("&");
+        const url = !isManager ? `${config.backendUrl}/users/me/transactions?${params}` :
+                                 `${config.backendUrl}/transactions?${params}`;
         try {
             const response = await fetch(url, {
                 method: "GET",
@@ -63,6 +73,20 @@ const Transactions = () => {
         }
     };
 
+    const changeFilter = e => {
+        const { name, value } = e.target;
+        setSearchParams(params => {
+            if (value) {
+                searchParams.set(name, value);
+            }
+            else {
+                searchParams.delete(name);
+            }
+            searchParams.set("page", 1);
+            return params;
+        });
+    };
+
     const changePage = newPage => {
         setSearchParams(params => {
             params.set("page", newPage);
@@ -73,6 +97,75 @@ const Transactions = () => {
     return (
         <div>
             <h1>Transactions</h1>
+            <div>
+                {isManager && <>
+                    <input
+                        name="name"
+                        value={query.name}
+                        placeholder="Name or UTORid"
+                        onChange={changeFilter}
+                    />
+                    <input
+                        name="createdBy"
+                        value={query.createdBy}
+                        placeholder="Created By"
+                        onChange={changeFilter}
+                    />
+                    <select
+                        name="suspicious"
+                        value={query.suspicious}
+                        onChange={changeFilter}
+                    >
+                        <option value="">Suspicious?</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </>}
+                <select
+                    name="type"
+                    value={query.type}
+                    onChange={changeFilter}
+                >
+                    <option value="">Select Transaction Type</option>
+                    <option value="purchase">Purchase</option>
+                    <option value="adjustment">Adjustment</option>
+                    <option value="redemption">Redemption</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="event">Event</option>
+                </select>
+                <input
+                    name="relatedId"
+                    value={query.relatedId}
+                    type="number"
+                    placeholder="Related ID"
+                    onChange={changeFilter}
+                    disabled={!query.type}
+                />
+                <input
+                    name="promotionId"
+                    value={query.promotionId}
+                    type="number"
+                    placeholder="Promotion ID"
+                    onChange={changeFilter}
+                />
+                <select
+                    name="operator"
+                    value={query.operator}
+                    onChange={changeFilter}
+                >
+                    <option value="">Operator</option>
+                    <option value="gte">≥</option>
+                    <option value="lte">≤</option>
+                </select>
+                <input
+                    name="amount"
+                    value={query.amount}
+                    type="number"
+                    placeholder="Amount"
+                    onChange={changeFilter}
+                    disabled={!query.operator}
+                />
+            </div>
             <ul>
                 {transactions.map(transaction => (
                     <li key={transaction.id}>{transaction.type}</li>
