@@ -8,7 +8,6 @@ const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
 const UpdateUser = () => {
     const { authReady, user, fetchUserData } = useAuth();
-    const navigate = useNavigate();
     const [error, setError] = useState("");
     const [data, setData] = useState({
         name: user?.name || null,
@@ -20,6 +19,7 @@ const UpdateUser = () => {
         old: null,
         new: null,
     });
+    const navigate = useNavigate();
     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
 
     if (!authReady) {
@@ -44,7 +44,7 @@ const UpdateUser = () => {
         if (file) {
             setData({ ...data, avatar: file });
         }
-    };    
+    };
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -82,7 +82,7 @@ const UpdateUser = () => {
 
     const handleReset = async e => {
         e.preventDefault();
-    
+
         try {
             const url = `${config.backendUrl}/users/me/password`;
             const response = await fetch(url, {
@@ -96,7 +96,7 @@ const UpdateUser = () => {
                     new: passwordData.new
                 }),
             });
-    
+
             if (response.ok) {
                 await fetchUserData(user.token);
                 navigate("/dashboard");
@@ -110,11 +110,9 @@ const UpdateUser = () => {
             setError("An error occurred while requesting token");
         }
     };
-    
-    
 
-    return <>     
-        <h3>Hello, {user?.name ||user?.utorid}!</h3>   
+    return <>
+        <h3>Hello, {user?.name ||user?.utorid}!</h3>
         <img
             src={avatarUrl}
             alt="Your avatar"

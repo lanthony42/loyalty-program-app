@@ -17,6 +17,7 @@ form input {
 }
 
 form .btn-container,
+form .success,
 form .error {
     grid-column: span 2;
     text-align: center;
@@ -54,6 +55,7 @@ form .error {
     }
 
     form .btn-container,
+    form .success,
     form .error {
         grid-column: auto;
     }

@@ -1,6 +1,6 @@
 import "@/pages/main.css";
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -81,6 +81,14 @@ const Transactions = () => {
             }
             else {
                 searchParams.delete(name);
+
+                // Clear dependant parameters
+                if (name === "type") {
+                    searchParams.delete("relatedId");
+                }
+                else if (name === "operator") {
+                    searchParams.delete("amount");
+                }
             }
             searchParams.set("page", 1);
             return params;
@@ -94,100 +102,103 @@ const Transactions = () => {
         });
     };
 
-    return (
+    return <>
+        <h1>Transactions</h1>
         <div>
-            <h1>Transactions</h1>
-            <div>
-                {isManager && <>
-                    <input
-                        name="name"
-                        value={query.name}
-                        placeholder="Name or UTORid"
-                        onChange={changeFilter}
-                    />
-                    <input
-                        name="createdBy"
-                        value={query.createdBy}
-                        placeholder="Created By"
-                        onChange={changeFilter}
-                    />
-                    <select
-                        name="suspicious"
-                        value={query.suspicious}
-                        onChange={changeFilter}
-                    >
-                        <option value="">Suspicious?</option>
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                </>}
-                <select
-                    name="type"
-                    value={query.type}
-                    onChange={changeFilter}
-                >
-                    <option value="">Select Transaction Type</option>
-                    <option value="purchase">Purchase</option>
-                    <option value="adjustment">Adjustment</option>
-                    <option value="redemption">Redemption</option>
-                    <option value="transfer">Transfer</option>
-                    <option value="event">Event</option>
-                </select>
+            {isManager && <>
                 <input
-                    name="relatedId"
-                    value={query.relatedId}
-                    type="number"
-                    placeholder="Related ID"
+                    name="name"
+                    value={query.name}
+                    placeholder="Name or UTORid"
                     onChange={changeFilter}
-                    disabled={!query.type}
                 />
                 <input
-                    name="promotionId"
-                    value={query.promotionId}
-                    type="number"
-                    placeholder="Promotion ID"
+                    name="createdBy"
+                    value={query.createdBy}
+                    placeholder="Created By"
                     onChange={changeFilter}
                 />
                 <select
-                    name="operator"
-                    value={query.operator}
+                    name="suspicious"
+                    value={query.suspicious}
                     onChange={changeFilter}
                 >
-                    <option value="">Operator</option>
-                    <option value="gte">≥</option>
-                    <option value="lte">≤</option>
+                    <option value="">Suspicious?</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
                 </select>
-                <input
-                    name="amount"
-                    value={query.amount}
-                    type="number"
-                    placeholder="Amount"
-                    onChange={changeFilter}
-                    disabled={!query.operator}
-                />
-            </div>
-            <ul>
-                {transactions.map(transaction => (
-                    <li key={transaction.id}>{transaction.type}</li>
-                ))}
-            </ul>
-            <div>
-                <button
-                    onClick={() => changePage(query.page - 1)}
-                    disabled={query.page === 1}
-                >
-                    Previous
-                </button>
-                <span>Page {query.page} of {totalPages}</span>
-                <button
-                    onClick={() => changePage(query.page + 1)}
-                    disabled={query.page === totalPages}
-                >
-                    Next
-                </button>
-            </div>
+            </>}
+            <select
+                name="type"
+                value={query.type}
+                onChange={changeFilter}
+            >
+                <option value="">Select Transaction Type</option>
+                <option value="purchase">Purchase</option>
+                <option value="adjustment">Adjustment</option>
+                <option value="redemption">Redemption</option>
+                <option value="transfer">Transfer</option>
+                <option value="event">Event</option>
+            </select>
+            <input
+                name="relatedId"
+                value={query.relatedId}
+                type="number"
+                placeholder="Related ID"
+                onChange={changeFilter}
+                disabled={!query.type || query.type === "purchase"}
+            />
+            <input
+                name="promotionId"
+                value={query.promotionId}
+                type="number"
+                placeholder="Promotion ID"
+                onChange={changeFilter}
+            />
+            <select
+                name="operator"
+                value={query.operator}
+                onChange={changeFilter}
+            >
+                <option value="">Operator</option>
+                <option value="gte">≥</option>
+                <option value="lte">≤</option>
+            </select>
+            <input
+                name="amount"
+                value={query.amount}
+                type="number"
+                placeholder="Amount"
+                onChange={changeFilter}
+                disabled={!query.operator}
+            />
         </div>
-      );
+        <ul>
+            {transactions.map(transaction => (
+                <li key={transaction.id}>
+                    Id: {transaction.id} - Type: {transaction.type}
+                    {isManager && <Link to={`/transactions/${transaction.id}`} state={{ fromList: true }}>
+                        View
+                    </Link>}
+                </li>
+            ))}
+        </ul>
+        <div>
+            <button
+                onClick={() => changePage(query.page - 1)}
+                disabled={query.page === 1}
+            >
+                Previous
+            </button>
+            <span>Page {Math.min(query.page, totalPages)} of {totalPages}</span>
+            <button
+                onClick={() => changePage(query.page + 1)}
+                disabled={query.page === totalPages}
+            >
+                Next
+            </button>
+        </div>
+    </>;
 };
 
 export default Transactions;

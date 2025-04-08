@@ -17,10 +17,11 @@ const Layout = () => {
                 {user?.role !== "regular" && (
                     <Link to="/users">Users</Link>
                 )}
+                <Link to="/transactions">Transactions</Link>
             </div>
             {user ? (
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem", padding: 0, paddingRight: 50 }}>
-                    <span className="user-points">{user.points} points</span>
+                    <span className="user-points">{user?.points || 0} points</span>
                     <div className="avatar-dropdown">
                         <AvatarDropdown
                             avatarUrl={avatarUrl}

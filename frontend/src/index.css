@@ -19,3 +19,8 @@ body {
   color: red;
   font-style: italic;
 }
+
+.success {
+  color: green;
+  font-style: italic;
+}
