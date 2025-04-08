@@ -1,9 +1,10 @@
 import "./form.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import config from "../config";
 
-function UpdateUser() {
-    const { update_user } = useAuth();    
+const UpdateUser = () => {
     const [error, setError] = useState("");
     const [data, setData] = useState({
         name: null,
@@ -11,29 +12,64 @@ function UpdateUser() {
         birthday: null,
         avatar: null
     });
+    const navigate = useNavigate();
 
-    const handle_change = (e) => {
+    const { authReady, token, user } = useAuth();
+    if (!authReady) {
+        return <p>Loading...</p>;
+    }
+    else if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    const handleChange = e => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
     };
 
-    const handle_file_change = (e) => {
+    const handleFileChange = e => {
         const file = e.target.files[0];
-        if (!file) return;
+        if (file) {
+            setData({ ...data, avatar: file });
+        }
+    };    
 
-        setData({ ...data, avatar: file }); // Save the file, not the URL
-    };
-    
-
-    const handle_submit = (e) => {
+    const handleSubmit = async e => {
         e.preventDefault();
-        update_user(data)
-        .then(message => setError(message));
+
+        try {
+            const url = `${config.backendUrl}/users/me`;
+            const formData = new FormData();
+            for (const key in data) {
+                if (data[key]) {
+                    formData.append(key, data[key]);
+                }
+            }
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            if (response.ok) {
+                navigate("/profile");
+            }
+            else {
+                const json = await response.json();
+                setError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setError("An error occurred while updating");
+        }
     };
 
     return <>
         <h2>Update Your Information</h2>
-        <form onSubmit={handle_submit}>
+        <form onSubmit={handleSubmit}>
             <label htmlFor="name">Name:</label>
             <input
                 type="text"
@@ -41,7 +77,7 @@ function UpdateUser() {
                 name="name"
                 placeholder="Name"
                 value={data.name || ""}
-                onChange={handle_change}
+                onChange={handleChange}
             />
             <label htmlFor="email">Email:</label>
             <input
@@ -50,7 +86,7 @@ function UpdateUser() {
                 name="email"
                 placeholder="Email"
                 value={data.email || ""}
-                onChange={handle_change}
+                onChange={handleChange}
             />
             <label htmlFor="birthday">Birthday:</label>
             <input
@@ -59,7 +95,7 @@ function UpdateUser() {
                 name="birthday"
                 placeholder="Birthday"
                 value={data.birthday || ""}
-                onChange={handle_change}
+                onChange={handleChange}
             />
             <label htmlFor="avatar">Avatar:</label>
             <input
@@ -67,7 +103,7 @@ function UpdateUser() {
                 id="avatar"
                 name="avatar"
                 accept="image/*"
-                onChange={handle_file_change}
+                onChange={handleFileChange}
             />
             <div className="btn-container">
                 <button type="submit">Update</button>
@@ -75,6 +111,6 @@ function UpdateUser() {
             <p className="error">{error}</p>
         </form>
     </>;
-}
+};
 
 export default UpdateUser;

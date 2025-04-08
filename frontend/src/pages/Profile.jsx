@@ -1,14 +1,15 @@
 import "./main.css";
+import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
-function Profile() {
+const Profile = () => {
     const { user, logout } = useAuth();
     const date = new Date(user?.createdAt);
-    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-    const pretty_date = date.toLocaleTimeString('en-US', options);
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    const pretty_date = date.toLocaleTimeString("en-US", options);
 
     const avatarUrl = user?.avatarUrl ? `${BACKEND_URL}${user?.avatarUrl}` : DEFAULT_AVATAR;
     
@@ -19,19 +20,19 @@ function Profile() {
             src={avatarUrl}
             alt="Your avatar"
             style={{
-                width: '120px',
-                height: '120px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                marginBottom: '1rem'
+                width: "120px",
+                height: "120px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                marginBottom: "1rem"
             }}
         />
 
         <div className="row">
-            <a href="/updateUser">Update Information</a>
+            <Link to="/updateUser">Update Information</Link>
             <a href="#" onClick={logout}>Logout</a>
         </div>
     </>;
-}
+};
 
 export default Profile;

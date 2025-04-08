@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-function Login() {
+const Login = () => {
     const [utorid, setUtorId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -52,6 +52,6 @@ function Login() {
             <p className="error">{error}</p>
         </form>
     </>;
-}
+};
 
 export default Login;

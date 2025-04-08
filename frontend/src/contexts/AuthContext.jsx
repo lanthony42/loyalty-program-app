@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
                 fetchUserData(storedToken);
                 setToken(storedToken);
 
-                navigate("/profile");
+                navigate("/dashboard");
             }
             else {
                 return data.message;
@@ -89,62 +89,8 @@ export const AuthProvider = ({ children }) => {
         navigate("/");
     };
 
-    const register = async ({ utorid, name, email }) => {
-        try {
-            const token = localStorage.getItem("token");
-
-            const response = await fetch(`${config.backendUrl}/users`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({ utorid, name, email }),
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                navigate("/success"); 
-            } else {
-                return data.message; 
-            }
-        } catch (error) {
-            console.error(error);
-            return "An error occurred while registering";
-        }
-    };
-
-    const updateUser = async (userData) => {
-        try {
-            const token = localStorage.getItem("token");
-            const formData = new FormData();
-            for (const key in userData) {
-                if (userData[key]) {                    
-                    formData.append(key, userData[key]);
-                }
-            }
-            const response = await fetch(`${config.backendUrl}/users/me`, {
-                method: "PATCH",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: formData,
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                navigate("/profile");
-            } else {
-                return data.message;
-            }
-        } catch (error) {
-            console.error(error);
-            return "An error occurred while updating";
-        }
-    };
-
     return (
-        <AuthContext.Provider value={{ authReady, token, user, login, logout, register, updateUser }}>
+        <AuthContext.Provider value={{ authReady, token, user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

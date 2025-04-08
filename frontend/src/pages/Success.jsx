@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./main.css";
 import { Link, useNavigate } from "react-router-dom";
 
-function Success() {
+const Success = () => {
     const navigate = useNavigate();
     const [ countdown, setCountdown ] = useState(3);
 
@@ -23,6 +23,6 @@ function Success() {
             <Link to="/login">Login</Link>
         </div>
     </>;
-}
+};
 
 export default Success;

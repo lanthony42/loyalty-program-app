@@ -10,20 +10,22 @@ import Profile from "./pages/Profile";
 import UpdateUser from "./pages/UpdateUser";
 
 const MyRoutes = () => {
-  return <Routes>
-    <Route path="/" element={<Layout />}>
-      <Route index element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/Dashboard" element={<Dashboard />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/success" element={<Success />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/updateUser" element={<UpdateUser />} />
-    </Route>
-  </Routes>
-}
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/updateUser" element={<UpdateUser />} />
+      </Route>
+    </Routes>
+  );
+};
 
-function App() {
+const App = () => {
   return (
       <BrowserRouter>
           <AuthProvider>
@@ -31,6 +33,6 @@ function App() {
           </AuthProvider>
       </BrowserRouter>
   );
-}
+};
 
-export default App
+export default App;

@@ -2,7 +2,7 @@ import "./main.css";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-function Home() {
+const Home = () => {
     const { authReady, user } = useAuth();
     if (!authReady) {
         return <p>Loading...</p>;
@@ -17,6 +17,6 @@ function Home() {
             <Link to="/login">Login</Link>
         </div>
     </>;
-}
+};
 
 export default Home;
