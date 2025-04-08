@@ -19,6 +19,7 @@ header > :first-child {
 }
 
 header a {
+    padding: 0 10px;
     color: #eee;
     font-weight: bold;
     cursor: pointer;
@@ -27,6 +28,10 @@ header a {
 
 header a:hover {
     color: white;
+}
+
+header > .link-container {
+    padding-left: 50px;
 }
 
 header > .avatar-dropdown {

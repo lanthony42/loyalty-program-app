@@ -110,7 +110,8 @@ const itemStyle = {
   background: "none",
   border: "none",
   textAlign: "left",
-  fontSize: 14
+  fontSize: 14,
+  fontWeight: "normal"
 };
 
 export default AvatarDropdown;

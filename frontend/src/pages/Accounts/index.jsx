@@ -1,16 +1,18 @@
 import "@/pages/main.css";
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-const PAGE_LIMIT = 10;
+const PAGE_LIMIT = 5;
+const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
 const Users = () => {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
-    const { Role, authReady, user } = useAuth();
+    const { authReady, user } = useAuth();
 
     const query = useMemo(() => {
         return {
@@ -21,6 +23,38 @@ const Users = () => {
             activated: searchParams.get("activated") || ""
         };
     }, [searchParams]);
+
+    const fetchUserData = async () => {
+        const result = [];
+        for (const key in query) {
+            if (query[key] != null && query[key] !== "") {
+                result.push(`${key}=${query[key]}`);
+            }
+        }
+        const params = result.join("&");
+        const url = `${config.backendUrl}/users?${params}&limit=${PAGE_LIMIT}`; // Make sure to include limit in the API call
+        
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(data.results);
+                setTotalPages(Math.ceil(data.count / PAGE_LIMIT)); // Correctly calculate total pages
+            }
+            else {
+                throw new Error("Failed to fetch user data");
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
         if (user) {
@@ -34,41 +68,9 @@ const Users = () => {
     else if (!user) {
         return <Navigate to="/login" replace />;
     }
-    else if (user.role == "regular") {
+    else if (user.role === "regular") {
         return <Navigate to="/dashboard" replace />;
     }
-
-    const fetchUserData = async () => {
-        const result = [];
-        for (const key in query) {
-            if (query[key] != null && query[key] !== "") {
-                result.push(`${key}=${query[key]}`);
-            }
-        }
-        const params = result.join("&");
-        const url = `${config.backendUrl}/users?${params}`;
-        
-        try {
-            const response = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                },
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setUsers(data.results);
-                setTotalPages(Math.ceil(data.count / PAGE_LIMIT));
-            }
-            else {
-                throw new Error("Failed to fetch user data");
-            }
-        }
-        catch (error) {
-            console.error(error);
-        }
-    };
 
     const changeFilter = e => {
         const { name, value } = e.target;
@@ -79,22 +81,31 @@ const Users = () => {
             else {
                 searchParams.delete(name);
             }
-            searchParams.set("page", 1);
+            searchParams.set("page", 1); // Reset to page 1 when filters change
             return params;
         });
     };
 
     const changePage = newPage => {
         setSearchParams(params => {
-            params.set("page", newPage);
+            params.set("page", newPage); // Change page
             return params;
         });
     };
 
+    const navigateToRegister = () => {
+        navigate("/register");
+    };
+
     return (
         <div>
-            <h1>Users</h1>
-            <div>
+            <div className="users-header-container">
+                <h1>Users</h1>
+                <div className="btn-container" id="register-button">
+                    <button onClick={navigateToRegister}>Register New User</button>
+                </div>
+            </div>
+            <div className="filter-container">
                 <input
                     name="name"
                     value={query.name}
@@ -131,38 +142,73 @@ const Users = () => {
                     <option value="false">No</option>
                 </select>
             </div>
+
             <ul>
-                {users.map(user => (
-                    <li key={user.id} style={{ marginBottom: "1rem" }}>
-                        <ul>
-                            {Object.entries(user).map(([key, value]) => (
-                                <li key={key}>
-                                    <strong>{key}</strong>: {typeof value === "object" && value !== null
-                                        ? JSON.stringify(value)
-                                        : String(value)}
-                                </li>
-                            ))}
-                        </ul>
-                    </li>
-                ))}
+                {users.map(user => {
+                    const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
+                    return (
+                        <li key={user.id} className="user-container">
+                            <div className="user-item">
+                                <strong>Name:</strong>
+                                <span>{user.name}</span>
+                            </div>
+                            <div className="user-item">
+                                <strong>Avatar:</strong>
+                                <img
+                                    src={avatarUrl}
+                                    alt={`${user.name}'s Avatar`}
+                                    style={{
+                                        width: "90px",
+                                        height: "90px",
+                                        borderRadius: "50%",
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            </div>
+                            <div className="user-item">
+                                <strong>UTORid:</strong>
+                                <span>{user.utorid}</span>
+                            </div>
+                            <div className="user-item">
+                                <strong>Email:</strong>
+                                <span>{user.email}</span>
+                            </div>
+                            <div className="user-item">
+                                <strong>Role:</strong>
+                                <span>{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                            </div>
+                            <div className="user-item">
+                                <strong>Verified:</strong>
+                                <span>{user.verified ? "Yes" : "No"}</span>
+                            </div>
+                        </li>
+                    );
+                })}
             </ul>
-            <div>
-                <button
-                    onClick={() => changePage(query.page - 1)}
-                    disabled={query.page === 1}
-                >
-                    Previous
-                </button>
+
+            <div className="pagination-container">
+                <div className="btn-container">
+                    <button
+                        onClick={() => changePage(query.page - 1)}
+                        disabled={query.page === 1}
+                    >
+                        Previous
+                    </button>
+                </div>
+
                 <span>Page {query.page} of {totalPages}</span>
-                <button
-                    onClick={() => changePage(query.page + 1)}
-                    disabled={query.page === totalPages}
-                >
-                    Next
-                </button>
+            
+                <div className="btn-container">
+                    <button
+                        onClick={() => changePage(query.page + 1)}
+                        disabled={query.page === totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
-      );
+    );
 };
 
 export default Users;
