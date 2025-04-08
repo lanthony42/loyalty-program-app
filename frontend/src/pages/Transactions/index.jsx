@@ -104,6 +104,7 @@ const Transactions = () => {
 
     return <>
         <h1>Transactions</h1>
+        <Link to="/transactions/create">Create New</Link>
         <div>
             {isManager && <>
                 <input
