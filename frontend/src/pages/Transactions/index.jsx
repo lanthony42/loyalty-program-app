@@ -4,7 +4,7 @@ import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-const PAGE_LIMIT = 5;
+const PAGE_LIMIT = 6;
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -40,6 +40,7 @@ const Transactions = () => {
         return <Navigate to="/login" replace />;
     }
 
+    const isCashier = Role[user.role] >= Role.cashier;
     const isManager = Role[user.role] >= Role.manager;
 
     const fetchTransactionData = async () => {
@@ -107,6 +108,7 @@ const Transactions = () => {
         <div className="header-container">
             <h1>Transactions</h1>
             <div className="btn-container">
+                {isCashier && <Link to="/transactions/process">Process Redemptions</Link>}
                 <Link to="/transactions/create">Create New</Link>
             </div>
         </div>
@@ -140,7 +142,7 @@ const Transactions = () => {
                 value={query.type}
                 onChange={changeFilter}
             >
-                <option value="">Select Transaction Type</option>
+                <option value="">Transaction Type</option>
                 <option value="purchase">Purchase</option>
                 <option value="adjustment">Adjustment</option>
                 <option value="redemption">Redemption</option>

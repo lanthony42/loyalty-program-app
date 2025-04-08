@@ -1,6 +1,6 @@
 import "@/pages/form.css";
 import { useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -12,8 +12,13 @@ const TYPES = {
 }
 
 const Create = () => {
+    const [searchParams] = useSearchParams();
     const { Role, authReady, user } = useAuth();
-    const [transaction, setTransaction] = useState({});
+    const [transaction, setTransaction] = useState({
+        userId: searchParams.get("userId") || undefined,
+        utorid: searchParams.get("utorid") || undefined,
+        type: searchParams.get("type") || undefined
+    });
     const [types, setTypes] = useState([]);
     const [error, setError] = useState("");    
     const navigate = useNavigate();
@@ -81,12 +86,13 @@ const Create = () => {
                 promotionIds: undefined
             });
         }
-        else {
+        else if (e.target.value === "adjustment") {
             setTransaction({
                 ...transaction,
                 type: e.target.value,
                 userId: undefined,
-                spent: undefined
+                spent: undefined,
+                promotionIds: undefined
             });
         }
     };
@@ -216,7 +222,7 @@ const Create = () => {
                     required
                 />
             </>}
-            {transaction.type !== "redemption" && transaction.type !== "transfer" && <>
+            {transaction.type === "purchase" && <>
                 <label htmlFor="promotionIds">Promotion Ids:</label>
                 <input
                     type="text"
