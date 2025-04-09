@@ -6,7 +6,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const PAGE_LIMIT = 4;
-const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
 const Promotions = () => {
     const navigate = useNavigate();
@@ -93,9 +92,11 @@ const Promotions = () => {
         <div>
             <div className="header-container">
                 <h1>Promotions</h1>
-                <div className="btn-container" id="create-button">
-                    <button onClick={() => navigate("/promotions/create")}>Create New Promotion</button>
-                </div>
+                {["manager", "superuser"].includes(user.role) && (
+                    <div className="btn-container" id="create-button">
+                        <button onClick={() => navigate("/promotions/create")}>Create New Promotion</button>
+                    </div>
+                )}
             </div>
             <div className="filter-container">
                 <input
@@ -129,9 +130,11 @@ const Promotions = () => {
                                 {<p><strong>Points:</strong> {promotion.points ?? 0}</p>}
                             </div>
                             <div className="promotion-section">
-                                <div className="btn-container" id="update-user-button">
-                                    <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>
-                                </div>
+                                {["manager", "superuser"].includes(user.role) && (
+                                    <div className="btn-container" id="update-user-button">
+                                        <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     );
