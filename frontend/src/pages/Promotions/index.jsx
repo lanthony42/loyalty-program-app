@@ -143,7 +143,7 @@ const Promotions = () => {
                             </div>
                             <div className="promotion-section">
                                 {["manager", "superuser"].includes(user.role) && (
-                                    <div className="btn-container" id="update-user-button">
+                                    <div className="btn-container">
                                         <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>
                                     </div>
                                 )}

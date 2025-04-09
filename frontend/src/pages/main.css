@@ -77,17 +77,6 @@ main .box:not(:empty) {
     gap: 10px;
 }
 
-#register-button {
-    display: flex;
-    justify-content: flex-end;
-}
-
-#update-user-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 button {
     padding: 10px 20px;
     font-size: 1rem;

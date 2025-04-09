@@ -1,5 +1,5 @@
 import "@/pages/main.css";
-import "./style.css";
+import "@/pages/card.css";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,7 +13,7 @@ const Users = () => {
     const [users, setUsers] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
-    const { authReady, user } = useAuth();
+    const { Role, authReady, user } = useAuth();
 
     const query = useMemo(() => {
         return {
@@ -24,6 +24,12 @@ const Users = () => {
             activated: searchParams.get("activated") || ""
         };
     }, [searchParams]);
+
+    useEffect(() => {
+        if (user) {
+            fetchUserData();
+        }
+    }, [user, query]);
 
     const fetchUserData = async () => {
         const result = [];
@@ -57,19 +63,15 @@ const Users = () => {
         }
     };
 
-    useEffect(() => {
-        if (user) {
-            fetchUserData();
-        }
-    }, [user, query]);
-
     if (!authReady) {
         return <p>Loading...</p>;
     }
     else if (!user) {
         return <Navigate to="/login" replace />;
     }
-    else if (user.role === "regular" || user.role === "cashier") {
+
+    const isManager = Role[user.role] >= Role.manager;
+    if (!isManager) {
         return <Navigate to="/dashboard" replace />;
     }
 
@@ -98,7 +100,7 @@ const Users = () => {
         <div>
             <div className="header-container">
                 <h1>Users</h1>
-                <div className="btn-container" id="register-button">
+                <div className="btn-container">
                     <button onClick={() => navigate("/register")}>Register New User</button>
                 </div>
             </div>
@@ -144,11 +146,10 @@ const Users = () => {
                 {users.map(user => {
                     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
                     return (
-                        <div key={user.id} className={`user-card ${user.role}`}>
-                            <div className="user-info">
-                                <h4>User ID: {user.id}</h4>
-                                {user.name && <h4 className="name">{user.name}</h4>}
-                                {user.utorid && <p><strong>UTORid:</strong> {user.utorid}</p>}
+                        <div key={user.id} className={`card ${user.role}`}>
+                            <div className="card-content">
+                                <h4>{user.utorid} (ID: {user.id})</h4>
+                                {user.name && <p><strong>Name:</strong> {user.name}</p>}
                                 {user.email && <p><strong>Email:</strong> {user.email}</p>}
                                 {user.birthday && <p><strong>Birthday:</strong> {user.birthday}</p>}
                                 {user.role && <p><strong>Role:</strong> {user.role.charAt(0).toUpperCase() + user.role.slice(1)}</p>}
@@ -156,14 +157,14 @@ const Users = () => {
                                 {user.verified != null && <p><strong>Verified:</strong> {user.verified ? "Yes" : "No"}</p>}
                             </div>
                             <div className="user-avatar-section">
+                                <div className="btn-container">
+                                    <button onClick={() => navigate(`/users/${user.id}`)}>Update User</button>
+                                </div>
                                 <img
                                     src={avatarUrl}
                                     alt={`${user.name}'s Avatar`}
                                     className="user-avatar"
                                 />
-                                <div className="btn-container" id="update-user-button">
-                                    <button onClick={() => navigate(`/users/${user.id}`)}>Update User</button>
-                                </div>
                             </div>
                         </div>
                     );
@@ -179,9 +180,7 @@ const Users = () => {
                         Previous
                     </button>
                 </div>
-
-                <span>Page {query.page} of {totalPages}</span>
-            
+                <span>Page {Math.min(query.page, totalPages)} of {totalPages}</span>            
                 <div className="btn-container">
                     <button
                         onClick={() => changePage(query.page + 1)}

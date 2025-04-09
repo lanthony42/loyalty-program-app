@@ -1,4 +1,5 @@
 import "@/pages/main.css";
+import "@/pages/card.css";
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -204,6 +205,7 @@ const Transactions = () => {
                 <TransactionCard key={transaction.id} transaction={transaction} showQRCode={showQRCode} />
             ))}
         </div>
+
         <div className="pagination-container">
             <div className="btn-container">
                 <button

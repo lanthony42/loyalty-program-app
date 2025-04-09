@@ -1,0 +1,119 @@
+.card {
+    display: flex;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border-left: 8px solid transparent;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card .card-content {
+    flex-grow: 1;
+}
+
+.card .card-content h4 {
+    margin-bottom: 4px;
+}
+
+.card .card-content p {
+    margin: 6px 0;
+}
+
+.card .btn-container {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+/* Users */
+.card.regular {
+    border-left: 8px solid #0eb7ca;
+}
+
+.card.regular h4 {
+    color: #0eb7ca;
+}
+
+.card.cashier {
+    border-left: 8px solid #9bb110;
+}
+
+.card.cashier h4 {
+    color: #9bb110;
+}
+
+.card.manager {
+    border-left: 8px solid #d71be4;
+}
+
+.card.manager h4 {
+    color: #d71be4;
+}
+
+.card.superuser {
+    border-left: 8px solid #c70909;
+}
+
+.card.superuser h4 {
+    color: #c70909;
+}
+
+.user-avatar-section {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 12px;
+    min-width: 120px;
+}
+
+.user-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Transactions */
+.card.purchase {
+    border-left-color: #4caf50;
+}
+
+.card.purchase h4 {
+    color: #4caf50;
+}
+
+.card.redemption {
+    border-left-color: #9c27b0;
+}
+
+.card.redemption h4 {
+    color: #9c27b0;
+}
+
+.card.adjustment {
+    border-left-color: #f44336;
+}
+
+.card.adjustment h4 {
+    color: #f44336;
+}
+
+.card.transfer {
+    border-left-color: #2196f3;
+}
+
+.card.transfer h4 {
+    color: #2196f3;
+}
+
+.card.event {
+    border-left-color: #ff9800;
+}
+
+.card.event h4 {
+    color: #ff9800;
+}

@@ -1,12 +1,15 @@
 import "@/pages/main.css";
+import "@/pages/card.css";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import RecentTransactions from "@/pages/Transactions/RecentTransactions";
-import UpcomingPromotions from "@/pages/Promotions/UpcomingPromotions";
-import UpcomingEvents from "@/pages/Events/UpcomingEvents";
+import RecentTransactions from "@/pages/Transactions/Recent";
+import UpcomingPromotions from "@/pages/Promotions/Upcoming";
+import UpcomingEvents from "@/pages/Events/Upcoming";
 
 const Dashboard = () => {
-    const { authReady, user } = useAuth();
+    const { Role, authReady, user } = useAuth();
+    const isManager = Role[user.role] >= Role.manager;
+
     if (!authReady) {
         return <p>Loading...</p>;
     }
@@ -16,18 +19,18 @@ const Dashboard = () => {
 
     return <>
         <h2>Welcome, {user?.name || user?.utorid}!</h2>
-        {["regular"].includes(user.role) && (
+        {user.role === "regular" && (
             <div>
                 <h3>Current Point Balance</h3>
                 <h3>{user.points}</h3>
             </div>
         )}
-        {["regular"].includes(user.role) && (
+        {user.role === "regular" && (
             <div>
-                <RecentTransactions user={user} /> 
+                <RecentTransactions user={user} />
             </div>
         )}
-        {["cashier"].includes(user.role) && (
+        {user.role === "cashier" && (
             <div>
                 <div className="btn-container">
                     <Link to="/transactions/process">Process Redemptions</Link>
@@ -35,14 +38,14 @@ const Dashboard = () => {
                 </div>
             </div>
         )}
-        {["manager", "superuser"].includes(user.role) && (
+        {isManager && (
             <div>
                 <h3>Manage Users</h3>
                 <div className="btn-container" style={{ display: "flex", justifyContent: "center", padding : "20px" }}>
                     <Link to="/users">Manage</Link>
                 </div>
-                <UpcomingPromotions user={user} /> 
-                <UpcomingEvents user={user} /> 
+                <UpcomingPromotions user={user} />
+                <UpcomingEvents user={user} />
             </div>
         )}
     </>;
