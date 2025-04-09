@@ -23,10 +23,10 @@
 # were used for development only like vite and eslint.
 
 ########################## DEPLOYMENT ##########################
-# 
-node index.js 3000
-npx prisma generate
-npx prisma db push
-node index.js 3000
-
-npm run dev
+# Our website was deployed using Railway, with much of the same
+# steps as Tutorial 11. Frontend was set up with root directory
+# frontend, build command npm run build, and start command "npx
+# serve -s dist. Backend was set up with root directory backend,
+# build command npm run build, and start command npm run start.
+# Environment variables FRONTEND_URL and VITE_BACKEND_URL were
+# set to the frontend URL and backend URL respectively.
