@@ -8,7 +8,7 @@ const View = () => {
     const [transaction, setTransaction] = useState(null);
     const [error, setError] = useState("");
     const { transactionId } = useParams();
-    const { Role, authReady, user } = useAuth();
+    const { Role, authReady, user, fetchUserData } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -92,6 +92,7 @@ const View = () => {
             });
 
             if (response.ok) {
+                await fetchUserData(user.token);
                 await fetchTransactionData();
             }
             else {
@@ -171,7 +172,7 @@ const View = () => {
                 type="checkbox"
                 id="suspicious"
                 name="suspicious"
-                value={transaction.suspicious || false}
+                checked={transaction.suspicious || false}
                 onChange={changeSuspicious}
             />
             <label htmlFor="remark">Remark:</label>
