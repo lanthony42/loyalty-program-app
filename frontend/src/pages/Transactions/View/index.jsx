@@ -147,22 +147,22 @@ const View = () => {
                 />
             </>}
             {transaction.type === "adjustment" && <>
-                <label htmlFor="relatedId">Related Id:</label>
+                <label htmlFor="relatedId">Related ID:</label>
                 <input
                     type="number"
                     id="relatedId"
                     name="relatedId"
-                    placeholder="Related Id"
+                    placeholder="Related ID"
                     value={transaction.relatedId || ""}
                     disabled
                 />
             </>}
-            <label htmlFor="promotionIds">Promotion Ids:</label>
+            <label htmlFor="promotionIds">Promotion IDs:</label>
             <input
                 type="text"
                 id="promotionIds"
                 name="promotionIds"
-                placeholder="Promotion Ids"
+                placeholder="Promotion IDs"
                 value={transaction.promotionIds.join(", ") || ""}
                 disabled
             />
