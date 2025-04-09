@@ -42,7 +42,7 @@ const Card = ({ event }) => {
                 </p>}
             </div>
             <div className="btn-container">
-                {isManager && <Link to={`/events/${event.id}`} state={{ fromSite: true }}>View</Link>}
+                <Link to={`/events/${event.id}`} state={{ fromSite: true }}>View</Link>
             </div>
         </div>
     </>;

@@ -20,6 +20,7 @@ form select {
 form textarea {
     padding: 8px;
     resize: vertical;
+    min-height: 19px;
     max-height: 200px;
     font-family: inherit;
     font-size: 1rem;

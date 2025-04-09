@@ -105,7 +105,7 @@ const Events = () => {
         <div className="header-container">
             <h1>Events</h1>
             <div className="btn-container">
-                <Link to="/events/create">Create New</Link>
+                {isManager && <Link to="/events/create">Create New</Link>}
             </div>
         </div>
 
@@ -145,8 +145,8 @@ const Events = () => {
                 value={query.showFull}
                 onChange={changeFilter}
             >
-                <option value="true">Show Full</option>
-                <option value="false">Show Available</option>
+                <option value="true">Show All</option>
+                <option value="false">Available Only</option>
             </select>
             {isManager && <>
                 <select
