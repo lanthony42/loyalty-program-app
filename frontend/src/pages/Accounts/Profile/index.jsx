@@ -1,6 +1,6 @@
 import "@/pages/form.css";
-import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -20,6 +20,17 @@ const UpdateUser = () => {
         old: null,
         new: null,
     });
+
+    useEffect(() => {
+        if (user) {
+            setData({
+                ...data,
+                name: user.name,
+                email: user.email,
+                birthday: user.birthday
+            });
+        }
+    }, [user]);
 
     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
 

@@ -94,7 +94,7 @@ const Reset = () => {
     };
 
     return <>
-        <h2>Request Reset Token</h2>
+        <h1>Request Reset Token</h1>
         <form onSubmit={handleTokenRequest}>
             <label htmlFor="utorid">UTORid:</label>
             <input
@@ -112,7 +112,7 @@ const Reset = () => {
             <p className="error">{error}</p>
         </form>
 
-        <h2>Reset Password</h2>
+        <h1>Reset Password</h1>
         <form onSubmit={handlePasswordReset}>
             <label htmlFor="resetToken">Reset Token:</label>
             <input
