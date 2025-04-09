@@ -122,6 +122,7 @@ const View = () => {
 
             if (response.ok) {
                 await fetchPromotionData();
+                setError("");
             }
             else {
                 const json = await response.json();

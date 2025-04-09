@@ -336,6 +336,7 @@ module.exports = app => {
         createdAt: user.createdAt,
         lastLogin: user.lastLogin,
         verified: user.verified,
+        suspicious: user.suspicious,
         avatarUrl: user.avatarUrl,
         promotions: promotions.map(promotion => {
           return {

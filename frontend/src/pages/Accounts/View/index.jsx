@@ -24,13 +24,19 @@ const View = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setUpdatingUser(data);
-            } else if (response.status === 404) {
+                setUpdatingUser({
+                    ...data,
+                    wasVerified: data.verified
+                });
+            }
+            else if (response.status === 404) {
                 navigate("/404");
-            } else {
+            }
+            else {
                 throw new Error("Failed to fetch user data");
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
         }
     };
@@ -80,6 +86,10 @@ const View = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
+        if (!updatingUser.wasVerified && !updatingUser.verified) {
+            updatingUser.verified = undefined;
+        }
+
         try {
             const url = `${config.backendUrl}/users/${updatingUser.id}`;
             const response = await fetch(url, {
@@ -88,16 +98,12 @@ const View = () => {
                     "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    email: updatingUser.email,
-                    suspicious: updatingUser.suspicious,
-                    verified: updatingUser.verified,
-                    role: updatingUser.role,
-                }),
+                body: JSON.stringify(updatingUser),
             });
 
             if (response.ok) {
-                navigate(`/users/${updatingUser.id}`);
+                await fetchUserData();
+                setError("");
             }
             else {
                 const json = await response.json();
@@ -151,17 +157,19 @@ const View = () => {
                     type="checkbox"
                     id="verified"
                     name="verified"
-                    checked={updatingUser.verified}
+                    checked={updatingUser.verified || false}
                     onChange={handleFieldChange}
                 />
-                <label htmlFor="suspicious">Suspicious:</label>
-                <input
-                    type="checkbox"
-                    id="suspicious"
-                    name="suspicious"
-                    checked={updatingUser.suspicious}
-                    onChange={handleFieldChange}
-                />
+                {updatingUser.role === "cashier" && <>
+                    <label htmlFor="suspicious">Suspicious:</label>
+                    <input
+                        type="checkbox"
+                        id="suspicious"
+                        name="suspicious"
+                        checked={updatingUser.suspicious || false}
+                        onChange={handleFieldChange}
+                    />
+                </>}
                 <div className="btn-container">
                     <button type="button" onClick={clickBack}>
                         Back
