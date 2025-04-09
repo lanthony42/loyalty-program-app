@@ -27,7 +27,9 @@ const Promotions = () => {
         return {
             page: parseInt(searchParams.get("page")) || 1,
             name: searchParams.get("name") || "",
-            type: searchParams.get("type") || ""
+            type: searchParams.get("type") || "",
+            started: searchParams.get("started") || "",
+            ended: searchParams.get("ended") || ""
         };
     }, [searchParams]);
 
@@ -83,6 +85,14 @@ const Promotions = () => {
         setSearchParams(params => {
             if (value) {
                 searchParams.set(name, value);
+
+                // Clear dependant parameters
+                if (name === "started") {
+                    searchParams.delete("ended");
+                }
+                else if (name === "ended") {
+                    searchParams.delete("started");
+                }
             }
             else {
                 searchParams.delete(name);
@@ -125,6 +135,26 @@ const Promotions = () => {
                     <option value="automatic">Automatic</option>
                     <option value="one-time">One-Time</option>
                 </select>
+                {isManager && <>
+                    <select
+                        name="started"
+                        value={query.started}
+                        onChange={changeFilter}
+                    >
+                        <option value="">Started?</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <select
+                        name="ended"
+                        value={query.ended}
+                        onChange={changeFilter}
+                    >
+                        <option value="">Ended?</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </>}
             </div>
 
             <div className="grid-container">
