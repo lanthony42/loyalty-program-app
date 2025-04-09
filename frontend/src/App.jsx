@@ -17,6 +17,7 @@ import Promotions from "@/pages/Promotions";
 import CreatePromotion from "@/pages/Promotions/Create"
 import ViewPromotion from "@/pages/Promotions/View";
 import Events from "@/pages/Events";
+import CreateEvent from "@/pages/Events/Create"
 import NotFound from "@/pages/NotFound";
 
 const MyRoutes = () => {
@@ -46,6 +47,7 @@ const MyRoutes = () => {
                 </Route>
                 <Route path="events">
                     <Route index element={<Events />} />
+                    <Route path="create" element={<CreateEvent />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Route>
