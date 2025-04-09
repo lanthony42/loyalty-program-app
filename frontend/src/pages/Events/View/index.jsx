@@ -147,6 +147,31 @@ const View = () => {
         }
     };
 
+    const handleRSVP = async () => {
+        try {
+            const url = `${config.backendUrl}/events/${event.id}/guests/me`;
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if (response.ok) {
+                clickBack();
+            }
+            else {
+                const json = await response.json();
+                setFormError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setFormError("An error occurred while updating");
+        }
+    };
+
     const handleDelete = async () => {
         try {
             const url = `${config.backendUrl}/events/${event.id}`;
@@ -383,6 +408,7 @@ const View = () => {
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
                 {isOrganizer && <button type="submit">Update</button>}
+                {!isOrganizer && <button type="button" onClick={handleRSVP}>RSVP</button>}
                 {isManager && !event.wasPublished && <button type="button" onClick={handleDelete}>Delete</button>}                
             </div>
             <p className="error">{formError}</p>
