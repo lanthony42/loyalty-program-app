@@ -24,6 +24,10 @@ main a:active {
     transform: translate(1px, 1px);
 }
 
+main .box:not(:empty) {
+    border: solid 1px lightgray;
+}
+
 .filter-container {
     display: flex;
     justify-content: center;

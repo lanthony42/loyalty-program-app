@@ -6,7 +6,11 @@ import config from "@/config";
 
 const View = () => {
     const [event, setEvent] = useState(null);
-    const [error, setError] = useState("");
+    const [formError, setFormError] = useState("");
+    const [organizer, setOrganizer] = useState("");
+    const [organizerError, setOrganizerError] = useState("");
+    const [guest, setGuest] = useState("");
+    const [guestError, setGuestError] = useState("");
     const { eventId } = useParams();
     const { Role, authReady, user } = useAuth();
     const navigate = useNavigate();
@@ -130,16 +134,16 @@ const View = () => {
 
             if (response.ok) {
                 await fetchEventData();
-                setError("");
+                setFormError("");
             }
             else {
                 const json = await response.json();
-                setError(json.error);
+                setFormError(json.error);
             }
         }
         catch (error) {
             console.error(error);
-            setError("An error occurred while updating");
+            setFormError("An error occurred while updating");
         }
     };
 
@@ -159,12 +163,132 @@ const View = () => {
             }
             else {
                 const json = await response.json();
-                setError(json.error);
+                setFormError(json.error);
             }
         }
         catch (error) {
             console.error(error);
-            setError("An error occurred while updating");
+            setFormError("An error occurred while updating");
+        }
+    };
+
+    const changeOrganizer = e => {
+        setOrganizer(e.target.value);
+    };
+
+    const changeGuest = e => {
+        setGuest(e.target.value);
+    };
+
+    const addOrganizer = async e => {
+        e.preventDefault();
+
+        try {
+            const url = `${config.backendUrl}/events/${event.id}/organizers`;
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ utorid: organizer }),
+            });
+
+            if (response.ok) {
+                await fetchEventData();
+                setOrganizerError("");
+                setOrganizer("");
+            }
+            else {
+                const json = await response.json();
+                setOrganizerError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setOrganizerError("An error occurred while updating");
+        }
+    };
+
+    const deleteOrganizer = async id => {
+        try {
+            const url = `${config.backendUrl}/events/${event.id}/organizers/${id}`;
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if (response.ok) {
+                await fetchEventData();
+                setOrganizerError("");
+            }
+            else {
+                const json = await response.json();
+                setOrganizerError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setOrganizerError("An error occurred while updating");
+        }
+    };
+
+    const addGuest = async e => {
+        e.preventDefault();
+
+        try {
+            const url = `${config.backendUrl}/events/${event.id}/guests`;
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ utorid: guest }),
+            });
+
+            if (response.ok) {
+                await fetchEventData();
+                setGuestError("");
+                setGuest("");
+            }
+            else {
+                const json = await response.json();
+                setGuestError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setGuestError("An error occurred while updating");
+        }
+    };
+
+    const deleteGuest = async id => {
+        try {
+            const url = `${config.backendUrl}/events/${event.id}/guests/${id}`;
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if (response.ok) {
+                await fetchEventData();
+                setGuestError("");
+            }
+            else {
+                const json = await response.json();
+                setGuestError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setGuestError("An error occurred while updating");
         }
     };
     
@@ -259,11 +383,72 @@ const View = () => {
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
                 {isOrganizer && <button type="submit">Update</button>}
-                {isOrganizer && <button type="submit" onClick={() => navigate(`/events/${event.id}/manage`, { state: { fromSite: true } })}>Manage</button>}
                 {isManager && !event.wasPublished && <button type="button" onClick={handleDelete}>Delete</button>}                
             </div>
-            <p className="error">{error}</p>
+            <p className="error">{formError}</p>
         </form>
+        {isManager && !endPassed && <>
+            <h1>Add Organizers</h1>
+            <form onSubmit={addOrganizer}>
+                <label htmlFor="organizer">UTORid:</label>
+                <input
+                    type="text"
+                    id="organizer"
+                    name="organizer"
+                    placeholder="UTORid"
+                    value={organizer || ""}
+                    onChange={changeOrganizer}
+                    required
+                />
+                <div className="btn-container">
+                    <button type="button" onClick={clickBack}>Back</button>
+                    <button type="submit">Add</button>
+                </div>
+                <p className="error">{organizerError}</p>
+            </form>
+            <div className="grid-container box">
+                {event.organizers.map(o => <div key={o.id} className="card event">
+                    <div className="card-content">
+                        <h4>{o.utorid} (ID: {o.id})</h4>
+                        <p><strong>Name:</strong> {o.name}</p>
+                    </div>
+                    <div className="btn-container">
+                        <button type="button" onClick={() => deleteOrganizer(o.id)}>Delete</button>
+                    </div>
+                </div>)}
+            </div>
+        </>}
+        {isOrganizer && !endPassed && <>
+            <h1>Add Guests</h1>
+            <form onSubmit={addGuest}>
+                <label htmlFor="guest">UTORid:</label>
+                <input
+                    type="text"
+                    id="guest"
+                    name="guest"
+                    placeholder="UTORid"
+                    value={guest || ""}
+                    onChange={changeGuest}
+                    required
+                />
+                <div className="btn-container">
+                    <button type="button" onClick={clickBack}>Back</button>
+                    <button type="submit">Add</button>
+                </div>
+                <p className="error">{guestError}</p>
+            </form>
+            {isManager && <div className="grid-container box">
+                {event.guests.map(g => <div key={g.id} className="card event">
+                    <div className="card-content">
+                        <h4>{g.utorid} (ID: {g.id})</h4>
+                        <p><strong>Name:</strong> {g.name}</p>
+                    </div>
+                    <div className="btn-container">
+                        <button type="button" onClick={() => deleteGuest(g.id)}>Delete</button>
+                    </div>
+                </div>)}
+            </div>}
+        </>}
     </>;
 };
 
