@@ -1,69 +1,71 @@
 import { useEffect, useState } from "react";
-import TransactionCard from "@/pages/Transactions/Card";
-import QRCode from "@/pages/Transactions/QRCode";
+import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-const RECENT_LIMIT = 4;
+const Recent = ({ limit = 4 }) => {
+    const [transactions, setTransactions] = useState([]);
+    const { Role, user } = useAuth();
+    const isManager = Role[user.role] >= Role.manager;
 
-const RecentTransactions = ({ user }) => {
-  const [transactions, setTransactions] = useState([]);
-  const [qrOpen, setQROpen] = useState(false);
-  const [qrUrl, setQRUrl] = useState(null);
+    useEffect(() => {
+        if (user) {
+            fetchRecentTransactions();
+        }
+    }, [user]);
 
-  useEffect(() => {
-    if (user) {
-      fetchRecentTransactions();
-    }
-  }, [user]);
+    const fetchRecentTransactions = async () => {
+        try {
+            const url = `${config.backendUrl}/users/me/transactions?limit=${limit}`; 
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                },
+            });
 
-  const fetchRecentTransactions = async () => {
-    try {
-      const url = `${config.backendUrl}/users/me/transactions?limit=${RECENT_LIMIT}`; 
+            if (response.ok) {
+                const data = await response.json();
+                setTransactions(data.results);
+            }
+            else {
+                console.error("Failed to fetch transactions");
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    };
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${user.token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setTransactions(data.results);
-      } else {
-        console.error("Failed to fetch transactions");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const showQRCode = (transactionId) => {
-    const url = `${window.location.origin}/transactions/${transactionId}`;
-    setQRUrl(url);
-    setQROpen(true);
-  };
-
-  return (
-    <div>
-      <h3>Recent Transactions</h3>
-      <div className="grid-container" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
-        {transactions.length === 0 ? (
-          <p className="no-transactions">No transactions to display</p>
-        ) : (
-          transactions.map(transaction => (
-            <div key={transaction.id} className="transaction-card">
-              <TransactionCard transaction={transaction} showQRCode={showQRCode} />
+    return !transactions ? null : <>
+        <div>
+            <h3>Recent Transactions</h3>
+            <div className="grid-container">
+                {transactions.map(transaction => <div key={transaction.id} className={`card ${transaction.type}`}>
+                    <div className="card-content">
+                        <h4>{transaction.type.toUpperCase()} (ID: {transaction.id})</h4>
+                        <p>
+                            <strong>Amount:</strong> {transaction.amount}
+                        </p>
+                        {transaction.type === "purchase" && <p>
+                            <strong>Spent:</strong> ${transaction.spent.toFixed(2)}
+                        </p>}
+                        {transaction.type === "adjustment" && <p>
+                            <strong>Related ID:</strong> {transaction.relatedId}
+                        </p>}
+                        {transaction.type === "redemption" && <p>
+                            <strong>Processed:</strong> {transaction.relatedId != null ? "Yes" : "No"}
+                        </p>}
+                        <p>
+                            <strong>Created By:</strong> {transaction.createdBy}
+                        </p>
+                    </div>
+                    <div className="btn-container">
+                        {isManager && <Link to={`/transactions/${transaction.id}`} state={{ fromSite: true }}>View</Link>}
+                    </div>
+                </div>)}
             </div>
-          ))
-        )}
-      </div>
-
-      {qrOpen && (
-        <QRCode url={qrUrl} onClose={() => setQROpen(false)} />
-      )}
-    </div>
-  );
+        </div>
+    </>;
 };
 
-export default RecentTransactions;
+export default Recent;

@@ -8,7 +8,6 @@ import UpcomingEvents from "@/pages/Events/Upcoming";
 
 const Dashboard = () => {
     const { Role, authReady, user } = useAuth();
-    const isManager = Role[user.role] >= Role.manager;
 
     if (!authReady) {
         return <p>Loading...</p>;
@@ -16,6 +15,8 @@ const Dashboard = () => {
     else if (!user) {
         return <Navigate to="/login" replace />;
     }
+    
+    const isManager = Role[user.role] >= Role.manager;
 
     return <>
         <h2>Welcome, {user?.name || user?.utorid}!</h2>
@@ -27,7 +28,7 @@ const Dashboard = () => {
         )}
         {user.role === "regular" && (
             <div>
-                <RecentTransactions user={user} />
+                <RecentTransactions />
             </div>
         )}
         {user.role === "cashier" && (
@@ -44,8 +45,8 @@ const Dashboard = () => {
                 <div className="btn-container" style={{ display: "flex", justifyContent: "center", padding : "20px" }}>
                     <Link to="/users">Manage</Link>
                 </div>
-                <UpcomingPromotions user={user} />
-                <UpcomingEvents user={user} />
+                <UpcomingPromotions />
+                <UpcomingEvents />
             </div>
         )}
     </>;
