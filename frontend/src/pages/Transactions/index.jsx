@@ -2,6 +2,7 @@ import "@/pages/main.css";
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import TransactionCard from "./Card";
 import config from "@/config";
 
 const PAGE_LIMIT = 6;
@@ -182,16 +183,11 @@ const Transactions = () => {
                 disabled={!query.operator}
             />
         </div>
-        <ul>
+        <div className="grid-container">
             {transactions.map(transaction => (
-                <li key={transaction.id}>
-                    Id: {transaction.id} - Type: {transaction.type}
-                    {isManager && <Link to={`/transactions/${transaction.id}`} state={{ fromSite: true }}>
-                        View
-                    </Link>}
-                </li>
+                <TransactionCard key={transaction.id} transaction={transaction} />
             ))}
-        </ul>
+        </div>
         <div className="pagination-container">
             <div className="btn-container">
                 <button

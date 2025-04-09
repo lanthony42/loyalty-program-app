@@ -123,7 +123,7 @@ const View = () => {
                 id="type"
                 name="type"
                 placeholder="Type"
-                value={transaction.type || ""}
+                value={transaction.type ? `${transaction.type.charAt(0).toUpperCase()}${transaction.type.slice(1)}` : ""}
                 disabled
             />
             <label htmlFor="amount">Amount:</label>
