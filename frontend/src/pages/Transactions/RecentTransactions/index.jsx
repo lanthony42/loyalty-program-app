@@ -18,7 +18,7 @@ const RecentTransactions = ({ user }) => {
 
   const fetchRecentTransactions = async () => {
     try {
-      const url = `${config.backendUrl}/users/me/transactions?limit=10000`; 
+      const url = `${config.backendUrl}/users/me/transactions?limit=${RECENT_LIMIT}`; 
 
       const response = await fetch(url, {
         method: "GET",
@@ -29,8 +29,7 @@ const RecentTransactions = ({ user }) => {
 
       if (response.ok) {
         const data = await response.json();
-        const sortedTransactions = data.results.sort((a, b) => b.id - a.id).slice(0, RECENT_LIMIT);
-        setTransactions(sortedTransactions);
+        setTransactions(data.results);
       } else {
         console.error("Failed to fetch transactions");
       }

@@ -1,7 +1,9 @@
 import "@/pages/main.css";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import RecentTransactions from "@/pages/Transactions/RecentTransactions";
+import UpcomingPromotions from "@/pages/Promotions/UpcomingPromotions";
+import UpcomingEvents from "@/pages/Events/UpcomingEvents";
 
 const Dashboard = () => {
     const { authReady, user } = useAuth();
@@ -23,6 +25,20 @@ const Dashboard = () => {
         {["regular"].includes(user.role) && (
             <div>
                 <RecentTransactions user={user} /> 
+            </div>
+        )}
+        {["cashier"].includes(user.role) && (
+            <div>
+                <div className="btn-container">
+                    <Link to="/transactions/process">Process Redemptions</Link>
+                    <Link to="/transactions/create">Create New Transaction</Link>
+                </div>
+            </div>
+        )}
+        {["manager", "superuser"].includes(user.role) && (
+            <div>
+                <UpcomingPromotions user={user} /> 
+                <UpcomingEvents user={user} /> 
             </div>
         )}
     </>;

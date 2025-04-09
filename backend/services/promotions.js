@@ -345,7 +345,7 @@ module.exports = app => {
   app.delete("/promotions/:promotionId", managerOrHigher, async (req, res) => {
     const valid = validate.integer(req.params, "promotionId");
     if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "PromotionId is not an integer" });
       return;
     }
 
@@ -355,11 +355,11 @@ module.exports = app => {
       }
     });
     if (!promotion) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Promotion not Found" });
       return;
     }
     else if (promotion.startTime < new Date()) {
-      res.status(403).json({ error: "Forbidden" });
+      res.status(403).json({ error: "Cannot delete promotion that has already started" });
       return;
     }
 

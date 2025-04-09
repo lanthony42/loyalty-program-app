@@ -55,6 +55,23 @@ const View = () => {
         return <Navigate to="/dashboard" replace />;
     }
 
+    const toDateTimeLocal = time => {
+        if (!time) {
+            return "";
+        }
+
+        const date = new Date(time);
+        const pad = n => String(n).padStart(2, "0");
+
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
     const handleChange = e => {
         const { name, value } = e.target;
         if (value === "") {
@@ -167,7 +184,8 @@ const View = () => {
                     type="datetime-local"
                     id="startTime"
                     name="startTime"
-                    value={promotion.startTime ? new Date(promotion.startTime).toISOString().slice(0, 16) : ""}
+                    placeholder="Start Time"
+                    value={toDateTimeLocal(promotion.startTime)}
                     onChange={handleChange}
                 />
                 <label htmlFor="endTime">End Time:</label>
@@ -175,7 +193,8 @@ const View = () => {
                     type="datetime-local"
                     id="endTime"
                     name="endTime"
-                    value={promotion.endTime ? new Date(promotion.endTime).toISOString().slice(0, 16) : ""}
+                    placeholder="End Time"
+                    value={toDateTimeLocal(promotion.endTime)}
                     onChange={handleChange}
                 />
                 <label htmlFor="minSpending">Minimum Spending:</label>

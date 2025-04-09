@@ -6,6 +6,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
 const PAGE_LIMIT = 4;
+const DATE_LOCALE = "en-US";
+const DATE_OPTIONS = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true
+};
 
 const Promotions = () => {
     const navigate = useNavigate();
@@ -124,7 +133,8 @@ const Promotions = () => {
                                 <h4>Promotion ID: {promotion.id}</h4>
                                 {<h4 className="name">{promotion.name}</h4>}
                                 {<p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>}
-                                {<p><strong>End Time:</strong> {new Date(promotion.endTime).toLocaleDateString("en-CA", {year: "numeric", month: "long",day: "numeric",})}</p>}
+                                {<p><strong>Start Time:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime))}</p>}
+                                {<p><strong>End Time:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime))}</p>}
                                 {<p><strong>Minimum Spending:</strong> {promotion.minSpending ?? 0}</p>}
                                 {<p><strong>Rate:</strong> {promotion.rate ?? 0}</p>}
                                 {<p><strong>Points:</strong> {promotion.points ?? 0}</p>}

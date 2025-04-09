@@ -29,6 +29,23 @@ const Create = () => {
         return <Navigate to="/dashboard" replace />;
     }
 
+    const toDateTimeLocal = time => {
+        if (!time) {
+            return "";
+        }
+
+        const date = new Date(time);
+        const pad = n => String(n).padStart(2, "0");
+
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
     const handleChange = e => {
         const { name, value } = e.target;
         if (value === "") {
@@ -104,23 +121,23 @@ const Create = () => {
                 <option value="one-time">One-Time</option>
             </select>
             <label htmlFor="startTime">Start Time:</label>
-            <input
-                type="datetime-local"
-                id="startTime"
-                name="startTime"
-                value={data.startTime ? new Date(data.startTime).toISOString().slice(0, 16) : ""}
-                onChange={handleChange}
-                required
-            />
-            <label htmlFor="endTime">End Time:</label>
-            <input
-                type="datetime-local"
-                id="endTime"
-                name="endTime"
-                value={data.endTime ? new Date(data.endTime).toISOString().slice(0, 16) : ""}
-                onChange={handleChange}
-                required
-            />
+                <input
+                    type="datetime-local"
+                    id="startTime"
+                    name="startTime"
+                    placeholder="Start Time"
+                    value={toDateTimeLocal(data.startTime)}
+                    onChange={handleChange}
+                />
+                <label htmlFor="endTime">End Time:</label>
+                <input
+                    type="datetime-local"
+                    id="endTime"
+                    name="endTime"
+                    placeholder="End Time"
+                    value={toDateTimeLocal(data.endTime)}
+                    onChange={handleChange}
+                />
             <label htmlFor="minSpending">Minimum Spending:</label>
             <input
                 type="number"
