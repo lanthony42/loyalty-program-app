@@ -129,7 +129,7 @@ const Promotions = () => {
 
             <div className="grid-container">
                 {promotions.map(promotion => {
-                    const prettyStart = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime));
+                    const prettyStart = isManager ? new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime)) : "";
                     const prettyEnd = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime));
                     return <div key={promotion.id} className={`card ${promotion.type}`}>
                         <div className="card-content">
