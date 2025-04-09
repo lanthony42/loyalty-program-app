@@ -69,7 +69,7 @@ const Users = () => {
     else if (!user) {
         return <Navigate to="/login" replace />;
     }
-    else if (user.role === "regular") {
+    else if (user.role === "regular" || user.role === "cashier") {
         return <Navigate to="/dashboard" replace />;
     }
 
