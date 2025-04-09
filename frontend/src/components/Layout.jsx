@@ -18,6 +18,7 @@ const Layout = () => {
                     {user?.role !== "regular" && <Link to="/users">Users</Link>}
                     <Link to="/transactions">Transactions</Link>
                     <Link to="/promotions">Promotions</Link>
+                    <Link to="/events">Events</Link>
                 </>}
             </div>
             {user ? (
