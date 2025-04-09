@@ -62,7 +62,7 @@ form .error {
 
     form label {
         text-align: left;
-        margin-bottom: -12px;   /* pull up */
+        margin-bottom: -12px;
     }
 
     form .btn-container,
