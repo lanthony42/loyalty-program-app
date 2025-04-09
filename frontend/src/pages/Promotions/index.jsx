@@ -133,7 +133,9 @@ const Promotions = () => {
                                 <h4>Promotion ID: {promotion.id}</h4>
                                 {<h4 className="name">{promotion.name}</h4>}
                                 {<p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>}
-                                {<p><strong>Start Time:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime))}</p>}
+                                {["manager", "superuser"].includes(user.role) && (
+                                    <p><strong>Start Time:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime))}</p>
+                                )}
                                 {<p><strong>End Time:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime))}</p>}
                                 {<p><strong>Minimum Spending:</strong> {promotion.minSpending ?? 0}</p>}
                                 {<p><strong>Rate:</strong> {promotion.rate ?? 0}</p>}
