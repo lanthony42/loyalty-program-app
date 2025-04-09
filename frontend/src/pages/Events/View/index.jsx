@@ -244,21 +244,23 @@ const View = () => {
                 onChange={handleChange}
                 disabled={!isManager}
             />
-            <label htmlFor="published">Published:</label>
-            <input
-                type="checkbox"
-                id="published"
-                name="published"
-                placeholder="Published"
-                checked={event.published || false}
-                onChange={handleCheckbox}
-                disabled={!isManager}
-            />
+            {isOrganizer && <>
+                <label htmlFor="published">Published:</label>
+                <input
+                    type="checkbox"
+                    id="published"
+                    name="published"
+                    placeholder="Published"
+                    checked={event.published || false}
+                    onChange={handleCheckbox}
+                    disabled={!isManager}
+                />
+            </>}
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
                 {isOrganizer && <button type="submit">Update</button>}
                 {isOrganizer && <button type="submit" onClick={() => navigate(`/events/${event.id}/manage`, { state: { fromSite: true } })}>Manage</button>}
-                {isManager && !event.published && <button type="button" onClick={handleDelete}>Delete</button>}                
+                {isManager && !event.wasPublished && <button type="button" onClick={handleDelete}>Delete</button>}                
             </div>
             <p className="error">{error}</p>
         </form>

@@ -90,6 +90,7 @@ const Manage = () => {
 
             if (response.ok) {
                 await fetchEventData();
+                setOrganizerError("");
             }
             else {
                 const json = await response.json();
@@ -115,6 +116,7 @@ const Manage = () => {
 
             if (response.ok) {
                 await fetchEventData();
+                setOrganizerError("");
             }
             else {
                 const json = await response.json();
