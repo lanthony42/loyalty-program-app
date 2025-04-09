@@ -1,5 +1,5 @@
 import "@/pages/main.css";
-import "./style.css";
+import "@/pages/card.css";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,11 +17,11 @@ const DATE_OPTIONS = {
 };
 
 const Promotions = () => {
-    const navigate = useNavigate();
     const [promotions, setPromotions] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
-    const { authReady, user } = useAuth();
+    const { Role, authReady, user } = useAuth();
+    const navigate = useNavigate();
 
     const query = useMemo(() => {
         return {
@@ -31,6 +31,12 @@ const Promotions = () => {
         };
     }, [searchParams]);
 
+    useEffect(() => {
+        if (user) {
+            fetchPromotionData();
+        }
+    }, [user, query]);
+
     const fetchPromotionData = async () => {
         const result = [];
         for (const key in query) {
@@ -39,8 +45,8 @@ const Promotions = () => {
             }
         }
         const params = result.join("&");
-        const url = `${config.backendUrl}/promotions?${params}&limit=${PAGE_LIMIT}`; // Make sure to include limit in the API call
-        
+        const url = `${config.backendUrl}/promotions?${params}&limit=${PAGE_LIMIT}`;
+
         try {
             const response = await fetch(url, {
                 method: "GET",
@@ -52,7 +58,7 @@ const Promotions = () => {
             if (response.ok) {
                 const data = await response.json();
                 setPromotions(data.results);
-                setTotalPages(Math.ceil(data.count / PAGE_LIMIT)); // Correctly calculate total pages
+                setTotalPages(Math.ceil(data.count / PAGE_LIMIT));
             }
             else {
                 throw new Error("Failed to fetch promotion data");
@@ -63,18 +69,14 @@ const Promotions = () => {
         }
     };
 
-    useEffect(() => {
-        if (user) {
-            fetchPromotionData();
-        }
-    }, [user, query]);
-
     if (!authReady) {
         return <p>Loading...</p>;
     }
     else if (!user) {
         return <Navigate to="/login" replace />;
     }
+
+    const isManager = Role[user.role] >= Role.manager;
 
     const changeFilter = e => {
         const { name, value } = e.target;
@@ -85,14 +87,14 @@ const Promotions = () => {
             else {
                 searchParams.delete(name);
             }
-            searchParams.set("page", 1); // Reset to page 1 when filters change
+            searchParams.set("page", 1);
             return params;
         });
     };
 
     const changePage = newPage => {
         setSearchParams(params => {
-            params.set("page", newPage); // Change page
+            params.set("page", newPage);
             return params;
         });
     };
@@ -101,7 +103,7 @@ const Promotions = () => {
         <div>
             <div className="header-container">
                 <h1>Promotions</h1>
-                {["manager", "superuser"].includes(user.role) && (
+                {isManager && (
                     <div className="btn-container" id="create-button">
                         <button onClick={() => navigate("/promotions/create")}>Create New Promotion</button>
                     </div>
@@ -127,29 +129,23 @@ const Promotions = () => {
 
             <div className="grid-container">
                 {promotions.map(promotion => {
-                    return (
-                        <div key={promotion.id} className={`promotion-card ${promotion.type}`}>
-                            <div className="promotion-info">
-                                <h4>Promotion ID: {promotion.id}</h4>
-                                {<h4 className="name">{promotion.name}</h4>}
-                                {<p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>}
-                                {["manager", "superuser"].includes(user.role) && (
-                                    <p><strong>Start Time:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime))}</p>
-                                )}
-                                {<p><strong>End Time:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime))}</p>}
-                                {<p><strong>Minimum Spending:</strong> {promotion.minSpending ?? 0}</p>}
-                                {<p><strong>Rate:</strong> {promotion.rate ?? 0}</p>}
-                                {<p><strong>Points:</strong> {promotion.points ?? 0}</p>}
-                            </div>
-                            <div className="promotion-section">
-                                {["manager", "superuser"].includes(user.role) && (
-                                    <div className="btn-container">
-                                        <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>
-                                    </div>
-                                )}
-                            </div>
+                    const prettyStart = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime));
+                    const prettyEnd = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime));
+                    return <div key={promotion.id} className={`card ${promotion.type}`}>
+                        <div className="card-content">
+                            <h4>Promotion ID: {promotion.id}</h4>
+                            <h4 className="name">{promotion.name}</h4>
+                            <p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>
+                            {isManager && <p><strong>Start Time:</strong> {prettyStart}</p>}
+                            <p><strong>End Time:</strong> {prettyEnd}</p>
+                            <p><strong>Minimum Spending:</strong> {promotion.minSpending || 0}</p>
+                            <p><strong>Rate:</strong> {promotion.rate || 0}</p>
+                            <p><strong>Points:</strong> {promotion.points || 0}</p>
                         </div>
-                    );
+                        <div className="btn-container">
+                            {isManager && <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>}
+                        </div>
+                    </div>;
                 })}
             </div>
 
@@ -162,9 +158,7 @@ const Promotions = () => {
                         Previous
                     </button>
                 </div>
-
-                <span>Page {query.page} of {totalPages}</span>
-            
+                <span>Page {Math.min(query.page, totalPages)} of {totalPages}</span>
                 <div className="btn-container">
                     <button
                         onClick={() => changePage(query.page + 1)}

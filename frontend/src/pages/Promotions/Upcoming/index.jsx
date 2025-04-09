@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
-import { useNavigate } from "react-router-dom";
 
-const UPCOMING_LIMIT = 4;
-const FETCH_LIMIT = 20; 
 const DATE_LOCALE = "en-US";
 const DATE_OPTIONS = {
     year: "numeric",
@@ -15,73 +13,62 @@ const DATE_OPTIONS = {
     hour12: true
 };
 
-const UpcomingPromotions = () => {
-  const { user } = useAuth();
-  const [promotions, setPromotions] = useState([]);
-  const navigate = useNavigate();
+const Upcoming = ({ limit = 4 }) => {
+    const [promotions, setPromotions] = useState([]);
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
-  const fetchUpcomingPromotions = async () => {
-    try {
-      const url = `${config.backendUrl}/promotions?limit=${FETCH_LIMIT}`;
+    useEffect(() => {
+        if (user) {
+            fetchUpcomingPromotions();
+        }
+    }, [user]);
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${user.token}`,
-        },
-      });
+    const fetchUpcomingPromotions = async () => {
+        try {
+            const url = `${config.backendUrl}/promotions?ended=false`;
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                },
+            });
 
-      if (response.ok) {
-        const data = await response.json();
-        const now = new Date();
+            if (response.ok) {
+                const data = await response.json();
+                setPromotions(data.results.slice(0, limit));
+            }
+            else {
+                throw new Error("Failed to fetch upcoming promotions");
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    };
 
-        const upcoming = data.results.filter(
-          promo => new Date(promo.endTime) > now
-        ).slice(0, UPCOMING_LIMIT); 
-
-        setPromotions(upcoming);
-      } else {
-        console.error("Failed to fetch upcoming promotions");
-      }
-    } catch (error) {
-      console.error("Error fetching promotions:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      fetchUpcomingPromotions();
-    }
-  }, [user]);
-
-  if (!user) return null;
-
-  return (
-    <div>
-      <h3>Upcoming Promotions</h3>
-      <div className="grid-container">
-        {promotions.length === 0 ? (
-          <p className="no-promotions">No upcoming promotions</p>
-        ) : (
-          promotions.map((promotion) => (
-            <div key={promotion.id} className={`promotion-card ${promotion.type}`}>
-              <div className="promotion-info">
-                <h4 className="name">{promotion.name}</h4>
-                <p><strong>Start:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime))}</p>
-                <p><strong>Ends:</strong> {new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime))}</p>
-                {<p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>}
-                {promotion.points && <p><strong>Points:</strong> {promotion.points}</p>}
-                {promotion.rate && <p><strong>Rate:</strong> {promotion.rate}</p>}
-              </div>
-              <div className="promotion-section">
-                <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>
-              </div>
+    return !promotions ? null : <>
+        <div>
+            <h3>Upcoming Promotions</h3>
+            <div className="grid-container">
+                {promotions.map((promotion) => {
+                    const prettyStart = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime));
+                    const prettyEnd = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime));
+                    return <div key={promotion.id} className={`card ${promotion.type}`}>
+                        <div className="card-content">
+                            <h4 className="name">{promotion.name} (ID: {promotion.id})</h4>
+                            <p><strong>Start Time:</strong> {prettyStart}</p>
+                            <p><strong>End Time:</strong> {prettyEnd}</p>
+                            <p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>
+                        </div>
+                        <div className="btn-container">
+                            <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>
+                        </div>
+                    </div>
+                })}
             </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    </>;
 };
 
-export default UpcomingPromotions;
+export default Upcoming;

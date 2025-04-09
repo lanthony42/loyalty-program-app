@@ -3,6 +3,7 @@
     background-color: #fff;
     border-radius: 12px;
     padding: 16px;
+    gap: 4px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     border-left: 8px solid transparent;
     transition: transform 0.2s ease;
@@ -111,9 +112,26 @@
 }
 
 .card.event {
-    border-left-color: #ff9800;
+    border-left-color: #ff9d09;
 }
 
 .card.event h4 {
-    color: #ff9800;
+    color: #ff9d09;
+}
+
+/* Promotions */
+.card.automatic {
+    border-left: 8px solid #ee6a12;
+}
+
+.card.automatic h4 {
+    color: #ee6a12;
+}
+
+.card.one-time {
+    border-left: 8px solid #6b4eec;
+}
+
+.card.one-time h4 {
+    color: #6b4eec;
 }
