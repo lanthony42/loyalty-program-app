@@ -68,7 +68,7 @@ const Register = () => {
     };
 
     return <>
-        <h2>Registration</h2>
+        <h1>Registering User</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="utorid">utorid:</label>
             <input

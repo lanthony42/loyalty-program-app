@@ -69,7 +69,7 @@ const Create = () => {
     };
 
     return <>
-        <h1>Create Event</h1>
+        <h1>Creating Event</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="name">Name:</label>
             <input

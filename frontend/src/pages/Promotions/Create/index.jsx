@@ -98,7 +98,7 @@ const Create = () => {
     };
 
     return <>
-        <h2>Create Promotion</h2>
+        <h1>Creating Promotion</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="name">Name:</label>
             <input

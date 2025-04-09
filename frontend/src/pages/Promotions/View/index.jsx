@@ -165,7 +165,7 @@ const View = () => {
         <p>Loading...</p>
     ) : (
         <>
-            <h1>Update Promotion ID: {promotion.id}</h1>
+            <h1>Viewing Promotion {promotion.id}</h1>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="name">Name:</label>
                 <input

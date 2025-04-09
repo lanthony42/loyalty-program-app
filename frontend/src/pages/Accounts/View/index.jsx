@@ -120,7 +120,7 @@ const View = () => {
         <p>Loading...</p>
     ) : (
         <>
-            <h1>Update User ID: {updatingUser.id}</h1>
+            <h1>Viewing User {updatingUser.id}</h1>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="utorid">UTORid:</label>
                 <input

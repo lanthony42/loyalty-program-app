@@ -130,8 +130,7 @@ const UpdateUser = () => {
             <p>User ID: {user?.id}</p>
         </div>
 
-
-        <h2>Update Your Information</h2>
+        <h1>Update Profile</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="name">Name:</label>
             <input
@@ -174,7 +173,7 @@ const UpdateUser = () => {
             <p className="error">{error}</p>
         </form>
 
-        <h2>Update Password</h2>
+        <h1>Update Password</h1>
         <form onSubmit={handlePasswordUpdate}>
             <label htmlFor="old">Old Password:</label>
             <input
