@@ -37,6 +37,9 @@ const Card = ({ event }) => {
                 {event.numGuests != null && <p>
                     <strong>Number of Guests:</strong> {event.numGuests}
                 </p>}
+                {isManager && <p>
+                    <strong>Published:</strong> {event.published ? "Yes" : "No"}
+                </p>}
             </div>
             <div className="btn-container">
                 {isManager && <Link to={`/events/${event.id}`} state={{ fromSite: true }}>View</Link>}

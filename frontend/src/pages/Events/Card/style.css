@@ -24,6 +24,14 @@
     flex-grow: 1;
 }
 
+.card .card-content h4 {
+    margin-bottom: 4px;
+}
+
+.card .card-content p {
+    margin: 6px 0;
+}
+
 .card .btn-container {
     display: flex;
     flex-direction: column-reverse;
