@@ -3,11 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import TransactionCard from "./Card";
+import QRCode from "./QRCode";
 import config from "@/config";
 
 const PAGE_LIMIT = 6;
 
 const Transactions = () => {
+    const [qrOpen, setQROpen] = useState(false);
+    const [qrUrl, setQRUrl] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -76,6 +79,18 @@ const Transactions = () => {
         }
     };
 
+    const showUserQR = e => {
+        e.preventDefault();
+
+        const url = `${window.location.origin}/transactions/create?type=transfer&utorid=${user.utorid}&userId=${user.id}`;
+        showQRCode(url);
+    };
+
+    const showQRCode = url => {
+        setQROpen(true);
+        setQRUrl(url);
+    };
+
     const changeFilter = e => {
         const { name, value } = e.target;
         setSearchParams(params => {
@@ -109,11 +124,12 @@ const Transactions = () => {
         <div className="header-container">
             <h1>Transactions</h1>
             <div className="btn-container">
+                {!isCashier && <a href="#" onClick={showUserQR}>Show QR Code</a>}
                 {isCashier && <Link to="/transactions/process">Process Redemptions</Link>}
                 <Link to="/transactions/create">Create New</Link>
             </div>
         </div>
-        
+
         <div className="filter-container">
             {isManager && <>
                 <input
@@ -185,7 +201,7 @@ const Transactions = () => {
         </div>
         <div className="grid-container">
             {transactions.map(transaction => (
-                <TransactionCard key={transaction.id} transaction={transaction} />
+                <TransactionCard key={transaction.id} transaction={transaction} showQRCode={showQRCode} />
             ))}
         </div>
         <div className="pagination-container">
@@ -207,6 +223,7 @@ const Transactions = () => {
                 </button>
             </div>
         </div>
+        {qrOpen && <QRCode url={qrUrl} onClose={() => setQROpen(false)} />}
     </div>;
 };
 

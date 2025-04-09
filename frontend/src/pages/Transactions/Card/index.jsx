@@ -2,9 +2,16 @@ import "./style.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Card = ({ transaction }) => {
+const Card = ({ transaction, showQRCode }) => {
     const { Role, user } = useAuth();
     const isManager = Role[user.role] >= Role.manager;
+
+    const showRedemptionQR = e => {
+        e.preventDefault();
+
+        const url = `${window.location.origin}/transactions/process?transactionId=${transaction.id}`;
+        showQRCode(url);
+    };
 
     return <>
         <div className={`card ${transaction.type}`}>
@@ -36,6 +43,7 @@ const Card = ({ transaction }) => {
                 </p>}
             </div>
             <div className="btn-container">
+                {!isManager && transaction.type === "redemption" && <a href="#" onClick={showRedemptionQR}>Show QR</a>}
                 {isManager && <Link to={`/transactions/${transaction.id}`} state={{ fromSite: true }}>View</Link>}
             </div>
         </div>

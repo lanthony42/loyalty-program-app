@@ -5,6 +5,7 @@
 # 1. All the packages you need to install
 # 2. How to configure various servers (e.g., Nginx, Apache, etc)
 dotenv
+qrcode
 
 node index.js 3000
 npx prisma generate
