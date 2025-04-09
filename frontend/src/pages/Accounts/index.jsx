@@ -144,7 +144,7 @@ const Users = () => {
                 {users.map(user => {
                     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
                     return (
-                        <div key={user.id} className="user-card">
+                        <div key={user.id} className={`user-card ${user.role}`}>
                             <div className="user-info">
                                 <h4>User ID: {user.id}</h4>
                                 {user.name && <h4 className="name">{user.name}</h4>}

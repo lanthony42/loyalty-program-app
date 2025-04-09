@@ -9,7 +9,7 @@ const Create = () => {
     const [data, setData] = useState({
         name: null,
         description: null,
-        type: null,
+        type: "automatic",
         startTime: null,
         endTime: null,
         minSpending: null,
@@ -31,7 +31,15 @@ const Create = () => {
 
     const handleChange = e => {
         const { name, value } = e.target;
-        setData({ ...data, [name]: value });
+        if (value === "") {
+            setData((prevData) => ({
+                ...prevData,
+                [name]: null,
+            }));
+        }
+        else {
+            setData({ ...data, [name]: value });
+        }
     };
 
     const handleSubmit = async e => {

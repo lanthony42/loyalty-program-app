@@ -119,7 +119,7 @@ const Promotions = () => {
             <div className="grid-container">
                 {promotions.map(promotion => {
                     return (
-                        <div key={promotion.id} className="promotion-card">
+                        <div key={promotion.id} className={`promotion-card ${promotion.type}`}>
                             <div className="promotion-info">
                                 <h4>Promotion ID: {promotion.id}</h4>
                                 {<h4 className="name">{promotion.name}</h4>}

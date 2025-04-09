@@ -8,19 +8,52 @@ const validate = require("./validate");
 
 module.exports = app => {
   app.post("/promotions", managerOrHigher, async (req, res) => {
-    const valid = (
-      validate.required(req.body, "name", "description", "type", "startTime", "endTime") &&
-      validate.string(req.body, "name", "description") &&
-      validate.promotionType(req.body, "type") &&
-      validate.dateTime(req.body, "startTime", "endTime") &&
-      validate.positiveNum(req.body, "minSpending", "rate") &&
-      validate.integer(req.body, "points") &&
-      new Date() < req.body.startTime &&
-      req.body.startTime < req.body.endTime &&
-      (!defined(req.body, "points") || req.body.points >= 0)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, "name", "description", "type", "startTime", "endTime")) {
+      res.status(400).json({ error: "Missing required field(s)" });
+      return;
+    }
+    else if (!validate.string(req.body, "name")) {
+      res.status(400).json({ error: "Name was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "description")) {
+      res.status(400).json({ error: "Description was not a string" });
+      return;
+    }
+    else if (!validate.promotionType(req.body, "type")) {
+      res.status(400).json({ error: "Type was invalid" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "startTime")) {
+      res.status(400).json({ error: "startTime was invalid" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "endTime")) {
+      res.status(400).json({ error: "endTime was invalid" });
+      return;
+    }
+    else if (!validate.positiveNum(req.body, "minSpending")) {
+      res.status(400).json({ error: "minSpending was not positive" });
+      return;
+    }
+    else if (!validate.positiveNum(req.body, "rate")) {
+      res.status(400).json({ error: "Rate was not positive" });
+      return;
+    }
+    else if (!validate.integer(req.body, "points")) {
+      res.status(400).json({ error: "Points was not an integer" });
+      return;
+    }
+    else if (new Date() >= req.body.startTime) {
+      res.status(400).json({ error: "startTime is already passed" });
+      return;
+    }
+    else if (req.body.startTime >= req.body.endTime) {
+      res.status(400).json({ error: "startTime is after endTime" });
+      return;
+    }
+    else if (!(!defined(req.body, "points") || req.body.points >= 0)) {
+      res.status(400).json({ error: "Points is less than zero" });
       return;
     }
 
@@ -205,21 +238,60 @@ module.exports = app => {
       return;
     }
 
-    const valid = (
-      validate.string(req.body, "name", "description") &&
-      validate.promotionType(req.body, "type") &&
-      validate.dateTime(req.body, "startTime", "endTime") &&
-      validate.positiveNum(req.body, "minSpending", "rate") &&
-      validate.integer(req.body, "points") &&
-      (req.body.startTime || promotion.startTime) < (req.body.endTime || promotion.endTime) &&
-      (!defined(req.body, "points") || req.body.points >= 0) &&
-      (!defined(req.body, "startTime") || new Date() < req.body.startTime) &&
-      (!defined(req.body, "endTime") || new Date() < req.body.endTime) &&
-      (!defined(req.body, "name", "description", "type", "startTime", "minSpending", "rate", "points") || new Date() < promotion.startTime) &&
-      (!defined(req.body, "endTime") || new Date() < promotion.endTime)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.string(req.body, "name", "description")) {
+      res.status(400).json({ error: "Name was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "description")) {
+      res.status(400).json({ error: "Description was not a string" });
+      return;
+    }
+    else if (!validate.promotionType(req.body, "type")) {
+      res.status(400).json({ error: "Type was invalid" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "startTime")) {
+      res.status(400).json({ error: "startTime was invalid" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "endTime")) {
+      res.status(400).json({ error: "endTime was invalid" });
+      return;
+    }
+    else if (!validate.positiveNum(req.body, "minSpending")) {
+      res.status(400).json({ error: "minSpending was not positive" });
+      return;
+    }
+    else if (!validate.positiveNum(req.body, "rate")) {
+      res.status(400).json({ error: "Rate was not positive" });
+      return;
+    }
+    else if (!validate.integer(req.body, "points")) {
+      res.status(400).json({ error: "Points was not an integer" });
+      return;
+    }
+    else if (!((req.body.startTime || promotion.startTime) < (req.body.endTime || promotion.endTime))) {
+      res.status(400).json({ error: "startTime is after endTime" });
+      return;
+    }
+    else if (!(!defined(req.body, "points") || req.body.points >= 0)) {
+      res.status(400).json({ error: "Points was negative" });
+      return;
+    }
+    else if (!(!defined(req.body, "startTime") || new Date() < req.body.startTime)) {
+      res.status(400).json({ error: "startTime is already passed" });
+      return;
+    }
+    else if (!(!defined(req.body, "endTime") || new Date() < req.body.endTime)) {
+      res.status(400).json({ error: "endTime is already passed" });
+      return;
+    }
+    else if (!(!defined(req.body, "name", "description", "type", "startTime", "minSpending", "rate", "points") || new Date() < promotion.startTime)) {
+      res.status(400).json({ error: "Can't update fields after promotion has started" });
+      return;
+    }
+    else if (!(!defined(req.body, "endTime") || new Date() < promotion.endTime)) {
+      res.status(400).json({ error: "Promotion has already ended" });
       return;
     }
     

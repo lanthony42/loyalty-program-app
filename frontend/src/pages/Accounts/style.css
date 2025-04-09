@@ -6,7 +6,6 @@
     border-radius: 12px;
     padding: 16px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    border-left: 8px solid #0eb7ca;
     transition: transform 0.2s ease;
     gap: 20px;
 }
@@ -16,13 +15,56 @@
     transform: translateY(-2px);
 }
 
-.user-card h4 {
+.user-card.regular {
+    border-left: 8px solid #0eb7ca;
+}
+
+.user-card.regular h4 {
     color: #0eb7ca;
     margin-bottom: 4px;
 }
 
-.user-card .name {
+.user-card.regular .name {
     color: #0b6d78;
+}
+
+.user-card.cashier {
+    border-left: 8px solid #c70909;
+}
+
+.user-card.cashier h4 {
+    color: #c70909;
+    margin-bottom: 4px;
+}
+
+.user-card.cashier .name {
+    color: #6f0606;
+}
+
+.user-card.manager {
+    border-left: 8px solid #d71be4;
+}
+
+.user-card.manager h4 {
+    color: #d71be4;
+    margin-bottom: 4px;
+}
+
+.user-card.manager .name {
+    color: #6c0773;
+}
+
+.user-card.superuser {
+    border-left: 8px solid #9bb110;
+}
+
+.user-card.superuser h4 {
+    color: #9bb110;
+    margin-bottom: 4px;
+}
+
+.user-card.superuser .name {
+    color: #647208;
 }
 
 .user-info p {

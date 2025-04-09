@@ -31,15 +31,41 @@ const upload = multer({ storage });
 module.exports = app => {
   app.post("/users", cashierOrHigher, async (req, res) => {
     const fields = ["utorid", "name", "email"];
-    const valid = (
-      validate.required(req.body, ...fields) &&
-      validate.string(req.body, ...fields) &&
-      /^[a-zA-Z0-9]{8}$/.test(req.body.utorid) &&
-      req.body.name.length <= 50 &&
-      req.body.email.endsWith("@mail.utoronto.ca")
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+
+    if (!validate.required(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "name")) {
+      res.status(400).json({ error: "Name was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "email")) {
+      res.status(400).json({ error: "Email was required" });
+      return;
+    }
+    else if (!validate.string(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "name")) {
+      res.status(400).json({ error: "Name was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "email")) {
+      res.status(400).json({ error: "Email was not a string" });
+      return;
+    }
+    else if (!/^[a-zA-Z0-9]{8}$/.test(req.body.utorid)) {
+      res.status(400).json({ error: "UTORid was invalid" });
+      return;
+    }
+    else if (req.body.name.length > 50) {
+      res.status(400).json({ error: "Name exceeded 50 characters" });
+      return;
+    }
+    else if (!req.body.email.endsWith("@mail.utoronto.ca")) {
+      res.status(400).json({ error: "Email was invalid utoronto email" });
       return;
     }
 
@@ -340,17 +366,36 @@ module.exports = app => {
   });
 
   app.patch("/users/:userId", managerOrHigher, async (req, res) => {
-    const valid = (
-      validate.integer(req.params, "userId") &&
-      validate.string(req.body, "email") &&
-      validate.boolean(req.body, "verified", "suspicious") &&
-      validate.role(req.body, "role") &&
-      validate.notEmpty(req.body) &&
-      (!defined(req.body, "email") || req.body.email.endsWith("@mail.utoronto.ca")) &&
-      (!defined(req.body, "verified") || req.body.verified)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.integer(req.params, "userId")) {
+      res.status(400).json({ error: "User ID was not an integer" });
+      return;
+    }    
+    else if (!validate.string(req.body, "email")) {
+      res.status(400).json({ error: "Email was not a string" });
+      return;
+    }
+    else if (!validate.boolean(req.body, "verified")) {
+      res.status(400).json({ error: "Verified was not a boolean" });
+      return;
+    }
+    else if (!validate.boolean(req.body, "suspicious")) {
+      res.status(400).json({ error: "Suspicious was not a boolean" });
+      return;
+    }
+    else if (!validate.role(req.body, "role")) {
+      res.status(400).json({ error: "Role was invalid" });
+      return;
+    }
+    else if (!validate.notEmpty(req.body)) {
+      res.status(400).json({ error: "No updates were made" });
+      return;
+    }
+    else if (!(!defined(req.body, "email") || req.body.email.endsWith("@mail.utoronto.ca"))) {
+      res.status(400).json({ error: "Email was invalid utoronto email" });
+      return;
+    }
+    else if (!(!defined(req.body, "verified") || req.body.verified)) {
+      res.status(400).json({ error: "Cannot unverify a user" });
       return;
     }
 

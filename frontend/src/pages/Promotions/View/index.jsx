@@ -57,7 +57,15 @@ const View = () => {
 
     const handleChange = e => {
         const { name, value } = e.target;
-        setPromotion({ ...promotion, [name]: value });
+        if (value === "") {
+            setPromotion((prevData) => ({
+                ...prevData,
+                [name]: null,
+            }));
+        }
+        else {
+            setPromotion({ ...promotion, [name]: value });
+        }
     };
 
     const handleSubmit = async (e) => {

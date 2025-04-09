@@ -52,11 +52,19 @@ const UpdateUser = () => {
     }
 
     const handleFieldChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setUpdatingUser({
-            ...updatingUser,
-            [name]: type === "checkbox" ? checked : value,
-        });
+        const { name, value, type, checked } = e.target;        
+        if (value === "") {
+            setUpdatingUser((prevData) => ({
+                ...prevData,
+                [name]: null,
+            }));
+        }
+        else {
+            setUpdatingUser({
+                ...updatingUser,
+                [name]: type === "checkbox" ? checked : value,
+            });
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -71,6 +79,7 @@ const UpdateUser = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    email: updatingUser.email,
                     suspicious: updatingUser.suspicious,
                     verified: updatingUser.verified,
                     role: updatingUser.role,
@@ -104,6 +113,14 @@ const UpdateUser = () => {
                     placeholder="UTORid"
                     value={updatingUser.utorid || ""}
                     disabled
+                />
+                <label htmlFor="email">Email:</label>
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    value={updatingUser.email || ""}
+                    onChange={handleFieldChange}
                 />
                 <label htmlFor="role">Role:</label>
                 <select

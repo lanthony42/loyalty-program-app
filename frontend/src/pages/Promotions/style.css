@@ -6,7 +6,6 @@
     border-radius: 12px;
     padding: 16px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    border-left: 8px solid #de9307;
     transition: transform 0.2s ease;
     gap: 20px;
 }
@@ -16,13 +15,30 @@
     transform: translateY(-2px);
 }
 
-.promotion-card h4 {
+.promotion-card.automatic {
+    border-left: 8px solid #de9307;
+}
+
+.promotion-card.automatic h4 {
     color: #de9307;
     margin-bottom: 4px;
 }
 
-.promotion-card .name {
+.promotion-card.automatic .name {
     color: #996606;
+}
+
+.promotion-card.one-time {
+    border-left: 8px solid #12d008;
+}
+
+.promotion-card.one-time h4 {
+    color: #12d008;
+    margin-bottom: 4px;
+}
+
+.promotion-card.one-time .name {
+    color: #0c7b07;
 }
 
 .promotion-info p {
