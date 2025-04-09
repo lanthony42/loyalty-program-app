@@ -62,7 +62,7 @@ const Upcoming = ({ limit = 4 }) => {
                             <p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>
                         </div>
                         <div className="btn-container">
-                            <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>
+                            <button onClick={() => navigate(`/promotions/${promotion.id}`, { state: { fromSite: true } })}>View</button>
                         </div>
                     </div>
                 })}

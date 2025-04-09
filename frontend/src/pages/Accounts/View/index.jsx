@@ -1,15 +1,16 @@
 import "@/pages/form.css";
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-const UpdateUser = () => {
+const View = () => {
     const [updatingUser, setUpdatingUser] = useState(null);
     const [error, setError] = useState("");
     const { userId } = useParams();
     const { authReady, Role, user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const fetchUserData = async () => {
         try {
@@ -33,7 +34,7 @@ const UpdateUser = () => {
             console.error(error);
         }
     };
-    
+
     useEffect(() => {
         if (user) {
             fetchUserData();
@@ -52,7 +53,7 @@ const UpdateUser = () => {
     }
 
     const handleFieldChange = (e) => {
-        const { name, value, type, checked } = e.target;        
+        const { name, value, type, checked } = e.target;
         if (value === "") {
             setUpdatingUser((prevData) => ({
                 ...prevData,
@@ -67,7 +68,16 @@ const UpdateUser = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const clickBack = () => {
+        if (location.state?.fromSite) {
+            navigate(-1);
+        }
+        else {
+            navigate('/users');
+        }
+    };
+
+    const handleSubmit = async e => {
         e.preventDefault();
 
         try {
@@ -87,13 +97,14 @@ const UpdateUser = () => {
             });
 
             if (response.ok) {
-                alert("User updated successfully");
-                navigate(`/users/${updatingUser.id}`);  // Redirect to the user's page
-            } else {
+                navigate(`/users/${updatingUser.id}`);
+            }
+            else {
                 const json = await response.json();
                 setError(json.error);
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             setError("An error occurred while updating the user");
         }
@@ -152,7 +163,7 @@ const UpdateUser = () => {
                     onChange={handleFieldChange}
                 />
                 <div className="btn-container">
-                    <button type="button" onClick={() => navigate(-1)}>
+                    <button type="button" onClick={clickBack}>
                         Back
                     </button>
                     <button type="submit">Update</button>
@@ -163,4 +174,4 @@ const UpdateUser = () => {
     );
 };
 
-export default UpdateUser;
+export default View;

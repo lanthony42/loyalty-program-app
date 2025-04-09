@@ -1,6 +1,6 @@
 import "@/pages/form.css";
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -10,6 +10,7 @@ const View = () => {
     const { promotionId } = useParams();
     const { Role, authReady, user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const fetchPromotionData = async () => {
         try {
@@ -85,7 +86,16 @@ const View = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const clickBack = () => {
+        if (location.state?.fromSite) {
+            navigate(-1);
+        }
+        else {
+            navigate('/promotions');
+        }
+    };
+
+    const handleSubmit = async e => {
         e.preventDefault();
 
         try {
@@ -109,19 +119,20 @@ const View = () => {
             });
 
             if (response.ok) {
-                alert("Promotion updated successfully");
-                navigate(`/promotions/${promotion.id}`); 
-            } else {
+                navigate(`/promotions/${promotion.id}`);
+            }
+            else {
                 const json = await response.json();
                 setError(json.error);
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             setError("An error occurred while updating the promotion");
         }
     };
 
-    const handleDelete = async (e) => {
+    const handleDelete = async e => {
         e.preventDefault();
 
         try {
@@ -134,13 +145,14 @@ const View = () => {
             });
 
             if (response.ok) {
-                alert("Promotion deleted successfully");
-                navigate(`/promotions`); 
-            } else {
+                navigate(`/promotions`);
+            }
+            else {
                 const json = await response.json();
                 setError(json.error);
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             setError("An error occurred while deleting the promotion");
         }
@@ -225,7 +237,7 @@ const View = () => {
                     onChange={handleChange}
                 />
                 <div className="btn-container">
-                    <button type="button" onClick={() => navigate(-1)}>
+                    <button type="button" onClick={clickBack}>
                         Back
                     </button>
                     <button type="submit">Update</button>

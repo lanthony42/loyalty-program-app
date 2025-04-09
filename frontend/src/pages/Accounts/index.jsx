@@ -40,7 +40,7 @@ const Users = () => {
         }
         const params = result.join("&");
         const url = `${config.backendUrl}/users?${params}&limit=${PAGE_LIMIT}`; // Make sure to include limit in the API call
-        
+
         try {
             const response = await fetch(url, {
                 method: "GET",
@@ -101,7 +101,7 @@ const Users = () => {
             <div className="header-container">
                 <h1>Users</h1>
                 <div className="btn-container">
-                    <button onClick={() => navigate("/register")}>Register New User</button>
+                    <button onClick={() => navigate("/register", { state: { fromSite: true } })}>Register New User</button>
                 </div>
             </div>
             <div className="filter-container">
@@ -158,7 +158,7 @@ const Users = () => {
                             </div>
                             <div className="user-avatar-section">
                                 <div className="btn-container">
-                                    <button onClick={() => navigate(`/users/${user.id}`)}>Update User</button>
+                                    <button onClick={() => navigate(`/users/${user.id}`, { state: { fromSite: true } })}>View</button>
                                 </div>
                                 <img
                                     src={avatarUrl}
@@ -180,7 +180,7 @@ const Users = () => {
                         Previous
                     </button>
                 </div>
-                <span>Page {Math.min(query.page, totalPages)} of {totalPages}</span>            
+                <span>Page {Math.min(query.page, totalPages)} of {totalPages}</span>
                 <div className="btn-container">
                     <button
                         onClick={() => changePage(query.page + 1)}

@@ -1,6 +1,6 @@
 import "@/pages/form.css";
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -13,6 +13,7 @@ const Register = () => {
     });
     const { authReady, user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     if (!authReady) {
         return <p>Loading...</p>;
@@ -27,6 +28,15 @@ const Register = () => {
     const handleChange = e => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
+    };
+
+    const clickBack = () => {
+        if (location.state?.fromSite) {
+            navigate(-1);
+        }
+        else {
+            navigate('/users');
+        }
     };
 
     const handleSubmit = async e => {
@@ -91,7 +101,7 @@ const Register = () => {
                 required
             />
             <div className="btn-container">
-                <button onClick={() => navigate(`/users`)}>Back</button>
+                <button onClick={clickBack}>Back</button>
                 <button type="submit">Register</button>
             </div>
             <p className="error">{error}</p>

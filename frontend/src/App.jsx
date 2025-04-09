@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
 import Users from "@/pages/Accounts";
-import UpdateUser from "@/pages/Accounts/Update";
+import ViewUser from "@/pages/Accounts/View";
 import Login from "@/pages/Accounts/Login";
 import Reset from "@/pages/Accounts/Reset";
 import EditProfile from "@/pages/Accounts/EditProfile";
@@ -31,7 +31,7 @@ const MyRoutes = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="users">
                     <Route index element={<Users />} />
-                    <Route path=":userId" element={<UpdateUser />} />
+                    <Route path=":userId" element={<ViewUser />} />
                 </Route>
                 <Route path="edit-profile" element={<EditProfile />} />
                 <Route path="register" element={<Register />} />

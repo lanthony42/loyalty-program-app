@@ -106,7 +106,7 @@ const Events = () => {
         <div className="header-container">
             <h1>Events</h1>
             <div className="btn-container">
-                {isManager && <Link to="/events/create">Create New</Link>}
+                {isManager && <Link to="/events/create" state={{ fromSite: true }}>Create New</Link>}
             </div>
         </div>
 

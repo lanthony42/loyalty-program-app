@@ -4,7 +4,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-
 const Reset = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
@@ -63,7 +62,7 @@ const Reset = () => {
 
     const handlePasswordReset = async e => {
         e.preventDefault();
-    
+
         try {
             const url = `${config.backendUrl}/auth/resets/${resetData.resetToken}`;
             const response = await fetch(url, {
@@ -76,7 +75,7 @@ const Reset = () => {
                     password: resetData.password
                 }),
             });
-    
+
             if (response.ok) {
                 navigate("/login");
             } else {

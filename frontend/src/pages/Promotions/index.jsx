@@ -105,7 +105,7 @@ const Promotions = () => {
                 <h1>Promotions</h1>
                 {isManager && (
                     <div className="btn-container" id="create-button">
-                        <button onClick={() => navigate("/promotions/create")}>Create New Promotion</button>
+                        <button onClick={() => navigate("/promotions/create", { state: { fromSite: true } })}>Create New Promotion</button>
                     </div>
                 )}
             </div>
@@ -133,8 +133,7 @@ const Promotions = () => {
                     const prettyEnd = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime));
                     return <div key={promotion.id} className={`card ${promotion.type}`}>
                         <div className="card-content">
-                            <h4>Promotion ID: {promotion.id}</h4>
-                            <h4 className="name">{promotion.name}</h4>
+                            <h4>{promotion.name} (ID: {promotion.id})</h4>
                             <p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>
                             {isManager && <p><strong>Start Time:</strong> {prettyStart}</p>}
                             <p><strong>End Time:</strong> {prettyEnd}</p>
@@ -143,7 +142,7 @@ const Promotions = () => {
                             <p><strong>Points:</strong> {promotion.points || 0}</p>
                         </div>
                         <div className="btn-container">
-                            {isManager && <button onClick={() => navigate(`/promotions/${promotion.id}`)}>View</button>}
+                            {isManager && <button onClick={() => navigate(`/promotions/${promotion.id}`, { state: { fromSite: true } })}>View</button>}
                         </div>
                     </div>;
                 })}

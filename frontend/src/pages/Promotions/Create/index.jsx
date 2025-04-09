@@ -1,6 +1,6 @@
 import "@/pages/form.css";
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -18,6 +18,7 @@ const Create = () => {
     });
     const { authReady, user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     if (!authReady) {
         return <p>Loading...</p>;
@@ -56,6 +57,15 @@ const Create = () => {
         }
         else {
             setData({ ...data, [name]: value });
+        }
+    };
+
+    const clickBack = () => {
+        if (location.state?.fromSite) {
+            navigate(-1);
+        }
+        else {
+            navigate('/promotions');
         }
     };
 
@@ -166,7 +176,7 @@ const Create = () => {
                 onChange={handleChange}
             />
             <div className="btn-container">
-                <button onClick={() => navigate(`/promotions`)}>Back</button>
+                <button onClick={clickBack}>Back</button>
                 <button type="submit">Create</button>
             </div>
             <p className="error">{error}</p>
