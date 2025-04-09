@@ -20,10 +20,6 @@ const UpdateUser = () => {
         old: null,
         new: null,
     });
-    const [resetData, setResetData] = useState({
-        resetToken: null,
-        password: null
-    });
     const navigate = useNavigate();
     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
 
@@ -44,10 +40,6 @@ const UpdateUser = () => {
         setPasswordData({ ...passwordData, [name]: value });
     };
 
-    const handlePasswordResetChange = e => {
-        const { name, value } = e.target;
-        setResetData({ ...resetData, [name]: value });
-    };
 
     const handleFileChange = e => {
         const file = e.target.files[0];
@@ -121,83 +113,23 @@ const UpdateUser = () => {
         }
     };
 
-    const handleTokenRequest = async e => {
-        e.preventDefault();
-    
-        try {
-            const url = `${config.backendUrl}/auth/resets`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    utorid: user.utorid
-                }),
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                setResetData(prev => ({
-                    ...prev,
-                    resetToken: data.resetToken
-                }));
-                alert(`Reset token: ${data.resetToken}`);
-            } else {
-                const json = await response.json();
-                setPasswordError(json.error);
-            }
-        }
-        catch (error) {
-            console.error(error);
-            setPasswordError("An error occurred while requesting token");
-        }
-    };
-
-    const handlePasswordReset = async e => {
-        e.preventDefault();
-    
-        try {
-            const url = `${config.backendUrl}/auth/resets/${resetData.resetToken}`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${user.token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    utorid: user.utorid
-                }),
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                alert(`Reset token: ${data.resetToken}`);
-            } else {
-                const json = await response.json();
-                setPasswordError(json.error);
-            }
-        }
-        catch (error) {
-            console.error(error);
-            setPasswordError("An error occurred while requesting token");
-        }
-    };
-
     return <>
         <h3>Hello, {user?.name || user?.utorid}!</h3>
-        <img
-            src={avatarUrl}
-            alt="Your avatar"
-            style={{
-                width: "120px",
-                height: "120px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                marginBottom: "1rem"
-            }}
-        />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0", fontWeight: "bold" }}>
+            <img
+                src={avatarUrl}
+                alt="Your avatar"
+                style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    marginBottom: "1rem"
+                }}
+            />
+            <p>User ID: {user?.id}</p>
+        </div>
+
 
         <h2>Update Your Information</h2>
         <form onSubmit={handleSubmit}>
@@ -266,37 +198,7 @@ const UpdateUser = () => {
                 <button id="update">Update Password</button>
             </div>
         </form>
-
-        <div className="btn-container">
-            <button id="request" onClick={handleTokenRequest}>Reset Password</button>
-        </div>
-
         <p className="error">{passwordError}</p>
-
-        <h2>Reset Password</h2>
-        <form onSubmit={handlePasswordReset}>
-            <label htmlFor="resetToken">Reset Token:</label>
-            <input
-                type="text"
-                id="resetToken"
-                name="resetToken"
-                value={resetData.resetToken || ""}
-                required
-                onChange={handlePasswordResetChange}
-            />
-            <label htmlFor="password">New Password:</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                value={resetData.password || ""}
-                required
-                onChange={handlePasswordResetChange}
-            />
-            <div className="btn-container">
-                <button id="update">Update Password</button>
-            </div>
-        </form>
     </>;
 };
 

@@ -4,7 +4,9 @@ import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
 import Users from "./pages/Accounts";
+import UpdateUser from "./pages/Accounts/UpdateUser";
 import Login from "@/pages/Accounts/Login";
+import Reset from "./pages/Accounts/Reset";
 import EditProfile from "@/pages/Accounts/EditProfile";
 import Register from "@/pages/Accounts/Register";
 import Transactions from "@/pages/Transactions";
@@ -18,8 +20,12 @@ const MyRoutes = () => {
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="login" element={<Login />} />
+                <Route path="reset" element={<Reset />} />
                 <Route path="dashboard" element={<Dashboard />} />
-                <Route path="users" element={<Users />} />
+                <Route path="users">
+                    <Route index element={<Users />} />
+                    <Route path=":userId" element={<UpdateUser />} />
+                </Route>
                 <Route path="edit-profile" element={<EditProfile />} />
                 <Route path="register" element={<Register />} />
                 <Route path="transactions">

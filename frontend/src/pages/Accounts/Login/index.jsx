@@ -1,9 +1,10 @@
 import "@/pages/form.css";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [utorid, setUtorId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -49,8 +50,13 @@ const Login = () => {
             <div className="btn-container">
                 <button type="submit">Login</button>
             </div>
-            <p className="error">{error}</p>
         </form>
+            
+        <div className="btn-container">
+            <button id="request" onClick={() => navigate(`/reset`)}>Reset Password</button>
+        </div>
+
+        <p className="error">{error}</p>
     </>;
 };
 

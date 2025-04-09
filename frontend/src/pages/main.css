@@ -53,9 +53,22 @@ main a:active {
     gap: 10px;
 }
 
+.update-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
 #register-button {
     display: flex;
     justify-content: flex-end;
+}
+
+#update-user-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 button {

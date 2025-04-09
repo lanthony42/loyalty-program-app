@@ -93,16 +93,12 @@ const Users = () => {
         });
     };
 
-    const navigateToRegister = () => {
-        navigate("/register");
-    };
-
     return (
         <div>
             <div className="users-header-container">
                 <h1>Users</h1>
                 <div className="btn-container" id="register-button">
-                    <button onClick={navigateToRegister}>Register New User</button>
+                    <button onClick={() => navigate(`/register`)}>Register New User</button>
                 </div>
             </div>
             <div className="filter-container">
@@ -149,6 +145,10 @@ const Users = () => {
                     return (
                         <li key={user.id} className="user-container">
                             <div className="user-item">
+                                <strong>User ID:</strong>
+                                <span>{user.id}</span>
+                            </div>
+                            <div className="user-item">
                                 <strong>Name:</strong>
                                 <span>{user.name}</span>
                             </div>
@@ -180,6 +180,9 @@ const Users = () => {
                             <div className="user-item">
                                 <strong>Verified:</strong>
                                 <span>{user.verified ? "Yes" : "No"}</span>
+                            </div>
+                            <div className="btn-container" id="update-user-button">
+                                <button onClick={() => navigate(`/users/${user.id}`)}>Update User</button>
                             </div>
                         </li>
                     );

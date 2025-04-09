@@ -33,7 +33,7 @@ const Layout = () => {
                     </div>
                 </div>
             ) : (
-                <Link to="/login">Login</Link>
+                <Link style={{ paddingTop: "10px", paddingRight: "50px" }} to="/login">Login</Link>
             )}
         </header>
         <main>
