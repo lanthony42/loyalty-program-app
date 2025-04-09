@@ -37,6 +37,10 @@ const Dashboard = () => {
         )}
         {["manager", "superuser"].includes(user.role) && (
             <div>
+                <h3>Manage Users</h3>
+                <div className="btn-container" style={{ display: "flex", justifyContent: "center", padding : "20px" }}>
+                    <Link to="/users">Manage</Link>
+                </div>
                 <UpcomingPromotions user={user} /> 
                 <UpcomingEvents user={user} /> 
             </div>

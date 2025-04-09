@@ -47,7 +47,7 @@ const RecentTransactions = ({ user }) => {
   return (
     <div>
       <h3>Recent Transactions</h3>
-      <div className="grid-container">
+      <div className="grid-container" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
         {transactions.length === 0 ? (
           <p className="no-transactions">No transactions to display</p>
         ) : (
