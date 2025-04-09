@@ -140,6 +140,9 @@ module.exports = app => {
             guests: true
           }
         }
+      },
+      orderBy: {
+        id: "desc"
       }
     });
     const filteredEvents = events.filter(event => (

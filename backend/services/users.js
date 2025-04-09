@@ -142,6 +142,9 @@ module.exports = app => {
     });
     const users = await getPrisma().user.findMany({
       where: { AND },
+      orderBy: {
+        id: "desc"
+      },
       skip,
       take
     });

@@ -138,6 +138,9 @@ module.exports = app => {
     });
     const promotions = await getPrisma().promotion.findMany({
       where: { AND },
+      orderBy: {
+        id: "desc"
+      },
       skip,
       take
     });

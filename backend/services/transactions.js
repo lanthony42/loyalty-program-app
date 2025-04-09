@@ -306,6 +306,9 @@ module.exports = app => {
         sentBy: true,
         promotions: true
       },
+      orderBy: {
+        id: "desc"
+      },
       skip,
       take
     });
@@ -574,6 +577,9 @@ module.exports = app => {
         receivedBy: true,
         sentBy: true,
         promotions: true
+      },
+      orderBy: {
+        id: "desc"
       },
       skip,
       take
