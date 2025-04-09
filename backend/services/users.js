@@ -30,8 +30,6 @@ const upload = multer({ storage });
 
 module.exports = app => {
   app.post("/users", cashierOrHigher, async (req, res) => {
-    const fields = ["utorid", "name", "email"];
-
     if (!validate.required(req.body, "utorid")) {
       res.status(400).json({ error: "UTORid was required" });
       return;
@@ -57,15 +55,15 @@ module.exports = app => {
       return;
     }
     else if (!/^[a-zA-Z0-9]{8}$/.test(req.body.utorid)) {
-      res.status(400).json({ error: "UTORid was invalid" });
+      res.status(400).json({ error: "UTORid must be alphanumeric and 8 characters" });
       return;
     }
     else if (req.body.name.length > 50) {
-      res.status(400).json({ error: "Name exceeded 50 characters" });
+      res.status(400).json({ error: "Name was more than 50 characters" });
       return;
     }
     else if (!req.body.email.endsWith("@mail.utoronto.ca")) {
-      res.status(400).json({ error: "Email was invalid utoronto email" });
+      res.status(400).json({ error: "Email was not a valid utoronto email" });
       return;
     }
 
@@ -98,7 +96,7 @@ module.exports = app => {
       });
     }
     catch {
-      res.status(409).json({ error: "Conflict" });
+      res.status(409).json({ error: "User with UTORid or email already exists" });
     }
   });
 
@@ -169,15 +167,28 @@ module.exports = app => {
   });
 
   app.patch("/users/me", upload.single("avatar"), async (req, res) => {
-    const valid = (
-      validate.string(req.body, "name", "email") &&
-      validate.date(req.body, "birthday") &&
-      (validate.notEmpty(req.body) || defined(req, "file")) &&
-      (!defined(req.body, "name") || req.body.name.length <= 50) &&
-      (!defined(req.body, "email") || req.body.email.endsWith("@mail.utoronto.ca"))
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.string(req.body, "name")) {
+      res.status(400).json({ error: "Name was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "email")) {
+      res.status(400).json({ error: "Email was not a string" });
+      return;
+    }
+    else if (!validate.date(req.body, "birthday")) {
+      res.status(400).json({ error: "Birthday was not a date" });
+      return;
+    }
+    else if (!validate.notEmpty(req.body) && !defined(req, "file")) {
+      res.status(400).json({ error: "Request was empty" });
+      return;
+    }
+    else if (defined(req.body, "name") && req.body.name.length > 50) {
+      res.status(400).json({ error: "Name was longer than 50 characters" });
+      return;
+    }
+    else if (defined(req.body, "email") && !req.body.email.endsWith("@mail.utoronto.ca")) {
+      res.status(400).json({ error: "Email was not a valid utoronto email" });
       return;
     }
 
@@ -218,7 +229,7 @@ module.exports = app => {
       });
     }
     catch {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "Something went wrong when updating user" });
     }
   });
 
@@ -264,22 +275,37 @@ module.exports = app => {
 
   app.patch("/users/me/password", async (req, res) => {
     const fields = ["old", "new"];
-    const valid = (
-      validate.required(req.body, ...fields) &&
-      validate.string(req.body, ...fields) &&
-      /^.{8,20}$/.test(req.body.new) &&
-      /[A-Z]/.test(req.body.new) &&
-      /[a-z]/.test(req.body.new) &&
-      /[0-9]/.test(req.body.new) &&
-      /[^a-zA-Z0-9]/.test(req.body.new)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, ...fields)) {
+      res.status(400).json({ error: "Password was required" });
+      return;
+    }
+    else if (!validate.string(req.body, ...fields)) {
+      res.status(400).json({ error: "Password was not a string" });
+      return;
+    }
+    else if (!/^.{8,20}$/.test(req.body.new)) {
+      res.status(400).json({ error: "Password was not between 8 and 20 characters" });
+      return;
+    }
+    else if (!/[A-Z]/.test(req.body.new)) {
+      res.status(400).json({ error: "Password did not contain a uppercase letter" });
+      return;
+    }
+    else if (!/[a-z]/.test(req.body.new)) {
+      res.status(400).json({ error: "Password did not contain a lowercase letter" });
+      return;
+    }
+    else if (!/[0-9]/.test(req.body.new)) {
+      res.status(400).json({ error: "Password did not contain a number" });
+      return;
+    }
+    else if (!/[^a-zA-Z0-9]/.test(req.body.new)) {
+      res.status(400).json({ error: "Password did not contain a symbol" });
       return;
     }
 
     if (req.user.password !== req.body.old) {
-      res.status(403).json({ error: "Forbidden" });
+      res.status(403).json({ error: "Incorrect password" });
       return;
     }
 
@@ -387,15 +413,15 @@ module.exports = app => {
       return;
     }
     else if (!validate.role(req.body, "role")) {
-      res.status(400).json({ error: "Role was invalid" });
+      res.status(400).json({ error: "Role was not a valid role" });
       return;
     }
     else if (!validate.notEmpty(req.body)) {
-      res.status(400).json({ error: "No updates were made" });
+      res.status(400).json({ error: "Request was empty" });
       return;
     }
     else if (!(!defined(req.body, "email") || req.body.email.endsWith("@mail.utoronto.ca"))) {
-      res.status(400).json({ error: "Email was invalid utoronto email" });
+      res.status(400).json({ error: "Email was not a valid utoronto email" });
       return;
     }
     else if (!(!defined(req.body, "verified") || req.body.verified)) {
@@ -405,7 +431,7 @@ module.exports = app => {
 
     if (defined(req.body, "role") && req.user.role === Role.MANAGER &&
         req.body.role !== Role.REGULAR && req.body.role !== Role.CASHIER) {
-      res.status(403).json({ error: "Forbidden" });
+      res.status(403).json({ error: "Managers cannot promote users to manager or higher" });
       return;
     }
 
@@ -413,7 +439,7 @@ module.exports = app => {
       where: { id: req.params.userId }
     });
     if (!user) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
@@ -450,18 +476,18 @@ module.exports = app => {
       res.status(200).json(result);
     }
     catch {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "Something went wrong when updating user" });
     }
   });
 
   app.post("/auth/tokens", async (req, res) => {
     const fields = ["utorid", "password"];
-    const valid = (
-      validate.required(req.body, ...fields) &&
-      validate.string(req.body, ...fields)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, ...fields)) {
+      res.status(400).json({ error: "UTORid and password were required" });
+      return;
+    }
+    else if (!validate.string(req.body, ...fields)) {
+      res.status(400).json({ error: "UTORid or password was not a string" });
       return;
     }
 
@@ -485,25 +511,25 @@ module.exports = app => {
   });
 
   app.post("/auth/resets", async (req, res) => {
-    const valid = (
-      validate.required(req.body, "utorid") &&
-      validate.string(req.body, "utorid")
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was required" });
+      return;
+    }
+    else if (!validate.string(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was not a string" });
       return;
     }
 
     const user = await getPrisma().user.findUnique({ where: { username: req.body.utorid } });
     if (!user) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
     const now = Date.now();
     const lastRequestTime = lastRequests.get(req.ip) || 0;
     if (now - lastRequestTime < RATE_LIMIT) {
-      res.status(429).json({ error: "Too Many Requests" });
+      res.status(429).json({ error: "Too many requests, wait before trying again" });
       return;
     }
     lastRequests.set(req.ip, now);
@@ -535,17 +561,32 @@ module.exports = app => {
 
   app.post("/auth/resets/:resetToken", async (req, res) => {
     const fields = ["utorid", "password"];
-    const valid = (
-      validate.required(req.body, ...fields) &&
-      validate.string(req.body, ...fields) &&
-      /^.{8,20}$/.test(req.body.password) &&
-      /[A-Z]/.test(req.body.password) &&
-      /[a-z]/.test(req.body.password) &&
-      /[0-9]/.test(req.body.password) &&
-      /[^a-zA-Z0-9]/.test(req.body.password)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, ...fields)) {
+      res.status(400).json({ error: "UTORid and password were required" });
+      return;
+    }
+    else if (!validate.string(req.body, ...fields)) {
+      res.status(400).json({ error: "UTORid or password was not a string" });
+      return;
+    }
+    else if (!/^.{8,20}$/.test(req.body.password)) {
+      res.status(400).json({ error: "Password was not between 8 and 20 characters" });
+      return;
+    }
+    else if (!/[A-Z]/.test(req.body.password)) {
+      res.status(400).json({ error: "Password did not contain a uppercase letter" });
+      return;
+    }
+    else if (!/[a-z]/.test(req.body.password)) {
+      res.status(400).json({ error: "Password did not contain a lowercase letter" });
+      return;
+    }
+    else if (!/[0-9]/.test(req.body.password)) {
+      res.status(400).json({ error: "Password did not contain a number" });
+      return;
+    }
+    else if (!/[^a-zA-Z0-9]/.test(req.body.password)) {
+      res.status(400).json({ error: "Password did not contain a symbol" });
       return;
     }
 
@@ -559,16 +600,16 @@ module.exports = app => {
     });
 
     if (!resetToken) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Reset token was not found" });
       return;
     }
 
     if (resetToken.user.username !== req.body.utorid) {
-      res.status(401).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "UTORid did not match reset token" });
       return;
     }
     else if (resetToken.expiresAt < new Date() || resetToken.invalid) {
-      res.status(410).json({ error: "Gone" });
+      res.status(410).json({ error: "Reset token expired" });
       return;
     }
 

@@ -101,7 +101,7 @@ const Users = () => {
             <div className="header-container">
                 <h1>Users</h1>
                 <div className="btn-container">
-                    <button onClick={() => navigate("/register", { state: { fromSite: true } })}>Register New User</button>
+                    <button onClick={() => navigate("/users/register", { state: { fromSite: true } })}>Register New User</button>
                 </div>
             </div>
             <div className="filter-container">

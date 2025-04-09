@@ -48,8 +48,8 @@ const Login = () => {
                 required
             />
             <div className="btn-container">
-                <button type="submit">Login</button>
                 <button type="button" id="request" onClick={() => navigate(`/reset`)}>Reset Password</button>
+                <button type="submit">Login</button>
             </div>
         </form>
 

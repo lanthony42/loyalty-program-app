@@ -7,6 +7,7 @@ import config from "@/config";
 const Reset = () => {
     const navigate = useNavigate();
     const [error, setError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const [resetData, setResetData] = useState({
         utorid: null,
         resetToken: null,
@@ -48,8 +49,10 @@ const Reset = () => {
                     ...prev,
                     resetToken: data.resetToken
                 }));
+                setError("");
                 alert(`Reset token: ${data.resetToken}`);
-            } else {
+            }
+            else {
                 const json = await response.json();
                 setError(json.error);
             }
@@ -78,14 +81,15 @@ const Reset = () => {
 
             if (response.ok) {
                 navigate("/login");
-            } else {
+            }
+            else {
                 const json = await response.json();
-                setError(json.error);
+                setPasswordError(json.error);
             }
         }
         catch (error) {
             console.error(error);
-            setError("An error occurred while resetting password");
+            setPasswordError("An error occurred while resetting password");
         }
     };
 
@@ -105,7 +109,6 @@ const Reset = () => {
             <div className="btn-container">
                 <button type="submit">Request</button>
             </div>
-
             <p className="error">{error}</p>
         </form>
 
@@ -132,6 +135,7 @@ const Reset = () => {
             <div className="btn-container">
                 <button id="update">Update Password</button>
             </div>
+            <p className="error">{passwordError}</p>
         </form>
     </>;
 };

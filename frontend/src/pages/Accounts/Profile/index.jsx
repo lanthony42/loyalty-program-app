@@ -20,7 +20,7 @@ const UpdateUser = () => {
         old: null,
         new: null,
     });
-    const navigate = useNavigate();
+
     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
 
     if (!authReady) {
@@ -39,7 +39,6 @@ const UpdateUser = () => {
         const { name, value } = e.target;
         setPasswordData({ ...passwordData, [name]: value });
     };
-
 
     const handleFileChange = e => {
         const file = e.target.files[0];
@@ -69,7 +68,7 @@ const UpdateUser = () => {
 
             if (response.ok) {
                 await fetchUserData(user.token);
-                navigate("/dashboard");
+                setError("");
             }
             else {
                 const json = await response.json();
@@ -101,8 +100,9 @@ const UpdateUser = () => {
 
             if (response.ok) {
                 await fetchUserData(user.token);
-                navigate("/dashboard");
-            } else {
+                setPasswordError("");
+            }
+            else {
                 const json = await response.json();
                 setPasswordError(json.error);
             }

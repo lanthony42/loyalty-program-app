@@ -42,7 +42,7 @@ const AvatarDropdown = ({ avatarUrl, logout, user, setRole, Role }) => {
           className="dropdown-menu"
           style={{
             position: "absolute",
-            top: "50px",
+            top: "55px",
             right: -55,
             backgroundColor: "#fff",
             border: "1px solid #ddd",
@@ -53,7 +53,7 @@ const AvatarDropdown = ({ avatarUrl, logout, user, setRole, Role }) => {
             padding: "8px 0"
           }}
         >
-          <Link to="/edit-profile" style={itemStyle}>Profile</Link>
+          <Link to="/users/profile" style={itemStyle}>Profile</Link>
 
           <button
             style={itemStyle}

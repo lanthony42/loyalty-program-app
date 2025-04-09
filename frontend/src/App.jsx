@@ -7,7 +7,7 @@ import Users from "@/pages/Accounts";
 import ViewUser from "@/pages/Accounts/View";
 import Login from "@/pages/Accounts/Login";
 import Reset from "@/pages/Accounts/Reset";
-import EditProfile from "@/pages/Accounts/EditProfile";
+import Profile from "@/pages/Accounts/Profile";
 import Register from "@/pages/Accounts/Register";
 import Transactions from "@/pages/Transactions";
 import CreateTransaction from "@/pages/Transactions/Create";
@@ -31,10 +31,10 @@ const MyRoutes = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="users">
                     <Route index element={<Users />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="register" element={<Register />} />
                     <Route path=":userId" element={<ViewUser />} />
                 </Route>
-                <Route path="edit-profile" element={<EditProfile />} />
-                <Route path="register" element={<Register />} />
                 <Route path="transactions">
                     <Route index element={<Transactions />} />
                     <Route path="create" element={<CreateTransaction />} />
