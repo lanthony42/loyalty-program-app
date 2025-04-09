@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }) => {
                 navigate("/dashboard");
             }
             else {
-                return data.message;
+                return data.error;
             }
         }
         catch (error) {

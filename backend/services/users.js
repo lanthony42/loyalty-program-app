@@ -479,7 +479,7 @@ module.exports = app => {
       res.status(200).json(token);
     }
     catch {
-      res.status(401).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "Incorrect username or password" });
     }
   });
 

@@ -49,12 +49,9 @@ const Login = () => {
             />
             <div className="btn-container">
                 <button type="submit">Login</button>
+                <button type="button" id="request" onClick={() => navigate(`/reset`)}>Reset Password</button>
             </div>
         </form>
-            
-        <div className="btn-container">
-            <button id="request" onClick={() => navigate(`/reset`)}>Reset Password</button>
-        </div>
 
         <p className="error">{error}</p>
     </>;
