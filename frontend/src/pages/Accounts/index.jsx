@@ -1,10 +1,11 @@
 import "@/pages/main.css";
+import "./style.css";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
-const PAGE_LIMIT = 5;
+const PAGE_LIMIT = 4;
 const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
 const Users = () => {
@@ -98,7 +99,7 @@ const Users = () => {
             <div className="header-container">
                 <h1>Users</h1>
                 <div className="btn-container" id="register-button">
-                    <button onClick={() => navigate(`/register`)}>Register New User</button>
+                    <button onClick={() => navigate("/register")}>Register New User</button>
                 </div>
             </div>
             <div className="filter-container">
@@ -139,55 +140,35 @@ const Users = () => {
                 </select>
             </div>
 
-            <ul>
+            <div className="grid-container">
                 {users.map(user => {
                     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
                     return (
-                        <li key={user.id} className="user-container">
-                            <div className="user-item">
-                                <strong>User ID:</strong>
-                                <span>{user.id}</span>
+                        <div key={user.id} className="user-card">
+                            <div className="user-info">
+                                <h4>User ID: {user.id}</h4>
+                                {user.name && <h4 className="name">{user.name}</h4>}
+                                {user.utorid && <p><strong>UTORid:</strong> {user.utorid}</p>}
+                                {user.email && <p><strong>Email:</strong> {user.email}</p>}
+                                {user.birthday && <p><strong>Birthday:</strong> {user.birthday}</p>}
+                                {user.role && <p><strong>Role:</strong> {user.role.charAt(0).toUpperCase() + user.role.slice(1)}</p>}
+                                {user.points != null && <p><strong>Points:</strong> {user.points}</p>}
+                                {user.verified != null && <p><strong>Verified:</strong> {user.verified ? "Yes" : "No"}</p>}
                             </div>
-                            <div className="user-item">
-                                <strong>Name:</strong>
-                                <span>{user.name}</span>
-                            </div>
-                            <div className="user-item">
-                                <strong>Avatar:</strong>
+                            <div className="user-avatar-section">
                                 <img
                                     src={avatarUrl}
                                     alt={`${user.name}'s Avatar`}
-                                    style={{
-                                        width: "90px",
-                                        height: "90px",
-                                        borderRadius: "50%",
-                                        objectFit: "cover",
-                                    }}
+                                    className="user-avatar"
                                 />
+                                <div className="btn-container" id="update-user-button">
+                                    <button onClick={() => navigate(`/users/${user.id}`)}>Update User</button>
+                                </div>
                             </div>
-                            <div className="user-item">
-                                <strong>UTORid:</strong>
-                                <span>{user.utorid}</span>
-                            </div>
-                            <div className="user-item">
-                                <strong>Email:</strong>
-                                <span>{user.email}</span>
-                            </div>
-                            <div className="user-item">
-                                <strong>Role:</strong>
-                                <span>{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
-                            </div>
-                            <div className="user-item">
-                                <strong>Verified:</strong>
-                                <span>{user.verified ? "Yes" : "No"}</span>
-                            </div>
-                            <div className="btn-container" id="update-user-button">
-                                <button onClick={() => navigate(`/users/${user.id}`)}>Update User</button>
-                            </div>
-                        </li>
+                        </div>
                     );
                 })}
-            </ul>
+            </div>
 
             <div className="pagination-container">
                 <div className="btn-container">
