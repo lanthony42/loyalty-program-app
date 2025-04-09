@@ -24,6 +24,11 @@ main a:active {
     transform: translate(1px, 1px);
 }
 
+main .box:empty {
+    padding: 0;
+    margin-bottom: -30px;
+}
+
 main .box:not(:empty) {
     border: solid 1px lightgray;
 }

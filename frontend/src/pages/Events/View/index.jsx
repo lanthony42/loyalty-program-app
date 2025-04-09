@@ -483,8 +483,7 @@ const View = () => {
                     required
                 />
                 <div className="btn-container">
-                    <button type="button" onClick={clickBack}>Back</button>
-                    <button type="submit">Add</button>
+                    <button type="submit">Add Organizer</button>
                 </div>
                 <p className="error">{organizerError}</p>
             </form>
@@ -514,8 +513,7 @@ const View = () => {
                     required
                 />
                 <div className="btn-container">
-                    <button type="button" onClick={clickBack}>Back</button>
-                    <button type="submit">Add</button>
+                    <button type="submit">Add Guest</button>
                 </div>
                 <p className="error">{guestError}</p>
             </form>
@@ -563,8 +561,7 @@ const View = () => {
                     required
                 />
                 <div className="btn-container">
-                    <button type="button" onClick={clickBack}>Back</button>
-                    <button type="submit">Award</button>
+                    <button type="submit">Award Points</button>
                 </div>
                 <p className="error">{pointsError}</p>
             </form>

@@ -47,28 +47,26 @@ const Upcoming = ({ limit = 4 }) => {
         }
     };
 
-    return !promotions ? null : <>
-        <div>
-            <h3>Upcoming Promotions</h3>
-            <div className="grid-container">
-                {promotions.map(promotion => {
-                    const prettyStart = promotion.startTime ? new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime)) : "";
-                    const prettyEnd = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime));
-                    return <div key={promotion.id} className={`card ${promotion.type}`}>
-                        <div className="card-content">
-                            <h4 className="name">{promotion.name} (ID: {promotion.id})</h4>
-                            <p><strong>Start Time:</strong> {prettyStart}</p>
-                            <p><strong>End Time:</strong> {prettyEnd}</p>
-                            <p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>
-                        </div>
-                        <div className="btn-container">
-                            <button onClick={() => navigate(`/promotions/${promotion.id}`, { state: { fromSite: true } })}>View</button>
-                        </div>
+    return !promotions ? null : <div>
+        <h1>Upcoming Promotions</h1>
+        <div className="grid-container">
+            {promotions.map(promotion => {
+                const prettyStart = promotion.startTime ? new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.startTime)) : "";
+                const prettyEnd = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(promotion.endTime));
+                return <div key={promotion.id} className={`card ${promotion.type}`}>
+                    <div className="card-content">
+                        <h4 className="name">{promotion.name} (ID: {promotion.id})</h4>
+                        <p><strong>Start Time:</strong> {prettyStart}</p>
+                        <p><strong>End Time:</strong> {prettyEnd}</p>
+                        <p><strong>Type:</strong> {promotion.type.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-")}</p>
                     </div>
-                })}
-            </div>
+                    <div className="btn-container">
+                        <button onClick={() => navigate(`/promotions/${promotion.id}`, { state: { fromSite: true } })}>View</button>
+                    </div>
+                </div>
+            })}
         </div>
-    </>;
+    </div>;
 };
 
 export default Upcoming;

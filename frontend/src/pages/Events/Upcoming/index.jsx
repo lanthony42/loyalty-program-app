@@ -47,33 +47,31 @@ const Upcoming = ({ limit = 4 }) => {
         }
     };
 
-    return !events ? null : <>
-        <div>
-            <h3>Upcoming Events</h3>
-            <div className="grid-container">
-                {events.map(event => {
-                    const prettyStart = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(event.startTime));
-                    return <div key={event.id} className="card event">
-                        <div className="card-content">
-                            <h4>{event.name} (ID: {event.id})</h4>
-                            <p>
-                                <strong>Location:</strong> {event.location}
-                            </p>
-                            <p>
-                                <strong>Start Time:</strong> {prettyStart}
-                            </p>
-                            {isManager && <p>
-                                <strong>Published:</strong> {event.published ? "Yes" : "No"}
-                            </p>}
-                        </div>
-                        <div className="btn-container">
-                            <Link to={`/events/${event.id}`} state={{ fromSite: true }}>View</Link>
-                        </div>
+    return !events ? null : <div>
+        <h1>Upcoming Events</h1>
+        <div className="grid-container">
+            {events.map(event => {
+                const prettyStart = new Intl.DateTimeFormat(DATE_LOCALE, DATE_OPTIONS).format(new Date(event.startTime));
+                return <div key={event.id} className="card event">
+                    <div className="card-content">
+                        <h4>{event.name} (ID: {event.id})</h4>
+                        <p>
+                            <strong>Location:</strong> {event.location}
+                        </p>
+                        <p>
+                            <strong>Start Time:</strong> {prettyStart}
+                        </p>
+                        {isManager && <p>
+                            <strong>Published:</strong> {event.published ? "Yes" : "No"}
+                        </p>}
                     </div>
-                })}
-            </div>
+                    <div className="btn-container">
+                        <Link to={`/events/${event.id}`} state={{ fromSite: true }}>View</Link>
+                    </div>
+                </div>
+            })}
         </div>
-    </>;
+    </div>;
 };
 
 export default Upcoming;

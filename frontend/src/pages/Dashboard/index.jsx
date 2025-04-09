@@ -19,36 +19,30 @@ const Dashboard = () => {
     const isManager = Role[user.role] >= Role.manager;
 
     return <>
-        <h2>Welcome, {user?.name || user?.utorid}!</h2>
-        {user.role === "regular" && (
+        <h3>Welcome, {user?.name || user?.utorid}!</h3>
+        {user.role === "regular" && <>
             <div>
-                <h3>Current Point Balance</h3>
-                <h3>{user.points}</h3>
+                <h1>Current Point Balance</h1>
+                <h1>{user.points}</h1>
             </div>
-        )}
-        {user.role === "regular" && (
-            <div>
-                <RecentTransactions />
-            </div>
-        )}
+            <RecentTransactions />
+        </>}
         {user.role === "cashier" && (
-            <div>
-                <div className="btn-container">
-                    <Link to="/transactions/process">Process Redemptions</Link>
-                    <Link to="/transactions/create">Create New Transaction</Link>
-                </div>
+            <div className="btn-container">
+                <Link to="/transactions/process">Process Redemptions</Link>
+                <Link to="/transactions/create">Create New Transaction</Link>
             </div>
         )}
-        {isManager && (
+        {isManager && <>
             <div>
-                <h3>Manage Users</h3>
+                <h1>Manage Users</h1>
                 <div className="btn-container" style={{ display: "flex", justifyContent: "center", padding : "20px" }}>
                     <Link to="/users">Manage</Link>
                 </div>
-                <UpcomingPromotions />
-                <UpcomingEvents />
             </div>
-        )}
+            <UpcomingPromotions />
+            <UpcomingEvents />
+        </>}
     </>;
 };
 
