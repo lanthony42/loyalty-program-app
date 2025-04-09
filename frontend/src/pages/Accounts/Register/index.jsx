@@ -21,7 +21,7 @@ const Register = () => {
         return <Navigate to="/login" replace />;
     }
     else if (user.role === "regular") {
-        return <Navigate to="/dashboard" replace />;
+        return <Navigate to="/users" replace />;
     }
 
     const handleChange = e => {
@@ -91,6 +91,7 @@ const Register = () => {
                 required
             />
             <div className="btn-container">
+                <button onClick={() => navigate(`/users`)}>Back</button>
                 <button type="submit">Register</button>
             </div>
             <p className="error">{error}</p>

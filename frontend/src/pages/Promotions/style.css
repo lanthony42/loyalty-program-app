@@ -1,0 +1,48 @@
+.promotion-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border-left: 8px solid #de9307;
+    transition: transform 0.2s ease;
+    gap: 20px;
+}
+
+
+.promotion-card:hover {
+    transform: translateY(-2px);
+}
+
+.promotion-card h4 {
+    color: #de9307;
+    margin-bottom: 4px;
+}
+
+.promotion-card .name {
+    color: #996606;
+}
+
+.promotion-info p {
+    margin: 6px 0;
+}
+
+.promotion-section {
+    margin-top: auto;
+    margin-left: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
