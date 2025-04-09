@@ -38,6 +38,12 @@ const Card = ({ event }) => {
                     <strong>Number of Guests:</strong> {event.numGuests}
                 </p>}
                 {isManager && <p>
+                    <strong>Points Remain:</strong> {event.pointsRemain}
+                </p>}
+                {isManager && <p>
+                    <strong>Points Awarded:</strong> {event.pointsAwarded}
+                </p>}
+                {isManager && <p>
                     <strong>Published:</strong> {event.published ? "Yes" : "No"}
                 </p>}
             </div>

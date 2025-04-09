@@ -9,15 +9,40 @@ const validate = require("./validate");
 module.exports = app => {
   app.post("/events", managerOrHigher, async (req, res) => {
     const fields = ["name", "description", "location", "startTime", "endTime", "points"];
-    const valid = (
-      validate.required(req.body, ...fields) &&
-      validate.string(req.body, "name", "description", "location") &&
-      validate.dateTime(req.body, "startTime", "endTime") &&
-      validate.positiveInt(req.body, "capacity", "points") &&
-      req.body.startTime < req.body.endTime
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, ...fields)) {
+      res.status(400).json({ error: "Missing required field(s)" });
+      return;
+    }
+    else if (!validate.string(req.body, "name")) {
+      res.status(400).json({ error: "Name was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "description")) {
+      res.status(400).json({ error: "Description was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "location")) {
+      res.status(400).json({ error: "Location was not a string" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "startTime")) {
+      res.status(400).json({ error: "Start time was not a date time" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "endTime")) {
+      res.status(400).json({ error: "End time was not a date time" });
+      return;
+    }
+    else if (!validate.positiveInt(req.body, "capacity")) {
+      res.status(400).json({ error: "Capacity was not a positive integer" });
+      return;
+    }
+    else if (!validate.positiveInt(req.body, "points")) {
+      res.status(400).json({ error: "Points was not a positive integer" });
+      return;
+    }
+    else if (req.body.startTime >= req.body.endTime) {
+      res.status(400).json({ error: "End time was not after start time" });
       return;
     }
 
@@ -106,7 +131,7 @@ module.exports = app => {
     else {
       AND.push({ published: true });
     }
-    
+
     const events = await getPrisma().event.findMany({
       where: { AND },
       include: {
@@ -237,7 +262,7 @@ module.exports = app => {
 
   app.patch("/events/:eventId", async (req, res) => {
     if (!validate.integer(req.params, "eventId")) {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "Event ID was not an integer" });
       return;
     }
 
@@ -255,33 +280,79 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
 
     const manage = req.user.role === Role.MANAGER || req.user.role === Role.SUPERUSER;
     const own = event.organizers.some(x => req.user.id === x.id);
     if (!manage && (!own || defined(req.body, "points") || defined(req.body, "published"))) {
-      res.status(403).json({ error: "Forbidden" });
+      res.status(403).json({ error: "User does not organize this event" });
       return;
     }
 
-    const valid = (
-      validate.string(req.body, "name", "description", "location") &&
-      validate.dateTime(req.body, "startTime", "endTime") &&
-      validate.positiveInt(req.body, "capacity", "points") &&
-      validate.boolean(req.body, "published") &&
-      (req.body.startTime || event.startTime) < (req.body.endTime || event.endTime) &&
-      (!defined(req.body, "published") || req.body.published) &&
-      (!defined(req.body, "startTime") || new Date() < req.body.startTime) &&
-      (!defined(req.body, "endTime") || new Date() < req.body.endTime) &&
-      (!defined(req.body, "capacity") || req.body.capacity >= event._count.guests) &&
-      (!defined(req.body, "points") || req.body.points >= event.pointsAwarded) &&
-      (!defined(req.body, "name", "description", "location", "startTime", "capacity") || new Date() < event.startTime) &&
-      (!defined(req.body, "endTime") || new Date() < event.endTime)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.string(req.body, "name")) {
+      res.status(400).json({ error: "Name was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "description")) {
+      res.status(400).json({ error: "Description was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "location")) {
+      res.status(400).json({ error: "Location was not a string" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "startTime")) {
+      res.status(400).json({ error: "Start time was not a date time" });
+      return;
+    }
+    else if (!validate.dateTime(req.body, "endTime")) {
+      res.status(400).json({ error: "End time was not a date time" });
+      return;
+    }
+    else if (!validate.positiveInt(req.body, "capacity")) {
+      res.status(400).json({ error: "Capacity was not a positive integer" });
+      return;
+    }
+    else if (!validate.positiveInt(req.body, "points")) {
+      res.status(400).json({ error: "Points was not a positive integer" });
+      return;
+    }
+    else if (!validate.boolean(req.body, "published")) {
+      res.status(400).json({ error: "Published was not a boolean" });
+      return;
+    }
+    else if ((req.body.startTime || event.startTime) >= (req.body.endTime || event.endTime)) {
+      res.status(400).json({ error: "End time was not after start time" });
+      return;
+    }
+    else if (defined(req.body, "published") && !req.body.published) {
+      res.status(400).json({ error: "Cannot unpublish an event" });
+      return;
+    }
+    else if (defined(req.body, "startTime") && new Date() >= req.body.startTime) {
+      res.status(400).json({ error: "Start time has already passed" });
+      return;
+    }
+    else if (defined(req.body, "endTime") && new Date() >= req.body.endTime) {
+      res.status(400).json({ error: "End time has already passed" });
+      return;
+    }
+    else if (defined(req.body, "capacity") && req.body.capacity < event._count.guests) {
+      res.status(400).json({ error: "Capacity was less than amount of guests" });
+      return;
+    }
+    else if (defined(req.body, "points") && req.body.points < event.pointsAwarded) {
+      res.status(400).json({ error: "Points was less than amount of points awarded" });
+      return;
+    }
+    else if (defined(req.body, "name", "description", "location", "startTime", "capacity") && new Date() >= event.startTime) {
+      res.status(400).json({ error: "Cannot update fields after event has started" });
+      return;
+    }
+    else if (defined(req.body, "endTime") && new Date() >= event.endTime) {
+      res.status(400).json({ error: "Cannot update end time after event has ended" });
       return;
     }
 

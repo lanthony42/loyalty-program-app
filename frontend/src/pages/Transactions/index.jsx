@@ -6,7 +6,7 @@ import TransactionCard from "./Card";
 import QRCode from "./QRCode";
 import config from "@/config";
 
-const PAGE_LIMIT = 6;
+const PAGE_LIMIT = 4;
 
 const Transactions = () => {
     const [qrOpen, setQROpen] = useState(false);

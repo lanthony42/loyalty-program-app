@@ -27,6 +27,8 @@ const View = () => {
 
     const isManager = Role[user.role] >= Role.manager;
     const isOrganizer = isManager || event && event.organizers.some(x => x.id === user.id);
+    const startPassed = event && new Date() >= new Date(event.startTime);
+    const endPassed = event && new Date() >= new Date(event.endTime);
 
     const fetchEventData = async () => {
         try {
@@ -40,7 +42,11 @@ const View = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setEvent(data);
+                setEvent({
+                    ...data,
+                    points: data.pointsRemain + data.pointsAwarded,
+                    wasPublished: data.published
+                });
             }
             else if (response.status === 404) {
                 navigate("/404");
@@ -79,6 +85,14 @@ const View = () => {
         });
     };
 
+    const handleCheckbox = e => {
+        const { name, checked } = e.target;
+        setEvent({
+            ...event,
+            [name]: checked
+        });
+    };
+
     const clickBack = () => {
         if (location.state?.fromSite) {
             navigate(-1);
@@ -90,6 +104,18 @@ const View = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+
+        if (startPassed) {
+            for (const key of ["name", "description", "location", "startTime", "capacity"]) {
+                event[key] = undefined;
+            }
+        }
+        if (endPassed) {
+            event.endTime = undefined;
+        }
+        if (!event.wasPublished && !event.published) {
+            event.published = undefined;
+        }
 
         try {
             const url = `${config.backendUrl}/events/${event.id}`;
@@ -127,7 +153,7 @@ const View = () => {
                 placeholder="Name"
                 value={event.name || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer}
+                disabled={!isOrganizer || startPassed}
             />
             <label htmlFor="description">Description:</label>
             <textarea
@@ -136,7 +162,7 @@ const View = () => {
                 placeholder="Description"
                 value={event.description || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer}
+                disabled={!isOrganizer || startPassed}
             />
             <label htmlFor="location">Location:</label>
             <input
@@ -146,7 +172,7 @@ const View = () => {
                 placeholder="Location"
                 value={event.location || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer}
+                disabled={!isOrganizer || startPassed}
             />
             <label htmlFor="startTime">Start Time:</label>
             <input
@@ -156,7 +182,7 @@ const View = () => {
                 placeholder="Start Time"
                 value={toDateTimeLocal(event.startTime)}
                 onChange={handleChange}
-                disabled={!isOrganizer}
+                disabled={!isOrganizer || startPassed}
             />
             <label htmlFor="endTime">End Time:</label>
             <input
@@ -166,7 +192,7 @@ const View = () => {
                 placeholder="End Time"
                 value={toDateTimeLocal(event.endTime)}
                 onChange={handleChange}
-                disabled={!isOrganizer}
+                disabled={!isOrganizer || endPassed}
             />
             <label htmlFor="capacity">Capacity:</label>
             <input
@@ -178,7 +204,7 @@ const View = () => {
                 step="1"
                 value={event.capacity || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer}
+                disabled={!isOrganizer || startPassed}
             />
             <label htmlFor="points">Points:</label>
             <input
@@ -199,7 +225,7 @@ const View = () => {
                 name="published"
                 placeholder="Published"
                 checked={event.published || false}
-                onChange={handleChange}
+                onChange={handleCheckbox}
                 disabled={!isManager}
             />
             <div className="btn-container">
