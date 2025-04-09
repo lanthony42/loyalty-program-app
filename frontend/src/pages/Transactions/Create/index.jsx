@@ -1,6 +1,6 @@
 import "@/pages/form.css";
 import { useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -12,8 +12,14 @@ const TYPES = {
 }
 
 const Create = () => {
+    const [searchParams] = useSearchParams();
     const { Role, authReady, user } = useAuth();
-    const [transaction, setTransaction] = useState({});
+    const [transaction, setTransaction] = useState({
+        userId: searchParams.get("userId") || undefined,
+        utorid: searchParams.get("utorid") || undefined,
+        type: searchParams.get("type") || undefined,
+        relatedId: searchParams.get("relatedId") || undefined
+    });
     const [types, setTypes] = useState([]);
     const [error, setError] = useState("");    
     const navigate = useNavigate();
@@ -27,10 +33,12 @@ const Create = () => {
                     newTypes.push(key);
                 }
             }
-            setTransaction({
-                ...transaction,
-                type: newTypes[0]
-            });
+            if (!newTypes.includes(transaction.type)) {                
+                setTransaction({
+                    ...transaction,
+                    type: newTypes[0]
+                });
+            }
             setTypes(newTypes);
         }
     }, [user]);
@@ -55,14 +63,39 @@ const Create = () => {
             setTransaction({
                 ...transaction,
                 type: e.target.value,
-                amount: undefined
+                userId: undefined,
+                amount: undefined,
+                relatedId: undefined
             });
         }
-        else {
+        else if (e.target.value === "redemption") {
             setTransaction({
                 ...transaction,
                 type: e.target.value,
-                spent: undefined
+                userId: undefined,
+                utorid: undefined,
+                spent: undefined,
+                relatedId: undefined,
+                promotionIds: undefined
+            });
+        }
+        else if (e.target.value === "transfer") {
+            setTransaction({
+                ...transaction,
+                type: e.target.value,
+                utorid: undefined,
+                spent: undefined,
+                relatedId: undefined,
+                promotionIds: undefined
+            });
+        }
+        else if (e.target.value === "adjustment") {
+            setTransaction({
+                ...transaction,
+                type: e.target.value,
+                userId: undefined,
+                spent: undefined,
+                promotionIds: undefined
             });
         }
     };
@@ -76,7 +109,7 @@ const Create = () => {
     }
 
     const clickBack = () => {
-        if (location.state?.fromList) {
+        if (location.state?.fromSite) {
             navigate(-1);
         }
         else {
@@ -89,7 +122,7 @@ const Create = () => {
 
         try {
             const url = transaction.type === "redemption" ? `${config.backendUrl}/users/me/transactions` :
-                        transaction.type === "transfer"   ? `${config.backendUrl}/users/${transaction.utorid}/transactions` :
+                        transaction.type === "transfer"   ? `${config.backendUrl}/users/${transaction.userId}/transactions` :
                                                             `${config.backendUrl}/transactions`;
             const response = await fetch(url, {
                 method: "POST",
@@ -117,16 +150,30 @@ const Create = () => {
     return <>
         <h1>Create Transaction</h1>
         <form onSubmit={handleSubmit}>
-            <label htmlFor="utorid">UTORid:</label>
-            <input
-                type="text"
-                id="utorid"
-                name="utorid"
-                placeholder="UTORid"
-                value={transaction.utorid || ""}
-                onChange={handleChange}
-                required
-            />
+            {transaction.type === "transfer" && <>
+                <label htmlFor="userId">User Id:</label>
+                <input
+                    type="text"
+                    id="userId"
+                    name="userId"
+                    placeholder="User Id"
+                    value={transaction.userId || ""}
+                    onChange={handleChange}
+                    required
+                />
+            </>}
+            {transaction.type !== "redemption" && transaction.type !== "transfer" && <>
+                <label htmlFor="utorid">UTORid:</label>
+                <input
+                    type="text"
+                    id="utorid"
+                    name="utorid"
+                    placeholder="UTORid"
+                    value={transaction.utorid || ""}
+                    onChange={handleChange}
+                    required
+                />
+            </>}
             <label htmlFor="type">Type:</label>
             <select
                 type="text"
@@ -178,15 +225,17 @@ const Create = () => {
                     required
                 />
             </>}
-            <label htmlFor="promotionIds">Promotion Ids:</label>
-            <input
-                type="text"
-                id="promotionIds"
-                name="promotionIds"
-                placeholder="Promotion Ids"
-                value={transaction.promotionIds?.join(", ") || ""}
-                onChange={handlePromotionsChange}
-            />
+            {transaction.type === "purchase" && <>
+                <label htmlFor="promotionIds">Promotion Ids:</label>
+                <input
+                    type="text"
+                    id="promotionIds"
+                    name="promotionIds"
+                    placeholder="Promotion Ids"
+                    value={transaction.promotionIds?.join(", ") || ""}
+                    onChange={handlePromotionsChange}
+                />
+            </>}
             <label htmlFor="remark">Remark:</label>
             <input
                 type="text"

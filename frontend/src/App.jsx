@@ -11,6 +11,7 @@ import EditProfile from "@/pages/Accounts/EditProfile";
 import Register from "@/pages/Accounts/Register";
 import Transactions from "@/pages/Transactions";
 import CreateTransaction from "@/pages/Transactions/Create";
+import ProcessTransaction from "@/pages/Transactions/Process";
 import ViewTransaction from "@/pages/Transactions/View";
 import NotFound from "@/pages/NotFound";
 
@@ -31,6 +32,7 @@ const MyRoutes = () => {
                 <Route path="transactions">
                     <Route index element={<Transactions />} />
                     <Route path="create" element={<CreateTransaction />} />
+                    <Route path="process" element={<ProcessTransaction />} />
                     <Route path=":transactionId" element={<ViewTransaction />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />

@@ -64,12 +64,17 @@ const View = () => {
     };
 
     const clickBack = () => {
-        if (location.state?.fromList) {
+        if (location.state?.fromSite) {
             navigate(-1);
         }
         else {
             navigate('/transactions');
         }
+    };
+
+    const createAdjustment = () => {
+        const url = `/transactions/create?type=adjustment&utorid=${transaction.utorid}&relatedId=${transaction.id}`;
+        navigate(url, { state: { fromSite: true } });
     };
 
     const handleSubmit = async e => {
@@ -118,7 +123,7 @@ const View = () => {
                 id="type"
                 name="type"
                 placeholder="Type"
-                value={transaction.type || ""}
+                value={transaction.type ? `${transaction.type.charAt(0).toUpperCase()}${transaction.type.slice(1)}` : ""}
                 disabled
             />
             <label htmlFor="amount">Amount:</label>
@@ -138,6 +143,17 @@ const View = () => {
                     name="spent"
                     placeholder="Spent"
                     value={transaction.spent || ""}
+                    disabled
+                />
+            </>}
+            {transaction.type === "adjustment" && <>
+                <label htmlFor="relatedId">Related Id:</label>
+                <input
+                    type="number"
+                    id="relatedId"
+                    name="relatedId"
+                    placeholder="Related Id"
+                    value={transaction.relatedId || ""}
                     disabled
                 />
             </>}
@@ -178,6 +194,7 @@ const View = () => {
             />
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
+                <button type="button" onClick={createAdjustment}>Create Adjustment</button>
                 <button type="submit">Update</button>
             </div>
             <p className="error">{error}</p>

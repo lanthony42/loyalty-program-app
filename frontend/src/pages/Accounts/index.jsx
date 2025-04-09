@@ -95,7 +95,7 @@ const Users = () => {
 
     return (
         <div>
-            <div className="users-header-container">
+            <div className="header-container">
                 <h1>Users</h1>
                 <div className="btn-container" id="register-button">
                     <button onClick={() => navigate(`/register`)}>Register New User</button>

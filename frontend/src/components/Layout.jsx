@@ -14,10 +14,10 @@ const Layout = () => {
         <header>
             <div className="link-container" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                 <Link to="/">Home</Link>
-                {user?.role !== "regular" && (
-                    <Link to="/users">Users</Link>
-                )}
-                <Link to="/transactions">Transactions</Link>
+                {user && <>
+                    {user?.role !== "regular" && <Link to="/users">Users</Link>}
+                    <Link to="/transactions">Transactions</Link>
+                </>}
             </div>
             {user ? (
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem", padding: 0, paddingRight: 50 }}>
