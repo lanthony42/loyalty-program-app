@@ -11,8 +11,12 @@ const View = () => {
     const [organizerError, setOrganizerError] = useState("");
     const [guest, setGuest] = useState("");
     const [guestError, setGuestError] = useState("");
+    const [pointsData, setPointsData] = useState({
+        type: "event"
+    });
+    const [pointsError, setPointsError] = useState("");
     const { eventId } = useParams();
-    const { Role, authReady, user } = useAuth();
+    const { Role, authReady, user, fetchUserData } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -201,10 +205,6 @@ const View = () => {
         setOrganizer(e.target.value);
     };
 
-    const changeGuest = e => {
-        setGuest(e.target.value);
-    };
-
     const addOrganizer = async e => {
         e.preventDefault();
 
@@ -259,6 +259,10 @@ const View = () => {
             console.error(error);
             setOrganizerError("An error occurred while updating");
         }
+    };
+
+    const changeGuest = e => {
+        setGuest(e.target.value);
     };
 
     const addGuest = async e => {
@@ -316,7 +320,59 @@ const View = () => {
             setGuestError("An error occurred while updating");
         }
     };
-    
+
+    const changeUtorId = e => {
+        if (e.target.value) {
+            setPointsData({
+                ...pointsData,
+                utorid: e.target.value
+            });
+        }
+        else {
+            setPointsData({
+                ...pointsData,
+                utorid: undefined
+            });
+        }
+    };
+
+    const changeAmount = e => {
+        setPointsData({
+            ...pointsData,
+            amount: e.target.value
+        });
+    };
+
+    const awardPoints = async e => {
+        e.preventDefault();
+
+        try {
+            const url = `${config.backendUrl}/events/${event.id}/transactions`;
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(pointsData),
+            });
+
+            if (response.ok) {
+                await fetchUserData(user.token);
+                await fetchEventData();
+                setPointsError("");
+            }
+            else {
+                const json = await response.json();
+                setPointsError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setPointsError("An error occurred while updating");
+        }
+    };
+
     return !event ? <p>Loading...</p> : <>
         <h1>Viewing Event {event.id}</h1>
         <form onSubmit={handleSubmit}>
@@ -409,7 +465,7 @@ const View = () => {
                 <button type="button" onClick={clickBack}>Back</button>
                 {isOrganizer && <button type="submit">Update</button>}
                 {!isOrganizer && <button type="button" onClick={handleRSVP}>RSVP</button>}
-                {isManager && !event.wasPublished && <button type="button" onClick={handleDelete}>Delete</button>}                
+                {isManager && !event.wasPublished && <button type="button" onClick={handleDelete}>Delete</button>}
             </div>
             <p className="error">{formError}</p>
         </form>
@@ -474,6 +530,44 @@ const View = () => {
                     </div>
                 </div>)}
             </div>}
+        </>}
+        {isOrganizer && <>
+            <div className="center-text">
+                <h1>Award Points</h1>
+                <p>Points Remaining: {event.pointsRemain}</p>
+            </div>
+            <form onSubmit={awardPoints}>
+                <label htmlFor="utorid">UTORid:</label>
+                <select
+                    id="utorid"
+                    name="utorid"
+                    placeholder="UTORid"
+                    value={pointsData.utorid || ""}
+                    onChange={changeUtorId}
+                >
+                    <option value="">All Guests</option>
+                    {event.guests.map(g => <option key={g.id} value={g.utorid}>
+                        {g.utorid}
+                    </option>)}
+                </select>
+                <label htmlFor="amount">Amount:</label>
+                <input
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    placeholder="Amount"
+                    min="1"
+                    step="1"
+                    value={pointsData.amount || ""}
+                    onChange={changeAmount}
+                    required
+                />
+                <div className="btn-container">
+                    <button type="button" onClick={clickBack}>Back</button>
+                    <button type="submit">Award</button>
+                </div>
+                <p className="error">{pointsError}</p>
+            </form>
         </>}
     </>;
 };

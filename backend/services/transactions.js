@@ -783,16 +783,32 @@ module.exports = app => {
   });
 
   app.post("/events/:eventId/transactions", async (req, res) => {
-    const input_valid = (
-      validate.integer(req.params, "eventId") &&
-      validate.required(req.body, "type", "amount") &&
-      validate.transactionType(req.body, "type") &&
-      validate.string(req.body, "utorid") &&
-      validate.positiveInt(req.body, "amount") &&
-      req.body.type === TransactionType.EVENT
-    );
-    if (!input_valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.integer(req.params, "eventId")) {
+      res.status(400).json({ error: "Event ID was not an integer" });
+      return;
+    }
+    else if (!validate.required(req.body, "type")) {
+      res.status(400).json({ error: "Type was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "amount")) {
+      res.status(400).json({ error: "Amount was required" });
+      return;
+    }
+    else if (!validate.transactionType(req.body, "type")) {
+      res.status(400).json({ error: "Type was not a valid transaction type" });
+      return;
+    }
+    else if (!validate.string(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was not a string" });
+      return;
+    }
+    else if (!validate.positiveInt(req.body, "amount")) {
+      res.status(400).json({ error: "Amount was not a positive integer" });
+      return;
+    }
+    else if (req.body.type !== TransactionType.EVENT) {
+      res.status(400).json({ error: "Transaction was not an event" });
       return;
     }
 
@@ -806,24 +822,24 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
     
     const manage = req.user.role === Role.MANAGER || req.user.role === Role.SUPERUSER ||
                    event.organizers.some(x => req.user.id === x.id);
     if (!manage) {
-      res.status(403).json({ error: "Forbidden" });
+      res.status(403).json({ error: "User does not organize this event" });
       return;
     }
     
     const pointsToAward = !defined(req.body, "utorid") ? req.body.amount * event.guests.length : req.body.amount;
-    const data_valid = (
-      (!defined(req.body, "utorid") || event.guests.some(x => req.body.utorid === x.username)) &&
-      event.pointsRemain >= pointsToAward
-    );
-    if (!data_valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (defined(req.body, "utorid") && !event.guests.some(x => req.body.utorid === x.username)) {
+      res.status(400).json({ error: "User was not registered as a guest" });
+      return;
+    }
+    else if (event.pointsRemain < pointsToAward) {
+      res.status(400).json({ error: "Event has insufficient points" });
       return;
     }
 
@@ -845,7 +861,7 @@ module.exports = app => {
         }
       });
       if (!user) {
-        res.status(404).json({ error: "Not Found" });
+        res.status(404).json({ error: "User was not found" });
         return;
       }
       data.push(makeTransaction(user));

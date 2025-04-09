@@ -28,6 +28,10 @@ main .box:not(:empty) {
     border: solid 1px lightgray;
 }
 
+.center-text {
+    text-align: center;
+}
+
 .filter-container {
     display: flex;
     justify-content: center;
