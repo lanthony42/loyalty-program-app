@@ -141,6 +141,31 @@ const View = () => {
             setError("An error occurred while updating");
         }
     };
+
+    const handleDelete = async () => {
+        try {
+            const url = `${config.backendUrl}/events/${event.id}`;
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${user.token}`,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if (response.ok) {
+                clickBack();
+            }
+            else {
+                const json = await response.json();
+                setError(json.error);
+            }
+        }
+        catch (error) {
+            console.error(error);
+            setError("An error occurred while updating");
+        }
+    };
     
     return !event ? <p>Loading...</p> : <>
         <h1>Event {event.id}</h1>
@@ -231,6 +256,7 @@ const View = () => {
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
                 {isOrganizer && <button type="submit">Update</button>}
+                {isManager && !event.published && <button type="button" onClick={handleDelete}>Delete</button>}                
             </div>
             <p className="error">{error}</p>
         </form>

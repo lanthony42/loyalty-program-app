@@ -421,11 +421,11 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
     else if (event.published) {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "Cannot delete published event" });
       return;
     }
 
