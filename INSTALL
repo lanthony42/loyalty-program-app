@@ -4,9 +4,26 @@
 
 # 1. All the packages you need to install
 # 2. How to configure various servers (e.g., Nginx, Apache, etc)
-dotenv
-qrcode
 
+############################ CREDITS ###########################
+# Tutorial 11 was used as the starting point for the style and
+# structure of the project.
+
+########################### PACKAGES ###########################
+# Packages used are listed in the respective package.json files.
+
+# prisma and sqlite3 was used for the database; express was used
+# for the backend; express-jwt and jsonwebtoken was used for JWT
+# authentication; cors was used to allow requests from frontend;
+# dotenv was used to get frontend URL from .env; multer was used
+# for avatar uploads; and uuid was used for reset tokens.
+
+# react, react-dom, and react-router-dom was used for the front-
+# end; qrcode was used for generating QR codes; various others
+# were used for development only like vite and eslint.
+
+########################## DEPLOYMENT ##########################
+# 
 node index.js 3000
 npx prisma generate
 npx prisma db push
