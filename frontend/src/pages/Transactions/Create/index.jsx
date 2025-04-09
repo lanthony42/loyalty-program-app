@@ -101,11 +101,19 @@ const Create = () => {
     };
 
     const handlePromotionsChange = e => {
-        const tokens = e.target.value.split(",");
-        setTransaction({
-            ...transaction,
-            promotionIds: tokens.map(x => x.trim())
-        });
+        if (e.target.value.trim()) {
+            const tokens = e.target.value.split(",");
+            setTransaction({
+                ...transaction,
+                promotionIds: tokens.map(x => x.trim())
+            });
+        }
+        else {
+            setTransaction({
+                ...transaction,
+                promotionIds: undefined
+            });
+        }
     }
 
     const clickBack = () => {

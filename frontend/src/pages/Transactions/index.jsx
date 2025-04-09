@@ -124,7 +124,7 @@ const Transactions = () => {
         <div className="header-container">
             <h1>Transactions</h1>
             <div className="btn-container">
-                {!isCashier && <a href="#" onClick={showUserQR}>Show QR Code</a>}
+                {!isCashier && <a href="#" onClick={showUserQR}>Show My QR</a>}
                 {isCashier && <Link to="/transactions/process">Process Redemptions</Link>}
                 <Link to="/transactions/create">Create New</Link>
             </div>

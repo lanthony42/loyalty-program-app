@@ -18,14 +18,28 @@ module.exports = app => {
       return;
     }
 
-    const input_valid = (
-      validate.required(req.body, "utorid", "spent") &&
-      validate.string(req.body, "utorid", "remark") &&
-      validate.positiveNum(req.body, "spent") &&
-      validate.intArray(req.body, "promotionIds")
-    );
-    if (!input_valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "spent")) {
+      res.status(400).json({ error: "Spent was required" });
+      return;
+    }
+    else if (!validate.string(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "remark")) {
+      res.status(400).json({ error: "Remark was not a string" });
+      return;
+    }
+    else if (!validate.positiveNum(req.body, "spent")) {
+      res.status(400).json({ error: "Spent was not a positive number" });
+      return;
+    }
+    else if (!validate.intArray(req.body, "promotionIds")) {
+      res.status(400).json({ error: "Promotion IDs was not an array of integers" });
       return;
     }
 
@@ -35,7 +49,7 @@ module.exports = app => {
       }
     });
     if (!user) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
@@ -58,7 +72,7 @@ module.exports = app => {
         }
       });
       if (!promotion) {
-        res.status(400).json({ error: "Bad Request" });
+        res.status(400).json({ error: `Promotion ${promotionId} was not valid` });
         return;
       }
       else if (promotion.minSpending == null || req.body.spent >= promotion.minSpending) {
@@ -116,16 +130,48 @@ module.exports = app => {
   });
 
   app.post("/transactions", managerOrHigher, async (req, res) => {
-    const valid = (
-      validate.required(req.body, "utorid", "type", "amount", "relatedId") &&
-      validate.string(req.body, "utorid", "remark") &&
-      validate.transactionType(req.body, "type") &&
-      validate.integer(req.body, "amount", "relatedId") &&
-      validate.intArray(req.body, "promotionIds") &&
-      req.body.type === TransactionType.ADJUSTMENT
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "type")) {
+      res.status(400).json({ error: "Type was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "amount")) {
+      res.status(400).json({ error: "Amount was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "relatedId")) {
+      res.status(400).json({ error: "Related ID was required" });
+      return;
+    }
+    else if (!validate.string(req.body, "utorid")) {
+      res.status(400).json({ error: "UTORid was not a string" });
+      return;
+    }
+    else if (!validate.string(req.body, "remark")) {
+      res.status(400).json({ error: "Remark was not a string" });
+      return;
+    }
+    else if (!validate.transactionType(req.body, "type")) {
+      res.status(400).json({ error: "Type was not a valid transaction type" });
+      return;
+    }
+    else if (!validate.integer(req.body, "amount")) {
+      res.status(400).json({ error: "Amount was not an integer" });
+      return;
+    }
+    else if (!validate.integer(req.body, "relatedId")) {
+      res.status(400).json({ error: "Related ID was not an integer" });
+      return;
+    }
+    else if (!validate.intArray(req.body, "promotionIds")) {
+      res.status(400).json({ error: "Promotion IDs was not an array of integers" });
+      return;
+    }
+    else if (req.body.type !== TransactionType.ADJUSTMENT) {
+      res.status(400).json({ error: "Transaction was not an adjustment" });
       return;
     }
 
@@ -135,11 +181,11 @@ module.exports = app => {
       }
     });
     if (!user) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
     else if (user.points + req.body.amount < 0) {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "User had insufficient points" });
       return;
     }
 
@@ -149,7 +195,7 @@ module.exports = app => {
       }
     });
     if (!related) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Related transaction was not found" });
       return;
     }
 
@@ -427,20 +473,32 @@ module.exports = app => {
   });
 
   app.post("/users/me/transactions", async (req, res) => {
-    const valid = (
-      validate.required(req.body, "type") &&
-      validate.transactionType(req.body, "type") &&
-      validate.positiveInt(req.body, "amount") &&
-      validate.string(req.body, "remark") &&
-      req.body.type === TransactionType.REDEMPTION &&
-      (!defined(req.body, "amount") || req.user.points >= req.body.amount)
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.required(req.body, "type")) {
+      res.status(400).json({ error: "Type was required" });
+      return;
+    }
+    else if (!validate.transactionType(req.body, "type")) {
+      res.status(400).json({ error: "Type was not a valid transaction type" });
+      return;
+    }
+    else if (!validate.positiveInt(req.body, "amount")) {
+      res.status(400).json({ error: "Amount was not a positive integer" });
+      return;
+    }
+    else if (!validate.string(req.body, "remark")) {
+      res.status(400).json({ error: "Remark was not a string" });
+      return;
+    }
+    else if (req.body.type !== TransactionType.REDEMPTION) {
+      res.status(400).json({ error: "Transaction was not a redemption" });
+      return;
+    }
+    else if (defined(req.body, "amount") && req.user.points < req.body.amount) {
+      res.status(400).json({ error: "User had insufficient points" });
       return;
     }
     else if (!req.user.verified) {
-      res.status(403).json({ error: "Forbidden" });
+      res.status(403).json({ error: "User was not verified" });
       return;
     }
 
@@ -551,21 +609,40 @@ module.exports = app => {
   });
 
   app.post("/users/:userId/transactions", async (req, res) => {
-    const valid = (
-      validate.integer(req.params, "userId") &&
-      validate.required(req.body, "type", "amount") &&
-      validate.transactionType(req.body, "type") &&
-      validate.positiveInt(req.body, "amount") &&
-      validate.string(req.body, "remark") &&
-      req.body.type === TransactionType.TRANSFER &&
-      req.user.points >= req.body.amount
-    );
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.integer(req.params, "userId")) {
+      res.status(400).json({ error: "User ID was not an integer" });
+      return;
+    }
+    else if (!validate.required(req.body, "type")) {
+      res.status(400).json({ error: "Type was required" });
+      return;
+    }
+    else if (!validate.required(req.body, "amount")) {
+      res.status(400).json({ error: "Amount was required" });
+      return;
+    }
+    else if (!validate.transactionType(req.body, "type")) {
+      res.status(400).json({ error: "Type was not a valid transaction type" });
+      return;
+    }
+    else if (!validate.positiveInt(req.body, "amount")) {
+      res.status(400).json({ error: "Amount was not a positive integer" });
+      return;
+    }
+    else if (!validate.string(req.body, "remark")) {
+      res.status(400).json({ error: "Remark was not a string" });
+      return;
+    }
+    else if (req.body.type !== TransactionType.TRANSFER) {
+      res.status(400).json({ error: "Transaction was not a transfer" });
+      return;
+    }
+    else if (req.user.points < req.body.amount) {
+      res.status(400).json({ error: "User had insufficient points" });
       return;
     }
     else if (!req.user.verified) {
-      res.status(403).json({ error: "Forbidden" });
+      res.status(403).json({ error: "User was not verified" });
       return;
     }
 
@@ -575,7 +652,7 @@ module.exports = app => {
       }
     });
     if (!user) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
@@ -633,13 +710,16 @@ module.exports = app => {
   });
 
   app.patch("/transactions/:transactionId/processed", cashierOrHigher, async (req, res) => {
-    const valid = (
-      validate.integer(req.params, "transactionId") &&
-      validate.required(req.body, "processed") &&
-      validate.boolean(req.body, "processed")
-    )
-    if (!valid) {
-      res.status(400).json({ error: "Bad Request" });
+    if (!validate.integer(req.params, "transactionId")) {
+      res.status(400).json({ error: "Transaction ID was not an integer" });
+      return;
+    }
+    if (!validate.required(req.body, "processed")) {
+      res.status(400).json({ error: "Processed was required" });
+      return;
+    }
+    if (!validate.boolean(req.body, "processed")) {
+      res.status(400).json({ error: "Processed was not a boolean" });
       return;
     }
 
@@ -649,11 +729,15 @@ module.exports = app => {
       }
     });
     if (!transaction) {      
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Transaction was not found" });
       return;
     }
-    else if (transaction.type !== TransactionType.REDEMPTION || transaction.relatedId != null) {
-      res.status(400).json({ error: "Bad Request" });
+    else if (transaction.type !== TransactionType.REDEMPTION) {
+      res.status(400).json({ error: "Transaction was not a redemption" });
+      return;
+    }
+    else if (transaction.relatedId != null) {
+      res.status(400).json({ error: "Transaction has already been processed" });
       return;
     }
 
