@@ -13,7 +13,7 @@ const TYPES = {
 
 const Create = () => {
     const [searchParams] = useSearchParams();
-    const { Role, authReady, user } = useAuth();
+    const { Role, authReady, user, fetchUserData } = useAuth();
     const [transaction, setTransaction] = useState({
         userId: searchParams.get("userId") || undefined,
         utorid: searchParams.get("utorid") || undefined,
@@ -142,6 +142,7 @@ const Create = () => {
             });
 
             if (response.ok) {
+                await fetchUserData(user.token);
                 clickBack();
             }
             else {

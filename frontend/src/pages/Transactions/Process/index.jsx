@@ -8,7 +8,7 @@ const Process = () => {
     const [searchParams] = useSearchParams();
     const [transactionId, setTransactionId] = useState(searchParams.get("transactionId"));
     const [error, setError] = useState("");
-    const { Role, authReady, user } = useAuth();
+    const { Role, authReady, user, fetchUserData } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -52,6 +52,7 @@ const Process = () => {
             });
 
             if (response.ok) {
+                await fetchUserData(user.token);
                 clickBack();
             }
             else {
