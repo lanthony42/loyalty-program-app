@@ -130,6 +130,7 @@ const View = () => {
 
             if (response.ok) {
                 await fetchEventData();
+                setError("");
             }
             else {
                 const json = await response.json();
@@ -168,7 +169,7 @@ const View = () => {
     };
     
     return !event ? <p>Loading...</p> : <>
-        <h1>Event {event.id}</h1>
+        <h1>Viewing Event {event.id}</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="name">Name:</label>
             <input
@@ -256,6 +257,7 @@ const View = () => {
             <div className="btn-container">
                 <button type="button" onClick={clickBack}>Back</button>
                 {isOrganizer && <button type="submit">Update</button>}
+                {isOrganizer && <button type="submit" onClick={() => navigate(`/events/${event.id}/manage`, { state: { fromSite: true } })}>Manage</button>}
                 {isManager && !event.published && <button type="button" onClick={handleDelete}>Delete</button>}                
             </div>
             <p className="error">{error}</p>

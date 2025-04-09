@@ -157,7 +157,7 @@ const Create = () => {
     };
 
     return <>
-        <h1>Create Transaction</h1>
+        <h1>Creating Transaction</h1>
         <form onSubmit={handleSubmit}>
             {transaction.type === "transfer" && <>
                 <label htmlFor="userId">User ID:</label>

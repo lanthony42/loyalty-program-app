@@ -94,6 +94,7 @@ const View = () => {
             if (response.ok) {
                 await fetchUserData(user.token);
                 await fetchTransactionData();
+                setError("");
             }
             else {
                 const json = await response.json();
@@ -107,7 +108,7 @@ const View = () => {
     };
     
     return !transaction ? <p>Loading...</p> : <>
-        <h1>Transaction {transaction.id}</h1>
+        <h1>Viewing Transaction {transaction.id}</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="utorid">UTORid:</label>
             <input

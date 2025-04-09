@@ -67,7 +67,7 @@ const Process = () => {
     };
 
     return <>
-        <h1>Process Redemption</h1>
+        <h1>Processing Redemption</h1>
         <form onSubmit={handleSubmit}>
             <label htmlFor="userId">Transaction Id:</label>
             <input

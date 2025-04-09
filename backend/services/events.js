@@ -457,15 +457,15 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
     else if (event.guests.some(x => req.body.utorid === x.username)) {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "User was already registered as a guest" });
       return;
     }
     else if (event.endTime < new Date()) {
-      res.status(410).json({ error: "Gone" });
+      res.status(410).json({ error: "Event has ended" });
       return;
     }
 
@@ -475,7 +475,7 @@ module.exports = app => {
       }
     });
     if (!organizer) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
@@ -521,7 +521,7 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
 
@@ -531,7 +531,7 @@ module.exports = app => {
       }
     });
     if (!organizer) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
@@ -575,15 +575,19 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
     else if (event.organizers.some(x => req.body.utorid === x.username)) {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "User was already registered as an organizer" });
       return;
     }
-    else if (event.capacity == event._count.guests || event.endTime < new Date()) {
-      res.status(410).json({ error: "Gone" });
+    else if (event.capacity == event._count.guests) {
+      res.status(410).json({ error: "Event is full" });
+      return;
+    }
+    else if (event.endTime < new Date()) {
+      res.status(410).json({ error: "Event has ended" });
       return;
     }
 
@@ -593,7 +597,7 @@ module.exports = app => {
       }
     });
     if (!guest) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
@@ -642,15 +646,19 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
     else if (event.guests.some(x => req.user.id === x.id)) {
-      res.status(400).json({ error: "Bad Request" });
+      res.status(400).json({ error: "User was already registered as a guest" });
       return;
     }
-    else if (event.capacity == event.guests.length || event.endTime < new Date()) {
-      res.status(410).json({ error: "Gone" });
+    else if (event.capacity == event.guests.length) {
+      res.status(410).json({ error: "Event is full" });
+      return;
+    }
+    else if (event.endTime < new Date()) {
+      res.status(410).json({ error: "Event has ended" });
       return;
     }
 
@@ -698,12 +706,16 @@ module.exports = app => {
         guests: true
       }
     });
-    if (!event || !event.guests.some(x => req.user.id === x.id)) {
-      res.status(404).json({ error: "Not Found" });
+    if (!event) {
+      res.status(404).json({ error: "Event was not found" });
+      return;
+    }
+    else if (!event.guests.some(x => req.user.id === x.id)) {
+      res.status(404).json({ error: "User was not registered as a guest" });
       return;
     }
     else if (event.endTime < new Date()) {
-      res.status(410).json({ error: "Gone" });
+      res.status(410).json({ error: "Event has ended" });
       return;
     }
 
@@ -735,7 +747,7 @@ module.exports = app => {
       }
     });
     if (!event) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "Event was not found" });
       return;
     }
 
@@ -745,7 +757,7 @@ module.exports = app => {
       }
     });
     if (!guest) {
-      res.status(404).json({ error: "Not Found" });
+      res.status(404).json({ error: "User was not found" });
       return;
     }
 
