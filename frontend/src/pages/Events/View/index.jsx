@@ -474,8 +474,7 @@ const View = () => {
                 {!isOrganizer && <button type="button" onClick={handleRSVP}>RSVP</button>}
                 {isManager && !event.wasPublished && <button type="button" onClick={handleDelete}>Delete</button>}
             </div>
-            <p className="success">{formSuccess}</p>
-            <p className="error">{formError}</p>
+            {formSuccess ? <p className="success">{formSuccess}</p> : <p className="error">{formError}</p>}
         </form>
         {isManager && !endPassed && <>
             <h1>Add Organizers</h1>

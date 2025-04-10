@@ -181,8 +181,7 @@ const View = () => {
                     </button>
                     <button type="submit">Update</button>
                 </div>
-                <p className="success">{success}</p>
-                <p className="error">{error}</p>
+                {success ? <p className="success">{success}</p> : <p className="error">{error}</p>}
             </form>
         </>
     );

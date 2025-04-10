@@ -117,6 +117,11 @@ const UpdateUser = () => {
 
             if (response.ok) {
                 await fetchUserData(user.token);
+                setPasswordData({
+                    ...passwordData,
+                    old: null,
+                    new: null
+                });
                 setPasswordSuccess("Password successfully updated");
                 setPasswordError("");
             }
@@ -190,8 +195,7 @@ const UpdateUser = () => {
             <div className="btn-container">
                 <button type="submit">Update</button>
             </div>
-            <p className="success">{profileSuccess}</p>
-            <p className="error">{profileError}</p>
+            {profileSuccess ? <p className="success">{profileSuccess}</p> : <p className="error">{profileError}</p>}
         </form>
 
         <h1>Update Password</h1>
@@ -217,8 +221,7 @@ const UpdateUser = () => {
             <div className="btn-container">
                 <button id="update">Update Password</button>
             </div>
-            <p className="success">{passwordSuccess}</p>
-            <p className="error">{passwordError}</p>
+            {passwordSuccess ? <p className="success">{passwordSuccess}</p> : <p className="error">{passwordError}</p>}
         </form>
     </>;
 };
