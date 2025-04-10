@@ -84,7 +84,7 @@ const Create = () => {
             });
 
             if (response.ok) {
-                navigate("/promotions");
+                clickBack();
             }
             else {
                 const json = await response.json();

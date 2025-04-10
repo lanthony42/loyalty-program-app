@@ -43,6 +43,10 @@ const Create = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
+        if (!event.capacity) {
+            event.capacity = undefined;
+        }
+
         try {
             const url = `${config.backendUrl}/events`;
             const response = await fetch(url, {

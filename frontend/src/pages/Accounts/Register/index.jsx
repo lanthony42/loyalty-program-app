@@ -54,7 +54,7 @@ const Register = () => {
             });
 
             if (response.ok) {
-                navigate("/dashboard");
+                clickBack();
             }
             else {
                 const json = await response.json();
