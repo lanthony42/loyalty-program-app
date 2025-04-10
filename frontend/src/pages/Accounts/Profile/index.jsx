@@ -1,6 +1,6 @@
 import "@/pages/form.css";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -20,6 +20,7 @@ const UpdateUser = () => {
         old: null,
         new: null,
     });
+    const location = useLocation();
 
     useEffect(() => {
         if (user) {
@@ -38,7 +39,7 @@ const UpdateUser = () => {
         return <p>Loading...</p>;
     }
     else if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" state={{ fromPage: location }} replace />;
     }
 
     const handleChange = e => {

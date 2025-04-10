@@ -1,20 +1,27 @@
 import "@/pages/form.css";
 import { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
-    const navigate = useNavigate();
     const [utorid, setUtorId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const { authReady, user, login } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
     
     if (!authReady) {
         return <p>Loading...</p>;
     }
     else if (user) {
-        return <Navigate to="/dashboard" replace />;
+        if (location.state?.fromPage) {
+            const url = `${location.state.fromPage.pathname}${location.state.fromPage.search}`;
+            return <Navigate to={url} replace />;
+        }
+        else {
+            return <Navigate to="/dashboard" replace />;
+        }
     }
 
     const handleSubmit = async e => {
@@ -34,7 +41,7 @@ const Login = () => {
                 name="utorid"
                 placeholder="utorid"
                 value={utorid}
-                onChange={(e) => setUtorId(e.target.value)}
+                onChange={e => setUtorId(e.target.value)}
                 required
             />
             <label htmlFor="password">Password:</label>
@@ -44,11 +51,11 @@ const Login = () => {
                 name="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 required
             />
             <div className="btn-container">
-                <button type="button" id="request" onClick={() => navigate(`/reset`)}>Reset Password</button>
+                <button type="button" id="request" onClick={() => navigate("/reset")}>Reset Password</button>
                 <button type="submit">Login</button>
             </div>
         </form>

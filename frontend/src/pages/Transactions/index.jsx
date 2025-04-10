@@ -1,7 +1,7 @@
 import "@/pages/main.css";
 import "@/pages/card.css";
 import { useEffect, useMemo, useState } from "react";
-import { Link, Navigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import TransactionCard from "./Card";
 import QRCode from "./QRCode";
@@ -16,6 +16,7 @@ const Transactions = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
     const { Role, authReady, user } = useAuth();
+    const location = useLocation();
 
     const query = useMemo(() => {
         return {
@@ -42,7 +43,7 @@ const Transactions = () => {
         return <p>Loading...</p>;
     }
     else if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" state={{ fromPage: location }} replace />;
     }
 
     const isCashier = Role[user.role] >= Role.cashier;
@@ -160,7 +161,7 @@ const Transactions = () => {
                 value={query.type}
                 onChange={changeFilter}
             >
-                <option value="">Transaction Type</option>
+                <option value="">Select Type</option>
                 <option value="purchase">Purchase</option>
                 <option value="adjustment">Adjustment</option>
                 <option value="redemption">Redemption</option>

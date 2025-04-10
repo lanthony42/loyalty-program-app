@@ -94,8 +94,7 @@ export const AuthProvider = ({ children }) => {
             if (response.ok) {
                 localStorage.setItem("token", data.token);
                 await fetchUserData(data.token);
-
-                navigate("/dashboard");
+                return "";
             }
             else {
                 return data.error;

@@ -1,7 +1,7 @@
 import "@/pages/main.css";
 import "@/pages/card.css";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
 
@@ -22,6 +22,7 @@ const Promotions = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { Role, authReady, user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const query = useMemo(() => {
         return {
@@ -75,7 +76,7 @@ const Promotions = () => {
         return <p>Loading...</p>;
     }
     else if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" state={{ fromPage: location }} replace />;
     }
 
     const isManager = Role[user.role] >= Role.manager;

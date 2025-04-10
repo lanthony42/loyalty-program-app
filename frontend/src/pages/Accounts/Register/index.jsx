@@ -19,7 +19,7 @@ const Register = () => {
         return <p>Loading...</p>;
     }
     else if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" state={{ fromPage: location }} replace />;
     }
     else if (user.role === "regular") {
         return <Navigate to="/users" replace />;

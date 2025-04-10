@@ -15,7 +15,7 @@ const Create = () => {
         return <p>Loading...</p>;
     }
     else if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" state={{ fromPage: location }} replace />;
     }
 
     const isManager = Role[user.role] >= Role.manager;

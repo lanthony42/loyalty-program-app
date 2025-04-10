@@ -16,7 +16,7 @@ const Process = () => {
         return <p>Loading...</p>;
     }
     else if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" state={{ fromPage: location }} replace />;
     }
 
     const isCashier = Role[user.role] >= Role.cashier;
