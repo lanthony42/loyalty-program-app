@@ -33,6 +33,11 @@ header .menu-toggle {
     display: none;
 }
 
+header .login {
+    padding-top: 10px;
+    padding-right: 50px;
+}
+
 header .link-container {
     display: flex;
     align-items: center;
@@ -84,37 +89,45 @@ footer {
 }
 
 @media (max-width: 800px) {
-    header {
+    header.user {
         flex-direction: column;
         align-items: center;
     }
 
-    header .menu-toggle {
+    header.user .menu-toggle {
         display: block;
         padding: 0 0 6px 0;
     }
 
-    header .link-container {
+    header.user .link-container {
         display: none;
         flex-direction: column;
         padding: 10px 20px;
         margin: 0;
     }
 
-    header .link-container.open {
+    header.user .link-container.open {
         display: flex;
     }
 
-    header .avatar-container {
+    header.user .avatar-container {
         flex-direction: column-reverse;
         margin-top: 8px;
         padding: 0;
         gap: 0;
     }
 
-    header .dropdown-menu {
+    header.user .dropdown-menu {
         top: 75px !important;
         right: -60px !important;
+    }
+
+    header:not(.user) .link-container {
+        padding-left: 25px;
+    }
+
+    header:not(.user) .login {
+        padding-right: 25px;
     }
 }
 

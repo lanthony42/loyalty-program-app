@@ -110,12 +110,12 @@ const Promotions = () => {
     };
 
     return (
-        <div>
+        <div className="listing-container">
             <div className="header-container">
                 <h1>Promotions</h1>
                 {isManager && (
                     <div className="btn-container" id="create-button">
-                        <button onClick={() => navigate("/promotions/create", { state: { fromSite: true } })}>Create New Promotion</button>
+                        <button onClick={() => navigate("/promotions/create", { state: { fromSite: true } })}>Create New</button>
                     </div>
                 )}
             </div>

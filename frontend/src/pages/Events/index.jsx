@@ -102,7 +102,7 @@ const Events = () => {
         });
     };
 
-    return <div>
+    return <div className="listing-container">
         <div className="header-container">
             <h1>Events</h1>
             <div className="btn-container">

@@ -97,7 +97,7 @@ const Users = () => {
     };
 
     return (
-        <div>
+        <div className="listing-container">
             <div className="header-container">
                 <h1>Users</h1>
                 <div className="btn-container">

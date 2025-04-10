@@ -70,12 +70,12 @@ const Register = () => {
     return <>
         <h1>Registering User</h1>
         <form onSubmit={handleSubmit}>
-            <label htmlFor="utorid">utorid:</label>
+            <label htmlFor="utorid">UTORid:</label>
             <input
                 type="text"
                 id="utorid"
                 name="utorid"
-                placeholder="utorid"
+                placeholder="UTORid"
                 value={data.utorid}
                 onChange={handleChange}
                 required

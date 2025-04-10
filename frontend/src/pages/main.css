@@ -37,6 +37,10 @@ main .box:not(:empty) {
     text-align: center;
 }
 
+.listing-container {
+    max-width: 100%;
+}
+
 .filter-container {
     display: flex;
     justify-content: center;
@@ -96,5 +100,9 @@ ul {
 }
 
 @media (max-width: 800px) {
-
+    .grid-container {
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+    }
 }

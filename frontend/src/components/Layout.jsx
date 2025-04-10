@@ -13,7 +13,7 @@ const Layout = () => {
     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
 
     return <>
-        <header>
+        <header className={user ? "user" : ""}>
             <button className="menu-toggle" onClick={() => setOpen(!open)}>
                 ☰
             </button>
@@ -40,7 +40,7 @@ const Layout = () => {
                     </div>
                 </div>
             ) : (
-                <Link style={{ paddingTop: "10px", paddingRight: "50px" }} to="/login">Login</Link>
+                <Link className="login" to="/login">Login</Link>
             )}
         </header>
         <main>

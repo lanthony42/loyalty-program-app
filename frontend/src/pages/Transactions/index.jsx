@@ -121,7 +121,7 @@ const Transactions = () => {
         });
     };
 
-    return <div>
+    return <div className="listing-container">
         <div className="header-container">
             <h1>Transactions</h1>
             <div className="btn-container">

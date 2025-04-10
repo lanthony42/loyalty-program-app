@@ -135,3 +135,9 @@
 .card.one-time h4 {
     color: #6b4eec;
 }
+
+@media (max-width: 800px) {
+    .card-content {
+        overflow: hidden;
+    }
+}
