@@ -6,6 +6,7 @@ import config from "@/config";
 
 const View = () => {
     const [transaction, setTransaction] = useState(null);
+    const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const { transactionId } = useParams();
     const { Role, authReady, user, fetchUserData } = useAuth();
@@ -94,16 +95,19 @@ const View = () => {
             if (response.ok) {
                 await fetchUserData(user.token);
                 await fetchTransactionData();
+                setSuccess("Transaction successfully updated");
                 setError("");
             }
             else {
                 const json = await response.json();
                 setError(json.error);
+                setSuccess("");
             }
         }
         catch (error) {
             console.error(error);
             setError("An error occurred while updating");
+            setSuccess("");
         }
     };
     
@@ -199,6 +203,7 @@ const View = () => {
                 <button type="button" onClick={createAdjustment}>Create Adjustment</button>
                 <button type="submit">Update</button>
             </div>
+            <p className="success">{success}</p>
             <p className="error">{error}</p>
         </form>
     </>;

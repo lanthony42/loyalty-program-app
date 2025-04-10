@@ -8,7 +8,9 @@ const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
 const UpdateUser = () => {
     const { authReady, user, fetchUserData } = useAuth();
-    const [error, setError] = useState("");
+    const [profileSuccess, setProfileSuccess] = useState("");
+    const [passwordSuccess, setPasswordSuccess] = useState("");
+    const [profileError, setProfileError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [data, setData] = useState({
         name: user?.name || null,
@@ -80,16 +82,19 @@ const UpdateUser = () => {
 
             if (response.ok) {
                 await fetchUserData(user.token);
-                setError("");
+                setProfileSuccess("Profile successfully updated");
+                setProfileError("");
             }
             else {
                 const json = await response.json();
-                setError(json.error);
+                setProfileError(json.error);
+                setProfileSuccess("");
             }
         }
         catch (error) {
             console.error(error);
-            setError("An error occurred while updating");
+            setProfileError("An error occurred while updating");
+            setProfileSuccess("");
         }
     };
 
@@ -112,16 +117,19 @@ const UpdateUser = () => {
 
             if (response.ok) {
                 await fetchUserData(user.token);
+                setPasswordSuccess("Password successfully updated");
                 setPasswordError("");
             }
             else {
                 const json = await response.json();
                 setPasswordError(json.error);
+                setPasswordSuccess("");
             }
         }
         catch (error) {
             console.error(error);
             setPasswordError("An error occurred while requesting token");
+            setPasswordSuccess("");
         }
     };
 
@@ -182,7 +190,8 @@ const UpdateUser = () => {
             <div className="btn-container">
                 <button type="submit">Update</button>
             </div>
-            <p className="error">{error}</p>
+            <p className="success">{profileSuccess}</p>
+            <p className="error">{profileError}</p>
         </form>
 
         <h1>Update Password</h1>
@@ -208,8 +217,9 @@ const UpdateUser = () => {
             <div className="btn-container">
                 <button id="update">Update Password</button>
             </div>
+            <p className="success">{passwordSuccess}</p>
+            <p className="error">{passwordError}</p>
         </form>
-        <p className="error">{passwordError}</p>
     </>;
 };
 

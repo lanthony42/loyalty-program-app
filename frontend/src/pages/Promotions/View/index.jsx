@@ -6,6 +6,7 @@ import config from "@/config";
 
 const View = () => {
     const [promotion, setPromotion] = useState(null);
+    const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const { promotionId } = useParams();
     const { Role, authReady, user } = useAuth();
@@ -122,16 +123,19 @@ const View = () => {
 
             if (response.ok) {
                 await fetchPromotionData();
+                setSuccess("Promotion successfully updated");
                 setError("");
             }
             else {
                 const json = await response.json();
                 setError(json.error);
+                setSuccess("");
             }
         }
         catch (error) {
             console.error(error);
             setError("An error occurred while updating the promotion");
+            setSuccess("");
         }
     };
 
@@ -148,7 +152,7 @@ const View = () => {
             });
 
             if (response.ok) {
-                navigate(`/promotions`);
+                clickBack();
             }
             else {
                 const json = await response.json();
@@ -256,6 +260,7 @@ const View = () => {
                         Delete
                     </button>}
                 </div>
+                <p className="success">{success}</p>
                 <p className="error">{error}</p>
             </form>
         </>

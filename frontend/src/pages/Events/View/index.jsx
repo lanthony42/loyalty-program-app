@@ -6,6 +6,7 @@ import config from "@/config";
 
 const View = () => {
     const [event, setEvent] = useState(null);
+    const [formSuccess, setFormSuccess] = useState("");
     const [formError, setFormError] = useState("");
     const [organizer, setOrganizer] = useState("");
     const [organizerError, setOrganizerError] = useState("");
@@ -138,16 +139,19 @@ const View = () => {
 
             if (response.ok) {
                 await fetchEventData();
+                setFormSuccess("Event successfully updated");
                 setFormError("");
             }
             else {
                 const json = await response.json();
                 setFormError(json.error);
+                setFormSuccess("");
             }
         }
         catch (error) {
             console.error(error);
             setFormError("An error occurred while updating");
+            setFormSuccess("");
         }
     };
 
@@ -163,16 +167,19 @@ const View = () => {
             });
 
             if (response.ok) {
-                clickBack();
+                setFormSuccess("RSVP successful");
+                setFormError("");
             }
             else {
                 const json = await response.json();
                 setFormError(json.error);
+                setFormSuccess("");
             }
         }
         catch (error) {
             console.error(error);
             setFormError("An error occurred while updating");
+            setFormSuccess("");
         }
     };
 
@@ -467,6 +474,7 @@ const View = () => {
                 {!isOrganizer && <button type="button" onClick={handleRSVP}>RSVP</button>}
                 {isManager && !event.wasPublished && <button type="button" onClick={handleDelete}>Delete</button>}
             </div>
+            <p className="success">{formSuccess}</p>
             <p className="error">{formError}</p>
         </form>
         {isManager && !endPassed && <>

@@ -6,6 +6,7 @@ import config from "@/config";
 
 const View = () => {
     const [updatingUser, setUpdatingUser] = useState(null);
+    const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const { userId } = useParams();
     const { authReady, Role, user } = useAuth();
@@ -104,16 +105,19 @@ const View = () => {
 
             if (response.ok) {
                 await fetchUserData();
+                setSuccess("User successfully updated");
                 setError("");
             }
             else {
                 const json = await response.json();
                 setError(json.error);
+                setSuccess("");
             }
         }
         catch (error) {
             console.error(error);
             setError("An error occurred while updating the user");
+            setSuccess("");
         }
     };
 
@@ -177,6 +181,7 @@ const View = () => {
                     </button>
                     <button type="submit">Update</button>
                 </div>
+                <p className="success">{success}</p>
                 <p className="error">{error}</p>
             </form>
         </>
