@@ -100,6 +100,12 @@ ul {
 }
 
 @media (max-width: 800px) {
+    .header-container > .btn-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
     .grid-container {
         display: flex;
         flex-direction: column;
