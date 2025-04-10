@@ -100,6 +100,7 @@ ul {
 }
 
 @media (max-width: 800px) {
+    .dashboard.btn-container,
     .header-container > .btn-container {
         display: flex;
         flex-direction: column;

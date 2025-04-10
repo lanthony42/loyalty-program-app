@@ -29,7 +29,8 @@ const Dashboard = () => {
             <RecentTransactions />
         </>}
         {user.role === "cashier" && (
-            <div className="btn-container">
+            <div className="dashboard btn-container">
+                <Link to="/users/register" state={{ fromSite: true }}>Register New User</Link>
                 <Link to="/transactions/process" state={{ fromSite: true }}>Process Redemptions</Link>
                 <Link to="/transactions/create" state={{ fromSite: true }}>Create New Transaction</Link>
             </div>
