@@ -2,24 +2,23 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    background-color: #4a4e69;  
+    background-color: #4a4e69;
     padding: 10px;
     text-align: center;
 }
 
 header > * {
     background-color: inherit;
-    border: none;  
+    border: none;
     text-decoration: none;
     padding: 10px 20px;
 }
 
-header > :first-child {
+header > :nth-child(2) {
     margin-right: auto;
 }
 
 header a {
-    padding: 0 10px;
     color: #eee;
     font-weight: bold;
     cursor: pointer;
@@ -30,14 +29,22 @@ header a:hover {
     color: white;
 }
 
-header > .link-container {
+header .menu-toggle {
+    display: none;
+}
+
+header .link-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
     padding-left: 50px;
 }
 
-header > .avatar-dropdown {
-    position: relative;
-    display: inline-block;
-    padding-right: 55px;
+header .avatar-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 50px 0 0;
 }
 
 .user-points {
@@ -74,6 +81,41 @@ footer {
     text-align: center;
     padding: 10px;
     width: 100%;
+}
+
+@media (max-width: 800px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header .menu-toggle {
+        display: block;
+        padding: 0 0 6px 0;
+    }
+
+    header .link-container {
+        display: none;
+        flex-direction: column;
+        padding: 10px 20px;
+        margin: 0;
+    }
+
+    header .link-container.open {
+        display: flex;
+    }
+
+    header .avatar-container {
+        flex-direction: column-reverse;
+        margin-top: 8px;
+        padding: 0;
+        gap: 0;
+    }
+
+    header .dropdown-menu {
+        top: 75px !important;
+        right: -60px !important;
+    }
 }
 
 @media (max-width: 400px) {

@@ -1,4 +1,5 @@
 import "./Layout.css";
+import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import config from "@/config";
@@ -7,12 +8,16 @@ import AvatarDropdown from "@/components/AvatarDropdown";
 const DEFAULT_AVATAR = "https://www.gravatar.com/avatar/?d=mp";
 
 const Layout = () => {
+    const [open, setOpen] = useState(false);
     const { user, logout, Role, setRole } = useAuth();
     const avatarUrl = user?.avatarUrl ? `${config.backendUrl}${user?.avatarUrl}` : DEFAULT_AVATAR;
 
     return <>
         <header>
-            <div className="link-container" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <button className="menu-toggle" onClick={() => setOpen(!open)}>
+                ☰
+            </button>
+            <div className={`link-container ${open ? "open" : ""}`}>
                 <Link to="/">Home</Link>
                 {user && <>
                     {user?.role !== "regular" && user?.role !== "cashier" && <Link to="/users">Users</Link>}
@@ -22,7 +27,7 @@ const Layout = () => {
                 </>}
             </div>
             {user ? (
-                <div style={{ display: "flex", alignItems: "center", gap: "1rem", padding: 0, paddingRight: 50 }}>
+                <div className="avatar-container">
                     <span className="user-points">{user?.points || 0} points</span>
                     <div className="avatar-dropdown">
                         <AvatarDropdown
