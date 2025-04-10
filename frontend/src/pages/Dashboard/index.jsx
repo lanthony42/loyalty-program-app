@@ -30,8 +30,8 @@ const Dashboard = () => {
         </>}
         {user.role === "cashier" && (
             <div className="btn-container">
-                <Link to="/transactions/process">Process Redemptions</Link>
-                <Link to="/transactions/create">Create New Transaction</Link>
+                <Link to="/transactions/process" state={{ fromSite: true }}>Process Redemptions</Link>
+                <Link to="/transactions/create" state={{ fromSite: true }}>Create New Transaction</Link>
             </div>
         )}
         {isManager && <>
