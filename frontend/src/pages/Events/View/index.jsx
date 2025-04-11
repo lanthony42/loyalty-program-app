@@ -114,20 +114,21 @@ const View = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
-        if (event.startPassed) {
+        const data = { ...event };
+        if (data.startPassed) {
             for (const key of ["name", "description", "location", "startTime", "capacity"]) {
-                event[key] = undefined;
+                data[key] = undefined;
             }
         }
-        if (event.endPassed) {
-            event.endTime = undefined;
+        if (data.endPassed) {
+            data.endTime = undefined;
         }
-        if (!event.wasPublished && !event.published) {
-            event.published = undefined;
+        if (!data.wasPublished && !data.published) {
+            data.published = undefined;
         }
         if (!isManager) {
-            event.points = undefined;
-            event.published = undefined;
+            data.points = undefined;
+            data.published = undefined;
         }
 
         try {
@@ -138,7 +139,7 @@ const View = () => {
                     "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(event),
+                body: JSON.stringify(data),
             });
 
             if (response.ok) {

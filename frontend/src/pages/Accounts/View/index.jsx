@@ -89,8 +89,9 @@ const View = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
-        if (!updatingUser.wasVerified && !updatingUser.verified) {
-            updatingUser.verified = undefined;
+        const data = { ...updatingUser };
+        if (!data.wasVerified && !data.verified) {
+            data.verified = undefined;
         }
 
         try {
@@ -101,7 +102,7 @@ const View = () => {
                     "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(updatingUser),
+                body: JSON.stringify(data),
             });
 
             if (response.ok) {
@@ -165,6 +166,7 @@ const View = () => {
                     name="verified"
                     checked={updatingUser.verified || false}
                     onChange={handleFieldChange}
+                    disabled={updatingUser.wasVerified}
                 />
                 {updatingUser.role === "cashier" && <>
                     <label htmlFor="suspicious">Suspicious:</label>

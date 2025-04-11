@@ -103,13 +103,14 @@ const View = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
-        if (promotion.startPassed) {
+        const data = { ...promotion };
+        if (data.startPassed) {
             for (const key of ["name", "description", "type", "startTime", "minSpending", "rate", "points"]) {
-                promotion[key] = undefined;
+                data[key] = undefined;
             }
         }
-        if (promotion.endPassed) {
-            promotion.endTime = undefined;
+        if (data.endPassed) {
+            data.endTime = undefined;
         }
 
         try {
@@ -120,7 +121,7 @@ const View = () => {
                     "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(promotion),
+                body: JSON.stringify(data),
             });
 
             if (response.ok) {
