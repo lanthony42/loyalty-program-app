@@ -27,6 +27,7 @@ const View = () => {
                 const data = await response.json();
                 setUpdatingUser({
                     ...data,
+                    wasRole: data.role,
                     wasVerified: data.verified
                 });
             }
@@ -150,12 +151,12 @@ const View = () => {
                     name="role"
                     value={updatingUser.role}
                     onChange={handleFieldChange}
-                    disabled={updatingUser.role === "superuser"}
+                    disabled={updatingUser.wasRole === "superuser"}
                 >
                     <option value="regular">Regular</option>
                     <option value="cashier">Cashier</option>
-                    <option value="manager">Manager</option>
-                    <option value="superuser">Superuser</option>
+                    {user.role === "superuser" && <option value="manager">Manager</option>}
+                    {user.role === "superuser" && <option value="superuser">Superuser</option>}
                 </select>
                 <label htmlFor="verified">Verified:</label>
                 <input
