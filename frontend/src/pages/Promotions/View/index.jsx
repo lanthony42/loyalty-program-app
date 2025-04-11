@@ -25,7 +25,11 @@ const View = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setPromotion(data);
+                setPromotion({
+                    ...data,
+                    startPassed: new Date() >= new Date(data.startTime),
+                    endPassed: new Date() >= new Date(data.endTime)
+                });
             }
             else if (response.status === 404) {
                 navigate("/404");
@@ -53,8 +57,6 @@ const View = () => {
     }
 
     const isManager = Role[user.role] >= Role.manager;
-    const startPassed = promotion && new Date() >= new Date(promotion.startTime);
-    const endPassed = promotion && new Date() >= new Date(promotion.endTime);
     if (!isManager) {
         return <Navigate to="/dashboard" replace />;
     }
@@ -101,12 +103,12 @@ const View = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
-        if (startPassed) {
+        if (promotion.startPassed) {
             for (const key of ["name", "description", "type", "startTime", "minSpending", "rate", "points"]) {
                 promotion[key] = undefined;
             }
         }
-        if (endPassed) {
+        if (promotion.endPassed) {
             promotion.endTime = undefined;
         }
 
@@ -179,7 +181,7 @@ const View = () => {
                     placeholder="Name"
                     value={promotion.name || ""}
                     onChange={handleChange}
-                    disabled={startPassed}
+                    disabled={promotion.startPassed}
                 />
                 <label htmlFor="description">Description:</label>
                 <textarea
@@ -188,7 +190,7 @@ const View = () => {
                     placeholder="Description"
                     value={promotion.description || ""}
                     onChange={handleChange}
-                    disabled={startPassed}
+                    disabled={promotion.startPassed}
                 />
                 <label htmlFor="type">Type:</label>
                 <select
@@ -196,7 +198,7 @@ const View = () => {
                     name="type"
                     value={promotion.type}
                     onChange={handleChange}
-                    disabled={startPassed}
+                    disabled={promotion.startPassed}
                 >
                     <option value="automatic">Automatic</option>
                     <option value="one-time">One-Time</option>
@@ -209,7 +211,7 @@ const View = () => {
                     placeholder="Start Time"
                     value={toDateTimeLocal(promotion.startTime)}
                     onChange={handleChange}
-                    disabled={startPassed}
+                    disabled={promotion.startPassed}
                 />
                 <label htmlFor="endTime">End Time:</label>
                 <input
@@ -219,7 +221,7 @@ const View = () => {
                     placeholder="End Time"
                     value={toDateTimeLocal(promotion.endTime)}
                     onChange={handleChange}
-                    disabled={endPassed}
+                    disabled={promotion.endPassed}
                 />
                 <label htmlFor="minSpending">Minimum Spending:</label>
                 <input
@@ -229,7 +231,7 @@ const View = () => {
                     placeholder="0"
                     value={promotion.minSpending || ""}
                     onChange={handleChange}
-                    disabled={startPassed}
+                    disabled={promotion.startPassed}
                 />
                 <label htmlFor="rate">Rate:</label>
                 <input
@@ -239,7 +241,7 @@ const View = () => {
                     placeholder="0"
                     value={promotion.rate || ""}
                     onChange={handleChange}
-                    disabled={startPassed}
+                    disabled={promotion.startPassed}
                 />
                 <label htmlFor="points">Points:</label>
                 <input
@@ -249,14 +251,14 @@ const View = () => {
                     placeholder="0"
                     value={promotion.points || ""}
                     onChange={handleChange}
-                    disabled={startPassed}
+                    disabled={promotion.startPassed}
                 />
                 <div className="btn-container">
                     <button type="button" onClick={clickBack}>
                         Back
                     </button>
-                    {!endPassed && <button type="submit">Update</button>}
-                    {!startPassed && <button type="button" onClick={handleDelete}>
+                    {!promotion.endPassed && <button type="submit">Update</button>}
+                    {!promotion.startPassed && <button type="button" onClick={handleDelete}>
                         Delete
                     </button>}
                 </div>

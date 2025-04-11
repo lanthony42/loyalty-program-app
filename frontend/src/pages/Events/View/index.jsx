@@ -36,8 +36,6 @@ const View = () => {
 
     const isManager = Role[user.role] >= Role.manager;
     const isOrganizer = isManager || event && event.organizers.some(x => x.id === user.id);
-    const startPassed = event && new Date() >= new Date(event.startTime);
-    const endPassed = event && new Date() >= new Date(event.endTime);
 
     const fetchEventData = async () => {
         try {
@@ -53,6 +51,8 @@ const View = () => {
                 const data = await response.json();
                 setEvent({
                     ...data,
+                    startPassed: new Date() >= new Date(data.startTime),
+                    endPassed: new Date() >= new Date(data.endTime),
                     points: data.pointsRemain + data.pointsAwarded,
                     wasPublished: data.published
                 });
@@ -114,15 +114,19 @@ const View = () => {
     const handleSubmit = async e => {
         e.preventDefault();
 
-        if (startPassed) {
+        if (event.startPassed) {
             for (const key of ["name", "description", "location", "startTime", "capacity"]) {
                 event[key] = undefined;
             }
         }
-        if (endPassed) {
+        if (event.endPassed) {
             event.endTime = undefined;
         }
         if (!event.wasPublished && !event.published) {
+            event.published = undefined;
+        }
+        if (!isManager) {
+            event.points = undefined;
             event.published = undefined;
         }
 
@@ -391,7 +395,7 @@ const View = () => {
                 placeholder="Name"
                 value={event.name || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer || startPassed}
+                disabled={!isOrganizer || event.startPassed}
             />
             <label htmlFor="description">Description:</label>
             <textarea
@@ -400,7 +404,7 @@ const View = () => {
                 placeholder="Description"
                 value={event.description || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer || startPassed}
+                disabled={!isOrganizer || event.startPassed}
             />
             <label htmlFor="location">Location:</label>
             <input
@@ -410,7 +414,7 @@ const View = () => {
                 placeholder="Location"
                 value={event.location || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer || startPassed}
+                disabled={!isOrganizer || event.startPassed}
             />
             <label htmlFor="startTime">Start Time:</label>
             <input
@@ -420,7 +424,7 @@ const View = () => {
                 placeholder="Start Time"
                 value={toDateTimeLocal(event.startTime)}
                 onChange={handleChange}
-                disabled={!isOrganizer || startPassed}
+                disabled={!isOrganizer || event.startPassed}
             />
             <label htmlFor="endTime">End Time:</label>
             <input
@@ -430,7 +434,7 @@ const View = () => {
                 placeholder="End Time"
                 value={toDateTimeLocal(event.endTime)}
                 onChange={handleChange}
-                disabled={!isOrganizer || endPassed}
+                disabled={!isOrganizer || event.endPassed}
             />
             <label htmlFor="capacity">Capacity:</label>
             <input
@@ -442,7 +446,7 @@ const View = () => {
                 step="1"
                 value={event.capacity || ""}
                 onChange={handleChange}
-                disabled={!isOrganizer || startPassed}
+                disabled={!isOrganizer || event.startPassed}
             />
             <label htmlFor="points">Points:</label>
             <input
@@ -476,7 +480,7 @@ const View = () => {
             </div>
             {formSuccess ? <p className="success">{formSuccess}</p> : <p className="error">{formError}</p>}
         </form>
-        {isManager && !endPassed && <>
+        {isManager && !event.endPassed && <>
             <h1>Add Organizers</h1>
             <form onSubmit={addOrganizer}>
                 <label htmlFor="organizer">UTORid:</label>
@@ -506,7 +510,7 @@ const View = () => {
                 </div>)}
             </div>
         </>}
-        {isOrganizer && !endPassed && <>
+        {isOrganizer && !event.endPassed && <>
             <h1>Add Guests</h1>
             <form onSubmit={addGuest}>
                 <label htmlFor="guest">UTORid:</label>
@@ -524,17 +528,17 @@ const View = () => {
                 </div>
                 <p className="error">{guestError}</p>
             </form>
-            {isManager && <div className="grid-container box">
+            <div className="grid-container box">
                 {event.guests.map(g => <div key={g.id} className="card event">
                     <div className="card-content">
                         <h4>{g.utorid} (ID: {g.id})</h4>
                         <p><strong>Name:</strong> {g.name}</p>
                     </div>
                     <div className="btn-container">
-                        <button type="button" onClick={() => deleteGuest(g.id)}>Delete</button>
+                        {isManager && <button type="button" onClick={() => deleteGuest(g.id)}>Delete</button>}
                     </div>
                 </div>)}
-            </div>}
+            </div>
         </>}
         {isOrganizer && <>
             <div className="center-text">

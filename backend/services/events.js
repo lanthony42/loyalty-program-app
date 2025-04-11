@@ -290,7 +290,7 @@ module.exports = app => {
     const manage = req.user.role === Role.MANAGER || req.user.role === Role.SUPERUSER;
     const own = event.organizers.some(x => req.user.id === x.id);
     if (!manage && (!own || defined(req.body, "points") || defined(req.body, "published"))) {
-      res.status(403).json({ error: "User does not organize this event" });
+      res.status(403).json({ error: "Only managers can change points or published" });
       return;
     }
 
