@@ -20,14 +20,14 @@ const seedAll = async () => {
       {
         username: "regular1",
         email: "regular1@mail.utoronto.ca",
-        password: "123123",
+        password: "123",
         role: Role.REGULAR,
         verified: true
       },
       {
         username: "regular2",
         email: "regular2@mail.utoronto.ca",
-        password: "123123",
+        password: "123",
         role: Role.REGULAR,
         verified: true
       },
@@ -64,14 +64,14 @@ const seedAll = async () => {
       {
         username: "cashier1",
         email: "cashier1@mail.utoronto.ca",
-        password: "123123",
+        password: "123",
         role: Role.CASHIER,
         verified: true
       },
       {
         username: "manager1",
         email: "manager1@mail.utoronto.ca",
-        password: "123123",
+        password: "20942",
         role: Role.MANAGER,
         verified: true
       },
