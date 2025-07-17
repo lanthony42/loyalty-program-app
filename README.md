@@ -23,8 +23,8 @@ A feature-rich loyalty program platform supporting role-based access control, QR
 
 ### Prerequisites
 
-- Node.js (v16+)
-- npm or yarn
+- Node.js
+- npm
 - Git
 
 ### Installation
